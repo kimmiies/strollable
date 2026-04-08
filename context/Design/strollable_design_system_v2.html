@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strollable — UI Design System v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+/* ══════════════════════════════════════════
+   STROLLABLE DESIGN SYSTEM v2.0
+   00 Foundations → 01 Tokens → 02 Atoms
+   03 Components → 04 Pages
+══════════════════════════════════════════ */
+
+:root {
+  /* ── Colour tokens ── */
+  --sage:        #7A9E7E;
+  --sage-light:  #B8D4BB;
+  --sage-deep:   #4A7350;
+  --cream:       #FAF7F2;
+  --warm-white:  #FFFEF9;
+  --ink:         #1A1F1B;
+  --ink-soft:    #3D4740;
+  --ink-faint:   rgba(26,31,27,0.4);
+  --terracotta:  #C9714A;
+  --terra-light: #F2DDD4;
+  --butter:      #F2D98B;
+  --butter-light:#FBF3D4;
+  --sky:         #A8C5D6;
+  --sky-light:   #D6EAF2;
+  --mist:        #EDF2EE;
+  --amber:       #D4952A;
+  --amber-light: #FDF0D5;
+  --error:       #C0392B;
+  --error-light: #FDECEA;
+
+  /* ── Border radius ── */
+  --r-sm:  8px;
+  --r-md:  14px;
+  --r-lg:  24px;
+  --r-xl:  32px;
+  --r-pill:100px;
+
+  /* ── Shadows / elevation ── */
+  --shadow-sm:   0 2px 8px rgba(26,31,27,.08);
+  --shadow-card: 0 4px 24px rgba(26,31,27,.07),0 1px 4px rgba(26,31,27,.04);
+  --shadow-float:0 8px 32px rgba(26,31,27,.12),0 2px 8px rgba(26,31,27,.06);
+  --focus-ring:  0 0 0 3px rgba(122,158,126,.35);
+
+  /* ── Spacing (8pt grid) ── */
+  --sp-2:  2px;  --sp-4:  4px;  --sp-6:  6px;  --sp-8:  8px;
+  --sp-12: 12px; --sp-16: 16px; --sp-20: 20px; --sp-24: 24px;
+  --sp-32: 32px; --sp-40: 40px; --sp-48: 48px; --sp-64: 64px;
+
+  /* ── Touch targets ── */
+  --touch-min:   44px;
+  --touch-fab:   52px;
+
+  /* ── Motion ── */
+  --ease-spring: cubic-bezier(.16,1,.3,1);
+  --ease-out:    cubic-bezier(.0,0,.2,1);
+  --dur-fast:    120ms;
+  --dur-base:    200ms;
+  --dur-slow:    350ms;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;}
+svg.icon{display:inline-block;vertical-align:middle;flex-shrink:0;}
+code{font-family:'Courier New',monospace;background:var(--mist);padding:1px 6px;border-radius:4px;font-size:.9em;}
+
+/* ── STICKY NAV ── */
+.ds-nav{position:sticky;top:0;z-index:100;background:var(--ink);padding:0 48px;display:flex;align-items:center;gap:0;border-bottom:1px solid rgba(255,255,255,.06);}
+.ds-nav-brand{font-family:'Fraunces',serif;font-size:15px;font-weight:300;color:var(--sage-light);letter-spacing:-.02em;padding:14px 0;margin-right:32px;white-space:nowrap;}
+.ds-nav-links{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;flex:1;}
+.ds-nav-links::-webkit-scrollbar{display:none;}
+.ds-nav-link{font-size:12px;color:rgba(255,255,255,.4);padding:14px 16px;white-space:nowrap;text-decoration:none;letter-spacing:.04em;transition:color var(--dur-base);cursor:pointer;}
+.ds-nav-link:hover{color:rgba(255,255,255,.75);}
+.ds-nav-badge{font-size:10px;color:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.1);padding:3px 9px;border-radius:var(--r-pill);margin-left:auto;white-space:nowrap;align-self:center;}
+
+/* ── COVER ── */
+.ds-cover{background:var(--ink);padding:72px 64px 64px;position:relative;overflow:hidden;isolation:isolate;}
+.ds-cover::before{content:'';position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(122,158,126,.18) 0%,transparent 70%);top:-200px;right:-150px;pointer-events:none;z-index:0;}
+.ds-cover-label,.ds-cover-title,.ds-cover-meta{position:relative;z-index:1;}
+.ds-cover-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);margin-bottom:16px;}
+.ds-cover-title{font-family:'Fraunces',serif;font-size:clamp(48px,7vw,80px);font-weight:300;letter-spacing:-.03em;line-height:.95;color:var(--warm-white);margin-bottom:32px;}
+.ds-cover-title em{font-style:italic;color:var(--sage-light);}
+.ds-cover-meta{display:flex;gap:48px;flex-wrap:wrap;}
+.ds-cover-meta-item{font-size:12px;color:rgba(255,255,255,.3);letter-spacing:.06em;}
+.ds-cover-meta-item span{display:block;color:rgba(255,255,255,.6);font-size:14px;margin-top:2px;}
+
+/* ── TOC ── */
+.ds-toc{background:var(--ink);padding:0 64px 64px;}
+.ds-toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:2px;border:1px solid rgba(255,255,255,.06);border-radius:var(--r-md);overflow:hidden;}
+.ds-toc-item{padding:18px 20px;background:rgba(255,255,255,.02);cursor:pointer;transition:background var(--dur-fast);}
+.ds-toc-item:hover{background:rgba(122,158,126,.08);}
+.ds-toc-num{font-size:10px;letter-spacing:.16em;color:var(--sage);margin-bottom:4px;}
+.ds-toc-name{font-size:13px;color:rgba(255,255,255,.55);line-height:1.4;}
+
+/* ── SECTIONS ── */
+.ds-section{padding:80px 64px;max-width:1400px;margin:0 auto;}
+.ds-section-full{padding:80px 0;}
+.ds-section-full .ds-section-inner{max-width:1400px;margin:0 auto;padding:0 64px;}
+.ds-section-mist{background:var(--mist);}
+.ds-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--sage);margin-bottom:14px;}
+.ds-title{font-family:'Fraunces',serif;font-size:clamp(32px,4vw,48px);font-weight:300;letter-spacing:-.025em;line-height:1.05;margin-bottom:40px;}
+.ds-title em{font-style:italic;color:var(--sage-deep);}
+.ds-divider{height:1px;background:linear-gradient(to right,rgba(122,158,126,.3),transparent);margin:0 64px;}
+.ds-note{font-size:13px;color:var(--ink-soft);line-height:1.8;background:var(--warm-white);border-radius:var(--r-md);padding:16px 18px;border:1px solid rgba(122,158,126,.12);}
+.ds-note strong{color:var(--ink);}
+.ds-note-sage{background:rgba(122,158,126,.06);border-left:2px solid var(--sage);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:10px 14px;font-size:12px;color:var(--ink-faint);line-height:1.6;}
+
+/* ── LAYOUT ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:start;}
+.row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
+.row-center{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.col{display:flex;flex-direction:column;gap:16px;}
+
+/* ── FRAME PAIR (mobile + desktop side by side) ── */
+.frame-pair{display:grid;grid-template-columns:390px 1fr;gap:32px;align-items:start;}
+.frame{background:var(--cream);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-float);position:relative;}
+.frame-label{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.frame-label svg{opacity:.5;}
+.frame-desktop{background:var(--cream);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-float);}
+
+/* ── COLOUR TOKENS ── */
+.token-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+.token-swatch{border-radius:var(--r-md);overflow:hidden;box-shadow:var(--shadow-sm);}
+.token-color{height:96px;}
+.token-info{padding:12px 14px;background:var(--warm-white);}
+.token-name{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;}
+.token-var{font-size:10px;color:var(--ink-faint);font-family:'Courier New',monospace;}
+.token-role{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-top:3px;}
+
+/* ── TYPOGRAPHY ── */
+.type-scale{display:flex;flex-direction:column;}
+.type-row{display:grid;grid-template-columns:160px 1fr auto;align-items:baseline;gap:24px;padding:20px 0;border-bottom:1px solid rgba(122,158,126,.1);}
+.type-row:last-child{border-bottom:none;}
+.type-row-meta{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);}
+.type-row-spec{font-size:10px;color:rgba(122,158,126,.7);font-family:'Courier New',monospace;text-align:right;}
+
+/* ── SPACING ── */
+.spacing-row{display:flex;align-items:center;gap:20px;padding:8px 0;border-bottom:1px solid rgba(122,158,126,.07);}
+.spacing-bar{background:var(--sage);border-radius:2px;height:8px;flex-shrink:0;}
+.spacing-meta{font-size:12px;color:var(--ink-faint);}
+.spacing-meta strong{color:var(--ink);font-weight:500;}
+.spacing-meta code{font-size:11px;}
+
+/* ── ELEVATION ── */
+.elev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.elev-card{background:var(--warm-white);border-radius:var(--r-lg);padding:28px;text-align:center;}
+.elev-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-top:12px;}
+.elev-spec{font-size:10px;color:var(--ink-faint);font-family:'Courier New',monospace;margin-top:4px;}
+
+/* ── MOTION ── */
+.motion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.motion-card{background:var(--warm-white);border-radius:var(--r-md);padding:20px;border:1px solid rgba(122,158,126,.12);}
+.motion-label{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:4px;}
+.motion-val{font-size:11px;color:var(--ink-faint);font-family:'Courier New',monospace;margin-bottom:8px;}
+.motion-demo{height:4px;border-radius:2px;background:var(--sage);transform-origin:left;animation:motionPulse 2s infinite;}
+@keyframes motionPulse{0%,100%{transform:scaleX(.2);opacity:.4}50%{transform:scaleX(1);opacity:1}}
+
+/* ── CHIPS / PILLS ── */
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r-pill);font-size:13px;font-weight:400;font-family:'DM Sans',sans-serif;border:1.5px solid transparent;cursor:pointer;transition:all var(--dur-base) var(--ease-spring);white-space:nowrap;}
+.chip-unknown  {background:var(--warm-white);border-color:rgba(26,31,27,.1);color:var(--ink-faint);}
+.chip-reported {background:var(--amber-light);border-color:rgba(212,149,42,.3);color:var(--amber);}
+.chip-confirmed{background:var(--mist);border-color:rgba(122,158,126,.3);color:var(--sage-deep);}
+.chip-disputed {background:var(--terra-light);border-color:rgba(201,113,74,.3);color:var(--terracotta);}
+.chip-filter        {background:var(--warm-white);border-color:rgba(122,158,126,.25);color:var(--ink-soft);}
+.chip-filter.active {background:var(--sage-deep);border-color:var(--sage-deep);color:white;}
+.chip-type          {background:var(--warm-white);border-color:rgba(26,31,27,.1);color:var(--ink-soft);}
+.chip-type.active   {background:var(--ink);border-color:var(--ink);color:white;}
+.chip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dot-unknown {background:rgba(26,31,27,.2);}
+.dot-reported{background:var(--amber);}
+.dot-confirmed{background:var(--sage);}
+.dot-disputed{background:var(--terracotta);}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+
+/* ── FEATURE CHIPS (small, on cards) ── */
+.fc{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:var(--r-pill);font-size:11px;font-weight:400;}
+.fc-confirmed{background:var(--mist);color:var(--sage-deep);border:1px solid rgba(122,158,126,.2);}
+.fc-reported {background:var(--amber-light);color:var(--amber);border:1px solid rgba(212,149,42,.2);}
+.fc-unknown  {background:transparent;color:var(--ink-faint);border:1px solid rgba(26,31,27,.18);}
+
+/* ── BADGES ── */
+.badge-showcase{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;}
+.badge-card{background:var(--warm-white);border-radius:var(--r-lg);padding:24px;border:1px solid rgba(122,158,126,.12);display:flex;flex-direction:column;gap:12px;}
+.badge-icon-ring{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;}
+.badge-icon-ring::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid transparent;}
+.ring-gold{background:linear-gradient(135deg,#fff7d6,#f2d98b);}
+.ring-gold::before{border-color:var(--butter);}
+.ring-sage{background:linear-gradient(135deg,#e2ede3,#b8d4bb);}
+.ring-sage::before{border-color:var(--sage-light);}
+.ring-terra{background:linear-gradient(135deg,#f5e0d6,#e8c4b2);}
+.ring-terra::before{border-color:#e8c4b2;}
+.ring-sky{background:linear-gradient(135deg,#deeef5,#a8c5d6);}
+.ring-sky::before{border-color:var(--sky);}
+.badge-name{font-family:'Fraunces',serif;font-size:16px;font-weight:400;letter-spacing:-.01em;color:var(--ink);}
+.badge-threshold{font-size:12px;color:var(--ink-faint);line-height:1.5;}
+.badge-progress{height:3px;background:var(--mist);border-radius:2px;overflow:hidden;}
+.badge-progress-fill{height:100%;border-radius:2px;}
+.bp-gold{background:var(--butter);}
+.bp-sage{background:var(--sage);}
+.bp-terra{background:var(--terracotta);}
+.bp-sky{background:var(--sky);}
+.badge-progress-label{font-size:11px;color:var(--ink-faint);margin-top:4px;}
+
+/* ── BUTTONS ── */
+.btn-grid{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:var(--r-pill);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:400;cursor:pointer;border:none;transition:all var(--dur-base) var(--ease-spring);white-space:nowrap;min-height:var(--touch-min);}
+.btn-primary  {background:var(--ink);color:white;}
+.btn-primary:hover{background:#2d3530;}
+.btn-primary:focus{box-shadow:var(--focus-ring);}
+.btn-sage     {background:var(--sage);color:white;}
+.btn-sage:hover{background:var(--sage-deep);}
+.btn-secondary{background:transparent;color:var(--ink);border:1.5px solid rgba(26,31,27,.18);}
+.btn-secondary:hover{background:var(--mist);}
+.btn-ghost    {background:var(--mist);color:var(--sage-deep);}
+.btn-ghost:hover{background:#dce8dd;}
+.btn-danger   {background:var(--terra-light);color:var(--terracotta);border:1.5px solid rgba(201,113,74,.25);}
+.btn-contribute{background:var(--sage);color:white;font-weight:500;}
+.btn-sm{padding:9px 16px;font-size:12px;min-height:36px;}
+.btn-lg{padding:18px 32px;font-size:16px;}
+.btn-icon{padding:12px;width:var(--touch-min);height:var(--touch-min);border-radius:50%;}
+.btn:disabled,.btn[disabled]{opacity:.4;cursor:not-allowed;pointer-events:none;}
+
+/* ── INPUTS ── */
+.input-group{display:flex;flex-direction:column;gap:6px;width:100%;}
+.input-label{font-size:12px;font-weight:500;color:var(--ink-soft);letter-spacing:.03em;}
+.input-label .req{color:var(--terracotta);margin-left:2px;}
+.input-field{width:100%;padding:13px 16px;border-radius:var(--r-md);border:1.5px solid rgba(26,31,27,.14);background:var(--warm-white);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--ink);outline:none;transition:all var(--dur-base) var(--ease-out);}
+.input-field::placeholder{color:var(--ink-faint);}
+.input-field:hover{border-color:rgba(122,158,126,.4);}
+.input-field:focus{border-color:var(--sage);box-shadow:var(--focus-ring);}
+.input-field.error{border-color:var(--error);background:var(--error-light);}
+.input-field.error:focus{box-shadow:0 0 0 3px rgba(192,57,43,.2);}
+.input-field:disabled{opacity:.45;cursor:not-allowed;background:var(--mist);}
+.input-hint{font-size:11px;color:var(--ink-faint);}
+.input-error-msg{font-size:11px;color:var(--error);display:flex;align-items:center;gap:4px;}
+.input-icon-wrap{position:relative;}
+.input-icon-wrap .input-field{padding-left:42px;}
+.input-icon-wrap .input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-faint);pointer-events:none;}
+.input-field-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(26,31,27,0.4)' stroke-width='1.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;cursor:pointer;}
+textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
+
+/* ── TOGGLE ── */
+.toggle-wrap{display:flex;align-items:center;gap:12px;cursor:pointer;}
+.toggle{width:48px;height:28px;border-radius:var(--r-pill);background:rgba(26,31,27,.15);position:relative;transition:background var(--dur-base) var(--ease-out);flex-shrink:0;}
+.toggle.on{background:var(--sage);}
+.toggle::after{content:'';position:absolute;width:22px;height:22px;border-radius:50%;background:white;top:3px;left:3px;transition:transform var(--dur-base) var(--ease-spring);box-shadow:var(--shadow-sm);}
+.toggle.on::after{transform:translateX(20px);}
+.toggle-label{font-size:14px;color:var(--ink-soft);}
+
+/* ── CHECKBOX ── */
+.checkbox-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.checkbox{width:20px;height:20px;border-radius:5px;border:1.5px solid rgba(26,31,27,.18);background:var(--warm-white);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--dur-base);color:white;}
+.checkbox.checked{background:var(--sage-deep);border-color:var(--sage-deep);}
+.checkbox.indeterminate{background:var(--sage);border-color:var(--sage);}
+.checkbox-label{font-size:14px;color:var(--ink-soft);}
+
+/* ── RADIO ── */
+.radio-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.radio{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(26,31,27,.18);background:var(--warm-white);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--dur-base);}
+.radio.checked{border-color:var(--sage-deep);}
+.radio.checked::after{content:'';width:10px;height:10px;border-radius:50%;background:var(--sage-deep);}
+.radio-label{font-size:14px;color:var(--ink-soft);}
+
+/* ── AVATARS ── */
+.avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:300;color:white;flex-shrink:0;position:relative;}
+.avatar-sm {width:32px;height:32px;font-size:13px;}
+.avatar-md {width:44px;height:44px;font-size:17px;}
+.avatar-lg {width:60px;height:60px;font-size:22px;}
+.avatar-xl {width:80px;height:80px;font-size:30px;}
+.av-sage  {background:linear-gradient(135deg,var(--sage-light),var(--sage));}
+.av-terra {background:linear-gradient(135deg,#e8b898,var(--terracotta));}
+.av-sky   {background:linear-gradient(135deg,var(--sky-light),var(--sky));}
+.av-butter{background:linear-gradient(135deg,var(--butter-light),var(--amber));}
+.av-ink   {background:linear-gradient(135deg,var(--ink-soft),var(--ink));}
+.avatar-online::after{content:'';position:absolute;width:10px;height:10px;border-radius:50%;background:#4CAF50;border:2px solid var(--warm-white);bottom:1px;right:1px;}
+
+/* ── DIVIDERS ── */
+.divider-full{height:1px;background:rgba(122,158,126,.14);}
+.divider-inset{height:1px;background:rgba(122,158,126,.14);margin-left:56px;}
+.divider-section{height:8px;background:var(--cream);border-top:1px solid rgba(122,158,126,.1);border-bottom:1px solid rgba(122,158,126,.1);}
+
+/* ── SEARCH BAR ── */
+.search-bar{background:var(--warm-white);border-radius:var(--r-pill);padding:14px 20px;display:flex;align-items:center;gap:12px;border:1.5px solid rgba(122,158,126,.2);box-shadow:var(--shadow-sm);max-width:480px;}
+.search-bar-icon{flex-shrink:0;color:var(--ink-faint);}
+.search-bar-input{flex:1;font-size:15px;color:var(--ink-faint);font-family:'DM Sans',sans-serif;font-weight:300;}
+.search-bar-kbd{font-size:11px;color:var(--ink-faint);background:var(--mist);padding:3px 8px;border-radius:6px;font-family:'Courier New',monospace;}
+.search-suggestions{background:var(--warm-white);border-radius:var(--r-lg);border:1px solid rgba(122,158,126,.15);box-shadow:var(--shadow-float);overflow:hidden;max-width:480px;}
+.search-suggestion-item{padding:13px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(122,158,126,.08);cursor:pointer;transition:background var(--dur-fast);}
+.search-suggestion-item:last-child{border-bottom:none;}
+.search-suggestion-item:hover{background:var(--mist);}
+.search-suggestion-item.nearby{background:rgba(122,158,126,.06);}
+.search-suggestion-icon{width:34px;height:34px;border-radius:var(--r-sm);background:var(--mist);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink-soft);}
+.search-suggestion-icon.nearby-icon{background:var(--sage);color:white;}
+.search-suggestion-text{font-size:14px;color:var(--ink-soft);}
+.search-suggestion-text.nearby-text{color:var(--sage-deep);font-weight:500;}
+.search-suggestion-sub{font-size:12px;color:var(--ink-faint);}
+
+/* ── FILTER MODAL ── */
+.filter-modal{background:var(--warm-white);border-radius:var(--r-xl) var(--r-xl) 0 0;padding:0 0 32px;max-width:440px;box-shadow:var(--shadow-float);border-top:1px solid rgba(122,158,126,.15);}
+.filter-modal-handle{width:36px;height:4px;border-radius:2px;background:rgba(26,31,27,.15);margin:12px auto;}
+.filter-modal-header{padding:16px 24px 0;display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.filter-modal-title{font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.02em;}
+.filter-modal-clear{font-size:13px;color:var(--sage-deep);text-decoration:underline;cursor:pointer;}
+.filter-section{padding:0 24px;margin-bottom:24px;}
+.filter-section-title{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.filter-section-divider{height:6px;background:var(--cream);border-top:1px solid rgba(122,158,126,.1);border-bottom:1px solid rgba(122,158,126,.1);margin-bottom:24px;}
+.filter-feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.filter-feature-btn{padding:14px 12px;border-radius:var(--r-md);border:1.5px solid rgba(122,158,126,.2);background:var(--warm-white);display:flex;align-items:center;gap:10px;cursor:pointer;transition:all var(--dur-base);text-align:left;}
+.filter-feature-btn.active{border-color:var(--sage-deep);background:var(--mist);}
+.filter-feature-btn.active .filter-feature-icon{background:var(--sage-deep);color:white;}
+.filter-feature-icon{width:34px;height:34px;border-radius:var(--r-sm);background:var(--mist);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--dur-base);color:var(--ink-soft);}
+.filter-feature-label{font-size:12px;color:var(--ink-soft);line-height:1.3;}
+.filter-type-row{display:flex;gap:8px;}
+.filter-type-btn{flex:1;padding:11px 8px;border-radius:var(--r-md);text-align:center;border:1.5px solid rgba(26,31,27,.1);background:var(--warm-white);font-size:13px;color:var(--ink-soft);cursor:pointer;transition:all var(--dur-base);display:flex;align-items:center;justify-content:center;gap:6px;}
+.filter-type-btn.active{border-color:var(--ink);background:var(--ink);color:white;}
+.filter-neighbourhood-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.filter-nbhd-btn{padding:10px 14px;border-radius:var(--r-md);border:1.5px solid rgba(26,31,27,.1);background:var(--warm-white);font-size:13px;color:var(--ink-soft);cursor:pointer;transition:all var(--dur-base);text-align:center;}
+.filter-nbhd-btn.active{border-color:var(--sage);background:var(--mist);color:var(--sage-deep);}
+.filter-modal-footer{padding:0 24px;display:flex;gap:12px;}
+
+/* ── MAP ── */
+.map-mockup{border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-float);position:relative;height:480px;background:linear-gradient(160deg,#e8ede9 0%,#d4e0d6 40%,#c8d8ca 100%);}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(122,158,126,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(122,158,126,.08) 1px,transparent 1px),linear-gradient(rgba(122,158,126,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(122,158,126,.04) 1px,transparent 1px);background-size:80px 80px,80px 80px,20px 20px,20px 20px;}
+.map-road{position:absolute;background:rgba(255,255,255,.7);border-radius:2px;}
+.map-road-h{height:8px;left:0;right:0;}
+.map-road-v{width:8px;top:0;bottom:0;}
+.map-road-h.major{height:14px;background:rgba(255,255,255,.85);}
+.map-marker{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform var(--dur-base) var(--ease-spring);}
+.map-marker:hover{transform:scale(1.1) translateY(-2px);}
+.marker-bubble{padding:6px 12px;border-radius:var(--r-pill);font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;box-shadow:0 3px 12px rgba(26,31,27,.2);white-space:nowrap;position:relative;}
+.marker-bubble::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:10px;height:10px;clip-path:polygon(0 0,100% 0,50% 100%);}
+.marker-verified{background:var(--ink);color:white;}
+.marker-verified::after{background:var(--ink);}
+.marker-partial{background:var(--amber);color:white;}
+.marker-partial::after{background:var(--amber);}
+.marker-active{background:var(--sage);color:white;transform:scale(1.15);}
+.marker-active::after{background:var(--sage);}
+.map-top-bar{position:absolute;top:16px;left:16px;right:16px;display:flex;gap:10px;align-items:center;z-index:10;}
+.map-search-pill{flex:1;background:white;border-radius:var(--r-pill);padding:12px 18px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-float);font-size:14px;color:var(--ink-faint);}
+.map-ctrl-btn{width:var(--touch-min);height:var(--touch-min);background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-float);cursor:pointer;flex-shrink:0;color:var(--ink-soft);}
+.map-filter-row{position:absolute;top:76px;left:16px;right:16px;display:flex;gap:8px;overflow-x:auto;z-index:10;scrollbar-width:none;}
+.map-filter-row::-webkit-scrollbar{display:none;}
+.map-filter-chip{background:white;border-radius:var(--r-pill);padding:8px 14px;font-size:12px;color:var(--ink-soft);box-shadow:var(--shadow-sm);white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:6px;flex-shrink:0;transition:all var(--dur-base);}
+.map-filter-chip.active{background:var(--sage-deep);color:white;}
+.map-toggle{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);border-radius:var(--r-pill);display:flex;overflow:hidden;box-shadow:var(--shadow-float);z-index:10;}
+.map-toggle-btn{padding:12px 24px;font-size:13px;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,.5);cursor:pointer;font-weight:400;display:flex;align-items:center;gap:6px;transition:all var(--dur-base);}
+.map-toggle-btn.active{background:white;color:var(--ink);border-radius:var(--r-pill);margin:3px;}
+.map-locate-btn{position:absolute;bottom:76px;right:16px;width:var(--touch-min);height:var(--touch-min);background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-float);cursor:pointer;z-index:10;color:var(--ink-soft);}
+.map-card-peek{position:absolute;bottom:72px;left:16px;right:16px;background:var(--warm-white);border-radius:var(--r-lg);padding:16px;box-shadow:var(--shadow-float);z-index:10;display:flex;gap:14px;align-items:center;}
+.map-card-peek-img{width:60px;height:60px;border-radius:var(--r-md);overflow:hidden;flex-shrink:0;position:relative;}
+.map-card-peek-info{flex:1;min-width:0;}
+.map-card-peek-name{font-family:'Fraunces',serif;font-size:16px;font-weight:400;letter-spacing:-.015em;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.map-card-peek-meta{font-size:12px;color:var(--ink-faint);margin-bottom:6px;}
+.map-card-peek-chips{display:flex;gap:4px;}
+.map-card-peek-arrow{font-size:20px;color:var(--ink-faint);flex-shrink:0;}
+
+/* ── ESTABLISHMENT CARD ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+.est-card{background:var(--warm-white);border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(122,158,126,.14);box-shadow:var(--shadow-card);cursor:pointer;transition:all .25s var(--ease-spring);}
+.est-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-float);}
+.est-card-img{height:176px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.est-card-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,31,27,.35) 0%,transparent 60%);}
+.est-card-save{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);cursor:pointer;transition:transform var(--dur-base);color:var(--ink-soft);}
+.est-card-save:hover{transform:scale(1.1);}
+.est-card-save.saved{background:var(--terracotta);color:white;}
+.est-card-body{padding:16px 18px 18px;}
+.est-card-name{font-family:'Fraunces',serif;font-size:18px;font-weight:400;letter-spacing:-.02em;color:var(--ink);margin-bottom:3px;line-height:1.2;}
+.est-card-meta{font-size:12px;color:var(--ink-faint);margin-bottom:12px;letter-spacing:.02em;}
+.est-card-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;}
+.est-card-footer{background:var(--mist);border-radius:var(--r-md);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
+.est-card-contrib{font-size:11px;color:var(--ink-soft);}
+.est-card-contrib strong{color:var(--sage-deep);font-weight:500;}
+.est-card-dist{font-size:11px;color:var(--ink-faint);display:flex;align-items:center;gap:4px;}
+
+/* ── PHOTO MOCKS ── */
+.photo-cafe{background:linear-gradient(160deg,#d4c5a4 0%,#b09b74 30%,#8a7558 60%,#6b5a3e 100%);position:relative;overflow:hidden;}
+.photo-cafe::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='176'%3E%3Crect width='400' height='176' fill='%23c4a882'/%3E%3Cellipse cx='200' cy='88' rx='60' ry='40' fill='%23a08060' opacity='.5'/%3E%3Crect x='60' y='40' width='80' height='96' rx='4' fill='%23805040' opacity='.4'/%3E%3Crect x='260' y='30' width='80' height='106' rx='4' fill='%23905848' opacity='.3'/%3E%3Ccircle cx='140' cy='60' r='20' fill='%23d4b080' opacity='.6'/%3E%3Cpath d='M0 120 Q100 100 200 115 Q300 130 400 110 L400 176 L0 176Z' fill='%23906840' opacity='.5'/%3E%3C/svg%3E") center/cover;}
+.photo-resto{background:linear-gradient(160deg,#e8d5c0 0%,#c9a882 30%,#a07858 60%,#7a5840 100%);position:relative;overflow:hidden;}
+.photo-resto::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='176'%3E%3Crect width='400' height='176' fill='%23d4b890'/%3E%3Crect x='40' y='50' width='120' height='80' rx='8' fill='%23c09870' opacity='.5'/%3E%3Crect x='240' y='40' width='120' height='90' rx='8' fill='%23b08860' opacity='.4'/%3E%3Cellipse cx='200' cy='100' rx='80' ry='20' fill='%23a07850' opacity='.3'/%3E%3Cpath d='M0 130 Q200 110 400 125 L400 176 L0 176Z' fill='%23906040' opacity='.6'/%3E%3C/svg%3E") center/cover;}
+.photo-shop{background:linear-gradient(160deg,#c8d5e0 0%,#9ab0c0 30%,#7090a8 60%,#506880 100%);position:relative;overflow:hidden;}
+.photo-shop::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='176'%3E%3Crect width='400' height='176' fill='%23a0b8c8'/%3E%3Crect x='20' y='20' width='360' height='136' rx='4' fill='%238090a8' opacity='.3'/%3E%3Crect x='60' y='40' width='100' height='100' rx='4' fill='%23708090' opacity='.4'/%3E%3Crect x='240' y='50' width='100' height='90' rx='4' fill='%23607080' opacity='.4'/%3E%3Ccircle cx='200' cy='80' r='30' fill='%23c0d0e0' opacity='.4'/%3E%3C/svg%3E") center/cover;}
+.photo-park{background:linear-gradient(160deg,#b8d4c0 0%,#8ab89a 30%,#6a9878 60%,#4a7858 100%);position:relative;overflow:hidden;}
+.photo-park::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='176'%3E%3Crect width='400' height='176' fill='%2390c098'/%3E%3Cellipse cx='100' cy='100' rx='60' ry='80' fill='%2368a070' opacity='.6'/%3E%3Cellipse cx='300' cy='110' rx='70' ry='70' fill='%2378b080' opacity='.5'/%3E%3Cpath d='M0 140 Q200 120 400 135 L400 176 L0 176Z' fill='%23508060' opacity='.6'/%3E%3C/svg%3E") center/cover;}
+
+/* ── DETAIL PAGE ── */
+.detail-mockup{background:var(--cream);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-float);max-width:390px;}
+.detail-hero{height:220px;position:relative;display:flex;align-items:center;justify-content:center;}
+.detail-back{position:absolute;top:16px;left:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);}
+.detail-save{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-soft);}
+.detail-body{padding:20px;}
+.detail-name{font-family:'Fraunces',serif;font-size:24px;font-weight:400;letter-spacing:-.025em;line-height:1.1;margin-bottom:4px;}
+.detail-meta{font-size:13px;color:var(--ink-faint);margin-bottom:16px;}
+.detail-info-row{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.detail-info-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-soft);}
+.detail-info-icon{width:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink-faint);}
+.detail-section-title{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);margin-bottom:12px;margin-top:20px;}
+.detail-feature-list{display:flex;flex-direction:column;gap:2px;margin-bottom:16px;}
+.detail-feature-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:var(--r-md);background:var(--warm-white);border:1px solid rgba(122,158,126,.1);}
+.detail-feature-label{font-size:14px;color:var(--ink-soft);display:flex;align-items:center;gap:8px;}
+.detail-feature-right{display:flex;align-items:center;gap:8px;}
+.detail-feature-state{display:flex;align-items:center;gap:5px;font-size:12px;}
+.state-confirmed{color:var(--sage-deep);}
+.state-reported{color:var(--amber);}
+.state-unknown{color:var(--ink-faint);}
+.detail-feature-count{font-size:11px;color:var(--ink-faint);background:var(--mist);padding:2px 8px;border-radius:var(--r-pill);}
+.review-card{background:var(--warm-white);border-radius:var(--r-md);padding:14px;border:1px solid rgba(122,158,126,.1);margin-bottom:8px;}
+.review-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.review-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:white;flex-shrink:0;}
+.review-name{font-size:13px;font-weight:500;color:var(--ink);}
+.review-date{font-size:11px;color:var(--ink-faint);}
+.review-text{font-size:13px;color:var(--ink-soft);line-height:1.6;}
+.review-photos{display:flex;gap:6px;margin-top:10px;}
+.review-photo{width:64px;height:64px;border-radius:var(--r-sm);overflow:hidden;flex-shrink:0;}
+.detail-contribute-bar{background:var(--warm-white);border-top:1px solid rgba(122,158,126,.1);padding:16px 20px;display:flex;gap:10px;}
+
+/* ── CONTRIBUTION FLOW ── */
+.contrib-flow{background:var(--warm-white);border-radius:var(--r-xl) var(--r-xl) 0 0;padding:0 0 40px;max-width:390px;box-shadow:var(--shadow-float);}
+.contrib-handle{width:36px;height:4px;border-radius:2px;background:rgba(26,31,27,.15);margin:12px auto 0;}
+.contrib-progress{padding:20px 24px 0;}
+.contrib-progress-bar{height:3px;background:var(--mist);border-radius:2px;margin-bottom:8px;}
+.contrib-progress-fill{height:100%;background:var(--sage);border-radius:2px;}
+.contrib-step{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);}
+.contrib-question{font-family:'Fraunces',serif;font-size:22px;font-weight:400;letter-spacing:-.02em;line-height:1.2;margin:10px 0 6px;color:var(--ink);}
+.contrib-sub{font-size:13px;color:var(--ink-faint);line-height:1.6;margin-bottom:20px;}
+.contrib-options{padding:0 24px;display:flex;flex-direction:column;gap:8px;}
+.contrib-option{padding:14px 16px;border-radius:var(--r-md);border:2px solid rgba(26,31,27,.08);background:var(--warm-white);display:flex;align-items:center;gap:12px;cursor:pointer;transition:all var(--dur-base) var(--ease-spring);}
+.contrib-option:hover,.contrib-option.selected{border-color:var(--sage);background:var(--mist);}
+.contrib-option-icon{width:36px;height:36px;border-radius:var(--r-sm);background:var(--mist);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--dur-base);color:var(--ink-soft);}
+.contrib-option.selected .contrib-option-icon{background:var(--sage);color:white;}
+.contrib-option-text{font-size:14px;color:var(--ink-soft);}
+.contrib-option.selected .contrib-option-text{color:var(--ink);}
+.contrib-footer{padding:16px 24px 0;display:flex;gap:10px;align-items:center;}
+.contrib-skip{font-size:13px;color:var(--ink-faint);cursor:pointer;text-decoration:underline;}
+.contrib-success{background:var(--mist);border-radius:var(--r-xl) var(--r-xl) 0 0;padding:40px 28px;text-align:center;max-width:390px;}
+.contrib-success-icon{width:64px;height:64px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:white;}
+.contrib-success-title{font-family:'Fraunces',serif;font-size:24px;font-weight:300;letter-spacing:-.02em;color:var(--sage-deep);margin-bottom:8px;}
+.contrib-success-body{font-size:14px;color:var(--ink-soft);line-height:1.6;margin-bottom:20px;}
+
+/* ── VERIFY STATES ── */
+.verify-states{display:flex;flex-direction:column;gap:8px;}
+.verify-row{background:var(--warm-white);border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:center;gap:12px;border:1px solid rgba(122,158,126,.1);}
+.verify-indicator{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.vi-unknown{background:rgba(26,31,27,.2);}
+.vi-reported{background:var(--amber);}
+.vi-confirmed{background:var(--sage);}
+.vi-disputed{background:var(--terracotta);}
+.verify-info{flex:1;}
+.verify-state-label{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px;}
+.verify-state-desc{font-size:12px;color:var(--ink-faint);line-height:1.5;}
+.verify-count{font-size:12px;color:var(--ink-faint);background:var(--mist);padding:4px 10px;border-radius:var(--r-pill);flex-shrink:0;}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{background:var(--warm-white);border-top:1px solid rgba(122,158,126,.15);padding:8px 0 16px;display:flex;justify-content:space-around;max-width:390px;box-shadow:0 -4px 24px rgba(26,31,27,.06);}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 16px;border-radius:var(--r-md);transition:all var(--dur-base);min-width:60px;color:var(--ink-faint);}
+.nav-item:hover{background:var(--mist);}
+.nav-label{font-size:10px;letter-spacing:.06em;color:var(--ink-faint);font-weight:400;}
+.nav-item.active .nav-label{color:var(--sage-deep);font-weight:500;}
+.nav-item.active{color:var(--sage);}
+.nav-dot{width:4px;height:4px;border-radius:50%;background:var(--sage);margin:-2px auto 0;}
+.nav-contribute-btn{width:var(--touch-fab);height:var(--touch-fab);border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;color:white;box-shadow:0 4px 16px rgba(122,158,126,.4);cursor:pointer;margin-top:-10px;transition:all var(--dur-base);}
+.nav-contribute-btn:hover{background:var(--sage-deep);transform:scale(1.05);}
+
+/* ── TOASTS ── */
+.toast-stack{display:flex;flex-direction:column;gap:10px;max-width:340px;}
+.toast{border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:flex-start;gap:12px;box-shadow:var(--shadow-float);}
+.toast-default{background:var(--ink);color:white;}
+.toast-success{background:var(--ink);color:white;}
+.toast-warning{background:var(--butter-light);border:1px solid rgba(212,149,42,.2);}
+.toast-error{background:var(--error-light);border:1px solid rgba(192,57,43,.2);}
+.toast-info{background:var(--mist);border:1px solid rgba(122,158,126,.2);}
+.toast-badge{background:var(--butter-light);border:1px solid rgba(212,149,42,.2);}
+.toast-icon{flex-shrink:0;margin-top:1px;}
+.toast-body{flex:1;}
+.toast-title{font-size:14px;font-weight:500;margin-bottom:2px;}
+.toast-title.light{color:white;}
+.toast-title.dark{color:var(--ink);}
+.toast-text{font-size:12px;line-height:1.5;}
+.toast-text.light{color:rgba(255,255,255,.65);}
+.toast-text.dark{color:var(--ink-faint);}
+
+/* ── EMPTY STATES ── */
+.empty-state{background:var(--warm-white);border-radius:var(--r-lg);padding:40px 32px;text-align:center;border:1px dashed rgba(122,158,126,.25);display:flex;flex-direction:column;align-items:center;gap:12px;}
+.empty-state-icon{opacity:.5;color:var(--ink-soft);}
+.empty-state-title{font-family:'Fraunces',serif;font-size:18px;font-weight:400;letter-spacing:-.015em;color:var(--ink);}
+.empty-state-body{font-size:14px;color:var(--ink-faint);line-height:1.6;max-width:260px;}
+
+/* ── SKELETON LOADERS ── */
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.skel{background:linear-gradient(90deg,var(--mist) 25%,rgba(255,255,255,.8) 50%,var(--mist) 75%);background-size:800px 100%;animation:shimmer 1.4s ease-in-out infinite;border-radius:4px;}
+.skel-card{background:var(--warm-white);border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(122,158,126,.1);}
+.skel-img{height:176px;}
+.skel-body{padding:16px 18px 18px;}
+.skel-line{height:12px;margin-bottom:8px;}
+.skel-line-short{width:60%;}
+.skel-line-mid{width:80%;}
+.skel-chips{display:flex;gap:6px;margin:12px 0;}
+.skel-chip{height:24px;width:72px;border-radius:var(--r-pill);}
+.skel-footer{height:36px;border-radius:var(--r-md);margin-top:4px;}
+
+/* ── PROFILE ── */
+.profile-mockup{background:var(--cream);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-float);max-width:390px;}
+.profile-header{background:var(--ink);padding:32px 24px 24px;position:relative;overflow:hidden;}
+.profile-header::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(122,158,126,.2) 0%,transparent 70%);top:-100px;right:-60px;}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--sage-light),var(--sage));display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:28px;font-weight:300;color:white;margin-bottom:12px;border:3px solid rgba(255,255,255,.15);}
+.profile-name{font-family:'Fraunces',serif;font-size:22px;font-weight:300;color:white;letter-spacing:-.02em;margin-bottom:2px;}
+.profile-handle{font-size:13px;color:rgba(255,255,255,.4);}
+.profile-stats{display:flex;gap:24px;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1);}
+.profile-stat-num{font-family:'Fraunces',serif;font-size:22px;font-weight:300;color:white;}
+.profile-stat-label{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.05em;}
+.profile-body{padding:20px;}
+.profile-badge-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.profile-badge{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.profile-badge-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.profile-badge-label{font-size:10px;color:var(--ink-faint);text-align:center;letter-spacing:.04em;}
+.profile-activity-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(122,158,126,.08);}
+.profile-activity-row:last-child{border-bottom:none;}
+.profile-activity-icon{width:32px;height:32px;border-radius:var(--r-sm);background:var(--mist);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--sage-deep);}
+.profile-activity-text{font-size:13px;color:var(--ink-soft);flex:1;line-height:1.4;}
+.profile-activity-time{font-size:11px;color:var(--ink-faint);}
+
+/* ── SAVED PLACES ── */
+.saved-mockup{background:var(--cream);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-float);max-width:390px;}
+.saved-header{padding:24px 20px 16px;}
+.saved-title{font-family:'Fraunces',serif;font-size:24px;font-weight:300;letter-spacing:-.025em;color:var(--ink);margin-bottom:4px;}
+.saved-subtitle{font-size:13px;color:var(--ink-faint);}
+.saved-list{padding:0 16px 16px;}
+.saved-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(122,158,126,.08);}
+.saved-item:last-child{border-bottom:none;}
+.saved-item-info{flex:1;min-width:0;}
+.saved-item-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px;}
+.saved-item-meta{font-size:12px;color:var(--ink-faint);margin-bottom:6px;}
+.saved-item-chips{display:flex;gap:4px;flex-wrap:wrap;}
+.saved-item-remove{color:var(--terracotta);flex-shrink:0;cursor:pointer;}
+
+/* ── AUTH ── */
+.auth-mockup{background:var(--cream);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-float);max-width:390px;}
+.auth-header{background:var(--ink);padding:48px 32px 36px;position:relative;overflow:hidden;text-align:center;}
+.auth-header::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(122,158,126,.15) 0%,transparent 70%);top:-150px;left:50%;transform:translateX(-50%);}
+.auth-logo{font-family:'Fraunces',serif;font-size:28px;font-weight:300;color:var(--warm-white);letter-spacing:-.03em;position:relative;z-index:1;}
+.auth-logo em{font-style:italic;color:var(--sage-light);}
+.auth-tagline{font-size:13px;color:rgba(255,255,255,.35);margin-top:6px;position:relative;z-index:1;}
+.auth-body{padding:32px;}
+.auth-title{font-family:'Fraunces',serif;font-size:26px;font-weight:300;letter-spacing:-.025em;color:var(--ink);margin-bottom:6px;}
+.auth-subtitle{font-size:14px;color:var(--ink-faint);margin-bottom:28px;line-height:1.5;}
+.auth-form{display:flex;flex-direction:column;gap:18px;}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:4px 0;}
+.auth-divider-line{flex:1;height:1px;background:rgba(122,158,126,.15);}
+.auth-divider-text{font-size:12px;color:var(--ink-faint);}
+.auth-social-btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:13px 20px;border-radius:var(--r-pill);border:1.5px solid rgba(26,31,27,.12);background:var(--warm-white);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--ink-soft);cursor:pointer;transition:all var(--dur-base);}
+.auth-social-btn:hover{background:var(--mist);}
+.auth-footer-text{font-size:13px;color:var(--ink-faint);text-align:center;margin-top:16px;}
+.auth-footer-text a{color:var(--sage-deep);text-decoration:underline;cursor:pointer;}
+.auth-forgot{font-size:12px;color:var(--sage-deep);text-align:right;cursor:pointer;text-decoration:underline;margin-top:-10px;}
+
+/* ── TOP NAV (desktop) ── */
+.top-nav{background:var(--warm-white);border-bottom:1px solid rgba(122,158,126,.12);padding:0 32px;display:flex;align-items:center;gap:0;height:60px;box-shadow:var(--shadow-sm);}
+.top-nav-brand{font-family:'Fraunces',serif;font-size:18px;font-weight:300;color:var(--ink);letter-spacing:-.02em;margin-right:32px;}
+.top-nav-brand em{color:var(--sage-deep);font-style:italic;}
+.top-nav-search{flex:1;max-width:320px;background:var(--mist);border-radius:var(--r-pill);padding:9px 16px;display:flex;align-items:center;gap:8px;color:var(--ink-faint);font-size:14px;border:1.5px solid transparent;cursor:text;}
+.top-nav-search:hover{border-color:rgba(122,158,126,.3);}
+.top-nav-links{display:flex;gap:0;margin-left:24px;}
+.top-nav-link{padding:0 16px;height:60px;display:flex;align-items:center;font-size:14px;color:var(--ink-faint);cursor:pointer;border-bottom:2px solid transparent;transition:all var(--dur-base);}
+.top-nav-link:hover{color:var(--ink-soft);}
+.top-nav-link.active{color:var(--sage-deep);border-bottom-color:var(--sage);}
+.top-nav-actions{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.top-nav-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--sage-light),var(--sage));display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:14px;color:white;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<!-- ══ STICKY NAV ══ -->
+<nav class="ds-nav">
+  <div class="ds-nav-brand">Strollable</div>
+  <div class="ds-nav-links">
+    <a class="ds-nav-link" href="#foundations">00 Foundations</a>
+    <a class="ds-nav-link" href="#tokens">01 Tokens</a>
+    <a class="ds-nav-link" href="#atoms">02 Atoms</a>
+    <a class="ds-nav-link" href="#components">03 Components</a>
+    <a class="ds-nav-link" href="#pages">04 Pages</a>
+  </div>
+  <div class="ds-nav-badge">v2.0 · April 2026</div>
+</nav>
+
+<!-- ══ COVER ══ -->
+<div class="ds-cover">
+  <div class="ds-cover-label">UI Design System</div>
+  <h1 class="ds-cover-title">Strollable<br><em>v2.0</em></h1>
+  <div class="ds-cover-meta">
+    <div class="ds-cover-meta-item">Version<span>2.0 — April 2026</span></div>
+    <div class="ds-cover-meta-item">Platform<span>iOS · Android · Web</span></div>
+    <div class="ds-cover-meta-item">Fonts<span>Fraunces + DM Sans</span></div>
+    <div class="ds-cover-meta-item">Stage<span>MVP · Toronto</span></div>
+  </div>
+</div>
+
+<!-- ══ TOC ══ -->
+<div class="ds-toc">
+  <div class="ds-toc-grid">
+    <div class="ds-toc-item"><div class="ds-toc-num">00</div><div class="ds-toc-name">Spacing · Radius · Elevation · Motion</div></div>
+    <div class="ds-toc-item"><div class="ds-toc-num">01</div><div class="ds-toc-name">Colour tokens · Typography scale</div></div>
+    <div class="ds-toc-item"><div class="ds-toc-num">02</div><div class="ds-toc-name">Buttons · Chips · Badges · Inputs · Avatars · Dividers · Icons</div></div>
+    <div class="ds-toc-item"><div class="ds-toc-num">03</div><div class="ds-toc-name">Navigation · Search · Filter modal · Card · Card grid · Map · Trust indicator · Toast · Empty state · Skeleton</div></div>
+    <div class="ds-toc-item"><div class="ds-toc-num">04</div><div class="ds-toc-name">Explore · Detail · Contribute · Profile · Auth (sign up · log in · forgot)</div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     00 FOUNDATIONS
+═════════════════════════════════════════ -->
+<div id="foundations"></div>
+<div class="ds-section">
+  <div class="ds-label">00 — Foundations</div>
+  <h2 class="ds-title">The invisible <em>glue</em></h2>
+
+  <!-- Spacing -->
+  <div style="margin-bottom:56px;">
+    <div class="ds-label" style="margin-bottom:20px;">Spacing scale — 8pt grid</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;">
+      <div>
+        <div class="spacing-row"><div class="spacing-bar skel" style="width:2px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-2</strong> <code>2px</code> · hairline / icon gaps</div></div>
+        <div class="spacing-row"><div class="spacing-bar" style="width:4px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-4</strong> <code>4px</code> · chip dot gap</div></div>
+        <div class="spacing-row"><div class="spacing-bar" style="width:6px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-6</strong> <code>6px</code> · inline chip padding</div></div>
+        <div class="spacing-row"><div class="spacing-bar" style="width:8px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-8</strong> <code>8px</code> · base unit · chip gaps</div></div>
+        <div class="spacing-row"><div class="spacing-bar" style="width:12px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-12</strong> <code>12px</code> · tight row padding</div></div>
+        <div class="spacing-row"><div class="spacing-bar" style="width:16px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-16</strong> <code>16px</code> · card inner padding</div></div>
+      </div>
+      <div>
+        <div class="spacing-row"><div class="spacing-bar" style="width:20px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-20</strong> <code>20px</code> · section inner padding</div></div>
+        <div class="spacing-row"><div class="spacing-bar" style="width:24px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-24</strong> <code>24px</code> · modal padding</div></div>
+        <div class="spacing-row"><div class="spacing-bar" style="width:32px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-32</strong> <code>32px</code> · large component gap</div></div>
+        <div class="spacing-row"><div class="spacing-bar" style="width:40px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-40</strong> <code>40px</code> · section gap</div></div>
+        <div class="spacing-row"><div class="spacing-bar" style="width:48px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-48</strong> <code>48px</code> · page-level spacing</div></div>
+        <div class="spacing-row"><div class="spacing-bar" style="width:64px;background:var(--sage);"></div><div class="spacing-meta"><strong>--sp-64</strong> <code>64px</code> · section horizontal padding</div></div>
+      </div>
+    </div>
+    <div class="ds-note-sage" style="margin-top:16px;">Touch targets minimum <strong>44px</strong> (--touch-min). Contribute FAB is <strong>52px</strong> (--touch-fab).</div>
+  </div>
+
+  <!-- Radius -->
+  <div style="margin-bottom:56px;">
+    <div class="ds-label" style="margin-bottom:20px;">Border radius tokens</div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div style="text-align:center;"><div style="width:80px;height:60px;background:var(--sage-light);border-radius:var(--r-sm);margin-bottom:8px;"></div><div style="font-size:11px;color:var(--ink-faint);">--r-sm<br><code>8px</code></div></div>
+      <div style="text-align:center;"><div style="width:80px;height:60px;background:var(--sage-light);border-radius:var(--r-md);margin-bottom:8px;"></div><div style="font-size:11px;color:var(--ink-faint);">--r-md<br><code>14px</code></div></div>
+      <div style="text-align:center;"><div style="width:80px;height:60px;background:var(--sage-light);border-radius:var(--r-lg);margin-bottom:8px;"></div><div style="font-size:11px;color:var(--ink-faint);">--r-lg<br><code>24px</code></div></div>
+      <div style="text-align:center;"><div style="width:80px;height:60px;background:var(--sage-light);border-radius:var(--r-xl);margin-bottom:8px;"></div><div style="font-size:11px;color:var(--ink-faint);">--r-xl<br><code>32px</code></div></div>
+      <div style="text-align:center;"><div style="width:80px;height:60px;background:var(--sage-light);border-radius:var(--r-pill);margin-bottom:8px;"></div><div style="font-size:11px;color:var(--ink-faint);">--r-pill<br><code>100px</code></div></div>
+    </div>
+    <div class="ds-note-sage" style="margin-top:16px;">Use r-sm for inline elements (icon containers, checkboxes). r-md for interactive cards &amp; inputs. r-lg for content cards. r-xl for modals &amp; sheets. r-pill for all pills and CTAs.</div>
+  </div>
+
+  <!-- Elevation -->
+  <div style="margin-bottom:56px;">
+    <div class="ds-label" style="margin-bottom:20px;">Elevation &amp; shadows</div>
+    <div class="elev-grid">
+      <div class="elev-card" style="box-shadow:var(--shadow-sm);">
+        <div style="font-size:28px;opacity:.3;">▫</div>
+        <div class="elev-label">Level 1 — sm</div>
+        <div class="elev-spec">--shadow-sm</div>
+        <div style="font-size:12px;color:var(--ink-faint);margin-top:8px;">Chips, search bar, input hover</div>
+      </div>
+      <div class="elev-card" style="box-shadow:var(--shadow-card);">
+        <div style="font-size:28px;opacity:.3;">▪</div>
+        <div class="elev-label">Level 2 — card</div>
+        <div class="elev-spec">--shadow-card</div>
+        <div style="font-size:12px;color:var(--ink-faint);margin-top:8px;">Establishment cards, list items</div>
+      </div>
+      <div class="elev-card" style="box-shadow:var(--shadow-float);">
+        <div style="font-size:28px;opacity:.3;">◾</div>
+        <div class="elev-label">Level 3 — float</div>
+        <div class="elev-spec">--shadow-float</div>
+        <div style="font-size:12px;color:var(--ink-faint);margin-top:8px;">Modals, bottom sheets, map overlays</div>
+      </div>
+    </div>
+    <div class="ds-note-sage" style="margin-top:16px;">Focus ring: <code>--focus-ring</code> · 3px offset, 35% opacity sage. Applied to all interactive elements on :focus-visible.</div>
+  </div>
+
+  <!-- Motion -->
+  <div>
+    <div class="ds-label" style="margin-bottom:20px;">Motion tokens</div>
+    <div class="motion-grid">
+      <div class="motion-card"><div class="motion-label">--dur-fast</div><div class="motion-val">120ms</div><div class="motion-demo" style="animation-duration:.8s;"></div><div style="font-size:11px;color:var(--ink-faint);margin-top:8px;">Hover states, chip toggles</div></div>
+      <div class="motion-card"><div class="motion-label">--dur-base</div><div class="motion-val">200ms</div><div class="motion-demo"></div><div style="font-size:11px;color:var(--ink-faint);margin-top:8px;">Button presses, nav items</div></div>
+      <div class="motion-card"><div class="motion-label">--dur-slow</div><div class="motion-val">350ms</div><div class="motion-demo" style="animation-duration:2.8s;"></div><div style="font-size:11px;color:var(--ink-faint);margin-top:8px;">Sheet entry, modal open</div></div>
+      <div class="motion-card"><div class="motion-label">--ease-spring</div><div class="motion-val">cubic-bezier(.16,1,.3,1)</div><div style="height:4px;border-radius:2px;background:var(--terracotta);margin-top:8px;"></div><div style="font-size:11px;color:var(--ink-faint);margin-top:8px;">Contribute FAB, card lift</div></div>
+      <div class="motion-card"><div class="motion-label">--ease-out</div><div class="motion-val">cubic-bezier(0,0,.2,1)</div><div style="height:4px;border-radius:2px;background:var(--sky);margin-top:8px;"></div><div style="font-size:11px;color:var(--ink-faint);margin-top:8px;">Sheet dismiss, fade out</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- ════════════════════════════════════════
+     01 TOKENS — COLOUR
+═════════════════════════════════════════ -->
+<div id="tokens"></div>
+<div class="ds-section">
+  <div class="ds-label">01 — Tokens · Colour</div>
+  <h2 class="ds-title">A <em>quiet</em> palette</h2>
+  <div class="token-grid">
+    <div class="token-swatch"><div class="token-color" style="background:var(--sage);"></div><div class="token-info"><div class="token-name">Sage</div><div class="token-var">--sage · #7A9E7E</div><div class="token-role">Primary brand</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--sage-light);"></div><div class="token-info"><div class="token-name">Sage Light</div><div class="token-var">--sage-light · #B8D4BB</div><div class="token-role">Tints, illustrations</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--sage-deep);"></div><div class="token-info"><div class="token-name">Sage Deep</div><div class="token-var">--sage-deep · #4A7350</div><div class="token-role">Text on light bg</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--cream);border:1px solid rgba(0,0,0,.06);"></div><div class="token-info"><div class="token-name">Cream</div><div class="token-var">--cream · #FAF7F2</div><div class="token-role">Page background</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--warm-white);border:1px solid rgba(0,0,0,.06);"></div><div class="token-info"><div class="token-name">Warm White</div><div class="token-var">--warm-white · #FFFEF9</div><div class="token-role">Card backgrounds</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--mist);"></div><div class="token-info"><div class="token-name">Mist</div><div class="token-var">--mist · #EDF2EE</div><div class="token-role">Hover, subtle fills</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--ink);"></div><div class="token-info"><div class="token-name">Ink</div><div class="token-var">--ink · #1A1F1B</div><div class="token-role">Primary text, dark surfaces</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--ink-soft);"></div><div class="token-info"><div class="token-name">Ink Soft</div><div class="token-var">--ink-soft · #3D4740</div><div class="token-role">Body text, labels</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--terracotta);"></div><div class="token-info"><div class="token-name">Terracotta</div><div class="token-var">--terracotta · #C9714A</div><div class="token-role">Danger, save/heart</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--terra-light);"></div><div class="token-info"><div class="token-name">Terra Light</div><div class="token-var">--terra-light · #F2DDD4</div><div class="token-role">Danger fills</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--amber);"></div><div class="token-info"><div class="token-name">Amber</div><div class="token-var">--amber · #D4952A</div><div class="token-role">Reported state</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--amber-light);"></div><div class="token-info"><div class="token-name">Amber Light</div><div class="token-var">--amber-light · #FDF0D5</div><div class="token-role">Reported fills</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--butter);"></div><div class="token-info"><div class="token-name">Butter</div><div class="token-var">--butter · #F2D98B</div><div class="token-role">Badge golds, rewards</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--sky);"></div><div class="token-info"><div class="token-name">Sky</div><div class="token-var">--sky · #A8C5D6</div><div class="token-role">Contributor badges</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--error);"></div><div class="token-info"><div class="token-name">Error</div><div class="token-var">--error · #C0392B</div><div class="token-role">Form errors</div></div></div>
+    <div class="token-swatch"><div class="token-color" style="background:var(--error-light);"></div><div class="token-info"><div class="token-name">Error Light</div><div class="token-var">--error-light · #FDECEA</div><div class="token-role">Error input fill</div></div></div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 01 TOKENS — TYPOGRAPHY -->
+<div class="ds-section">
+  <div class="ds-label">01 — Tokens · Typography</div>
+  <h2 class="ds-title">Two voices, <em>one story</em></h2>
+  <div style="margin-bottom:32px;" class="ds-note">
+    <strong>Fraunces</strong> — display, headlines, establishment names, section titles. Optical size 9–144, weight 300–500, italic for warmth.<br>
+    <strong>DM Sans</strong> — all UI text: labels, buttons, body copy, chips, metadata. Weight 300 (body) / 400 (UI) / 500 (emphasis).
+  </div>
+  <div class="type-scale">
+    <div class="type-row"><div class="type-row-meta">Display</div><div style="font-family:'Fraunces',serif;font-size:48px;font-weight:300;letter-spacing:-.03em;line-height:1;">Strollable</div><div class="type-row-spec">Fraunces 300<br>48px / –0.03em</div></div>
+    <div class="type-row"><div class="type-row-meta">Heading 1</div><div style="font-family:'Fraunces',serif;font-size:32px;font-weight:300;letter-spacing:-.025em;line-height:1.05;">Find <em style="font-style:italic;color:var(--sage-deep);">stroller-friendly</em> spots</div><div class="type-row-spec">Fraunces 300<br>32px / –0.025em</div></div>
+    <div class="type-row"><div class="type-row-meta">Heading 2</div><div style="font-family:'Fraunces',serif;font-size:24px;font-weight:400;letter-spacing:-.02em;">Broadview Espresso</div><div class="type-row-spec">Fraunces 400<br>24px / –0.02em</div></div>
+    <div class="type-row"><div class="type-row-meta">Heading 3</div><div style="font-family:'Fraunces',serif;font-size:18px;font-weight:400;letter-spacing:-.015em;">Café · Leslieville</div><div class="type-row-spec">Fraunces 400<br>18px / –0.015em</div></div>
+    <div class="type-row"><div class="type-row-meta">Body large</div><div style="font-size:16px;font-weight:300;line-height:1.6;color:var(--ink-soft);">Parents trust each other. That's what makes Strollable work.</div><div class="type-row-spec">DM Sans 300<br>16px / 1.6</div></div>
+    <div class="type-row"><div class="type-row-meta">Body base</div><div style="font-size:14px;font-weight:300;line-height:1.6;color:var(--ink-soft);">Ramp at the front, plenty of room inside for the stroller.</div><div class="type-row-spec">DM Sans 300<br>14px / 1.6</div></div>
+    <div class="type-row"><div class="type-row-meta">UI label</div><div style="font-size:13px;font-weight:400;color:var(--ink-soft);">Step-free entry · Accessible WC · Change table</div><div class="type-row-spec">DM Sans 400<br>13px / auto</div></div>
+    <div class="type-row"><div class="type-row-meta">Caption</div><div style="font-size:12px;font-weight:300;color:var(--ink-faint);">Reported by 6 parents · 0.3 km away</div><div class="type-row-spec">DM Sans 300<br>12px / auto</div></div>
+    <div class="type-row"><div class="type-row-meta">Overline</div><div style="font-size:10px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:var(--sage);">Strollability features</div><div class="type-row-spec">DM Sans 400<br>10px / 0.22em UC</div></div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- ════════════════════════════════════════
+     02 ATOMS — BUTTONS
+═════════════════════════════════════════ -->
+<div id="atoms"></div>
+<div class="ds-section">
+  <div class="ds-label">02 — Atoms · Buttons</div>
+  <h2 class="ds-title"><em>Action</em> hierarchy</h2>
+  <div style="display:flex;flex-direction:column;gap:32px;">
+    <div>
+      <div class="ds-label" style="margin-bottom:16px;">Primary actions</div>
+      <div class="btn-grid">
+        <div class="btn btn-primary">Find spots near me</div>
+        <div class="btn btn-sage">Contribute now</div>
+        <div class="btn btn-contribute">+ Add info about this place</div>
+      </div>
+    </div>
+    <div>
+      <div class="ds-label" style="margin-bottom:16px;">Secondary &amp; tertiary</div>
+      <div class="btn-grid">
+        <div class="btn btn-secondary">View all spots</div>
+        <div class="btn btn-ghost">Report incorrect info</div>
+        <div class="btn btn-danger">Dispute this</div>
+      </div>
+    </div>
+    <div>
+      <div class="ds-label" style="margin-bottom:16px;">Sizes + icon buttons</div>
+      <div class="btn-grid">
+        <div class="btn btn-primary btn-sm">Small</div>
+        <div class="btn btn-primary">Default</div>
+        <div class="btn btn-primary btn-lg">Large</div>
+        <div class="btn btn-icon btn-sage">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="btn btn-icon btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="ds-label" style="margin-bottom:16px;">States</div>
+      <div class="btn-grid">
+        <div class="btn btn-primary">Default</div>
+        <div class="btn btn-primary" style="box-shadow:var(--focus-ring);">Focused</div>
+        <div class="btn btn-primary" disabled>Disabled</div>
+        <div class="btn btn-sage" style="opacity:.7;cursor:wait;">Loading…</div>
+      </div>
+    </div>
+  </div>
+  <div class="ds-note-sage" style="margin-top:20px;">All buttons min-height 44px (--touch-min). FAB contribute is 52px (--touch-fab). Never use two primary buttons side by side.</div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 02 ATOMS — CHIPS & PILLS -->
+<div class="ds-section">
+  <div class="ds-label">02 — Atoms · Chips &amp; Pills</div>
+  <h2 class="ds-title">Verification <em>states</em></h2>
+  <div class="two-col" style="gap:48px;">
+    <div>
+      <div class="ds-label" style="margin-bottom:16px;">Strollability feature chips — all states</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="row-center">
+          <span style="font-size:11px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;width:90px;flex-shrink:0;">Unknown</span>
+          <div class="chip chip-unknown"><span class="chip-dot dot-unknown"></span>Step-free</div>
+          <div class="chip chip-unknown"><span class="chip-dot dot-unknown"></span>Change table</div>
+        </div>
+        <div class="row-center">
+          <span style="font-size:11px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;width:90px;flex-shrink:0;">Reported</span>
+          <div class="chip chip-reported"><span class="chip-dot dot-reported"></span>Step-free</div>
+          <div class="chip chip-reported"><span class="chip-dot dot-reported"></span>High chairs</div>
+        </div>
+        <div class="row-center">
+          <span style="font-size:11px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;width:90px;flex-shrink:0;">Confirmed</span>
+          <div class="chip chip-confirmed"><span class="chip-dot dot-confirmed"></span>Step-free</div>
+          <div class="chip chip-confirmed"><span class="chip-dot dot-confirmed"></span>Accessible WC</div>
+        </div>
+        <div class="row-center">
+          <span style="font-size:11px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;width:90px;flex-shrink:0;">Disputed</span>
+          <div class="chip chip-disputed"><span class="chip-dot dot-disputed"></span>Stroller layout</div>
+        </div>
+      </div>
+      <div style="margin-top:24px;">
+        <div class="ds-label" style="margin-bottom:12px;">Small / inline (used on cards)</div>
+        <div class="chip-row">
+          <div class="fc fc-confirmed">Step-free</div>
+          <div class="fc fc-reported">High chairs</div>
+          <div class="fc fc-unknown">Change table?</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="ds-label" style="margin-bottom:16px;">Filter pills — inactive / active</div>
+      <div style="background:var(--warm-white);border-radius:var(--r-md);padding:16px;border:1px solid rgba(122,158,126,.15);">
+        <div class="chip-row" style="margin-bottom:12px;">
+          <div class="chip chip-filter active" style="font-size:12px;padding:7px 12px;">Step-free</div>
+          <div class="chip chip-filter active" style="font-size:12px;padding:7px 12px;">Accessible WC</div>
+          <div class="chip chip-filter" style="font-size:12px;padding:7px 12px;">Change table</div>
+          <div class="chip chip-filter" style="font-size:12px;padding:7px 12px;">High chairs</div>
+          <div class="chip chip-filter" style="font-size:12px;padding:7px 12px;">Auto door</div>
+        </div>
+        <div class="chip-row">
+          <div class="chip chip-type active" style="font-size:12px;padding:7px 12px;">Café</div>
+          <div class="chip chip-type" style="font-size:12px;padding:7px 12px;">Restaurant</div>
+          <div class="chip chip-type" style="font-size:12px;padding:7px 12px;">Shop</div>
+          <div class="chip chip-type" style="font-size:12px;padding:7px 12px;">Park</div>
+        </div>
+      </div>
+      <div class="ds-note-sage" style="margin-top:12px;">Filter chips use sage-deep when active. Type chips (venue type) use ink when active — keeps them visually distinct from feature chips.</div>
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 02 ATOMS — BADGES -->
+<div class="ds-section">
+  <div class="ds-label">02 — Atoms · Badges</div>
+  <h2 class="ds-title">Earned <em>recognition</em></h2>
+  <div class="badge-showcase">
+    <div class="badge-card">
+      <div class="badge-icon-ring ring-sage">🗺️</div>
+      <div class="badge-name">Scout</div>
+      <div class="badge-threshold">First contribution made</div>
+      <div class="badge-progress"><div class="badge-progress-fill bp-sage" style="width:100%;"></div></div>
+      <div class="badge-progress-label">Earned ✓</div>
+    </div>
+    <div class="badge-card">
+      <div class="badge-icon-ring ring-gold">⭐</div>
+      <div class="badge-name">Pathfinder</div>
+      <div class="badge-threshold">10 verified contributions</div>
+      <div class="badge-progress"><div class="badge-progress-fill bp-gold" style="width:70%;"></div></div>
+      <div class="badge-progress-label">7 / 10</div>
+    </div>
+    <div class="badge-card">
+      <div class="badge-icon-ring ring-terra">🏆</div>
+      <div class="badge-name">Champion</div>
+      <div class="badge-threshold">50 verified contributions</div>
+      <div class="badge-progress"><div class="badge-progress-fill bp-terra" style="width:30%;"></div></div>
+      <div class="badge-progress-label">15 / 50</div>
+    </div>
+    <div class="badge-card" style="opacity:.45;">
+      <div class="badge-icon-ring ring-sky">🌟</div>
+      <div class="badge-name">Legend</div>
+      <div class="badge-threshold">100 verified contributions</div>
+      <div class="badge-progress"><div class="badge-progress-fill bp-sky" style="width:0%;"></div></div>
+      <div class="badge-progress-label" style="color:var(--ink-faint);">Locked</div>
+    </div>
+  </div>
+  <div class="ds-note-sage" style="margin-top:16px;">Locked badges display at 35% opacity. Never hide them — showing what's next motivates contribution.</div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 02 ATOMS — INPUTS -->
+<div class="ds-section">
+  <div class="ds-label">02 — Atoms · Inputs</div>
+  <h2 class="ds-title">Forms that <em>feel good</em></h2>
+  <div class="two-col" style="gap:64px;">
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <!-- Default text input -->
+      <div class="input-group">
+        <label class="input-label">Email address <span class="req">*</span></label>
+        <div class="input-icon-wrap">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <input class="input-field" type="email" placeholder="hello@strollable.ca">
+        </div>
+        <span class="input-hint">We'll only send you stroller-related goodness.</span>
+      </div>
+      <!-- Focus state -->
+      <div class="input-group">
+        <label class="input-label">Your name</label>
+        <input class="input-field" type="text" value="Sarah M." style="border-color:var(--sage);box-shadow:var(--focus-ring);">
+        <span class="input-hint">Shown on your contributions</span>
+      </div>
+      <!-- Error state -->
+      <div class="input-group">
+        <label class="input-label">Password <span class="req">*</span></label>
+        <input class="input-field error" type="password" value="pass">
+        <span class="input-error-msg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Must be at least 8 characters
+        </span>
+      </div>
+      <!-- Disabled state -->
+      <div class="input-group">
+        <label class="input-label" style="opacity:.5;">Location (auto-detected)</label>
+        <input class="input-field" type="text" value="Toronto, ON" disabled>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <!-- Select -->
+      <div class="input-group">
+        <label class="input-label">Establishment type</label>
+        <select class="input-field input-field-select">
+          <option>Café</option>
+          <option>Restaurant</option>
+          <option>Shop</option>
+          <option>Park</option>
+          <option>Community space</option>
+        </select>
+      </div>
+      <!-- Textarea -->
+      <div class="input-group">
+        <label class="input-label">Notes for other parents</label>
+        <textarea class="input-field" placeholder="e.g. Ramp at the side entrance, staff super helpful…"></textarea>
+        <span class="input-hint">Optional but appreciated by the community</span>
+      </div>
+      <!-- Toggle row -->
+      <div style="background:var(--warm-white);border-radius:var(--r-md);padding:16px;border:1px solid rgba(122,158,126,.12);display:flex;flex-direction:column;gap:14px;">
+        <div class="ds-label" style="margin-bottom:0;">Toggles</div>
+        <div class="toggle-wrap"><div class="toggle on"></div><span class="toggle-label">Push notifications</span></div>
+        <div class="toggle-wrap"><div class="toggle"></div><span class="toggle-label" style="color:var(--ink-faint);">Email digest (off)</span></div>
+      </div>
+      <!-- Checkbox & radio row -->
+      <div style="background:var(--warm-white);border-radius:var(--r-md);padding:16px;border:1px solid rgba(122,158,126,.12);">
+        <div class="ds-label" style="margin-bottom:12px;">Checkboxes</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+          <div class="checkbox-wrap"><div class="checkbox checked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label">Step-free entry</span></div>
+          <div class="checkbox-wrap"><div class="checkbox checked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label">Change table available</span></div>
+          <div class="checkbox-wrap"><div class="checkbox"></div><span class="checkbox-label" style="color:var(--ink-faint);">Accessible washroom</span></div>
+        </div>
+        <div class="ds-label" style="margin-bottom:12px;">Radio buttons</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="radio-wrap"><div class="radio checked"></div><span class="radio-label">Yes, confirmed</span></div>
+          <div class="radio-wrap"><div class="radio"></div><span class="radio-label" style="color:var(--ink-faint);">Reported only</span></div>
+          <div class="radio-wrap"><div class="radio"></div><span class="radio-label" style="color:var(--ink-faint);">Not sure</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 02 ATOMS — AVATARS & DIVIDERS -->
+<div class="ds-section">
+  <div class="ds-label">02 — Atoms · Avatars &amp; Dividers</div>
+  <h2 class="ds-title">Community <em>identity</em></h2>
+  <div class="two-col" style="gap:64px;">
+    <div>
+      <div class="ds-label" style="margin-bottom:16px;">Avatar sizes</div>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px;">
+        <div style="text-align:center;"><div class="avatar avatar-sm av-sage" style="margin:0 auto 6px;">S</div><div style="font-size:10px;color:var(--ink-faint);">sm 32</div></div>
+        <div style="text-align:center;"><div class="avatar avatar-md av-terra" style="margin:0 auto 6px;">R</div><div style="font-size:10px;color:var(--ink-faint);">md 44</div></div>
+        <div style="text-align:center;"><div class="avatar avatar-lg av-sky" style="margin:0 auto 6px;">J</div><div style="font-size:10px;color:var(--ink-faint);">lg 60</div></div>
+        <div style="text-align:center;"><div class="avatar avatar-xl av-sage" style="margin:0 auto 6px;">M</div><div style="font-size:10px;color:var(--ink-faint);">xl 80</div></div>
+      </div>
+      <div class="ds-label" style="margin-bottom:12px;">Colour variants</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
+        <div class="avatar avatar-md av-sage">A</div>
+        <div class="avatar avatar-md av-terra">B</div>
+        <div class="avatar avatar-md av-sky">C</div>
+        <div class="avatar avatar-md av-butter">D</div>
+        <div class="avatar avatar-md av-ink">E</div>
+      </div>
+      <div class="ds-label" style="margin-bottom:12px;">With online indicator</div>
+      <div style="display:flex;gap:12px;">
+        <div class="avatar avatar-md av-sage avatar-online">S</div>
+        <div class="avatar avatar-lg av-terra avatar-online">R</div>
+      </div>
+    </div>
+    <div>
+      <div class="ds-label" style="margin-bottom:16px;">Divider variants</div>
+      <div style="background:var(--warm-white);border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(122,158,126,.12);">
+        <div style="padding:16px 20px;font-size:13px;color:var(--ink-soft);">List item one</div>
+        <div class="divider-full"></div>
+        <div style="padding:16px 20px;display:flex;align-items:center;gap:12px;">
+          <div class="avatar avatar-sm av-sage">S</div>
+          <div style="font-size:13px;color:var(--ink-soft);">List item with avatar</div>
+        </div>
+        <div class="divider-inset"></div>
+        <div style="padding:16px 20px;display:flex;align-items:center;gap:12px;">
+          <div class="avatar avatar-sm av-terra">R</div>
+          <div style="font-size:13px;color:var(--ink-soft);">Inset divider (aligns to content)</div>
+        </div>
+        <div class="divider-section"></div>
+        <div style="padding:16px 20px;font-size:13px;color:var(--ink-soft);">Section divider separates groups</div>
+      </div>
+      <div class="ds-note-sage" style="margin-top:12px;">Use <strong>full</strong> for generic lists, <strong>inset</strong> for avatar lists (indent 56px = 32px avatar + 12px gap + 12px padding), <strong>section</strong> between logical groups.</div>
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 02 ATOMS — ICONS -->
+<div class="ds-section">
+  <div class="ds-label">02 — Atoms · Icons</div>
+  <h2 class="ds-title">Lucide at <em>1.5px</em> stroke</h2>
+  <p style="font-size:15px;color:var(--ink-soft);max-width:560px;line-height:1.7;margin-bottom:32px;">All icons use Lucide. 20px / 1.5px stroke for UI contexts. 16px for compact chips and labels. Colour inherits from parent — never hardcoded.</p>
+  <div class="two-col" style="gap:48px;">
+    <div>
+      <div class="ds-label" style="margin-bottom:16px;">Feature icons (20px)</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:16px;text-align:center;border:1px solid rgba(122,158,126,.12);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sage-deep);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>
+          <div style="font-size:11px;color:var(--ink-faint);">Step-free entry</div>
+        </div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:16px;text-align:center;border:1px solid rgba(122,158,126,.12);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sage-deep);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+          <div style="font-size:11px;color:var(--ink-faint);">Accessible WC</div>
+        </div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:16px;text-align:center;border:1px solid rgba(122,158,126,.12);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sage-deep);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;"><path d="M9 12h6M9 16h6M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="8" r="2"/></svg>
+          <div style="font-size:11px;color:var(--ink-faint);">Change table</div>
+        </div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:16px;text-align:center;border:1px solid rgba(122,158,126,.12);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-soft);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M15 7V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2"/></svg>
+          <div style="font-size:11px;color:var(--ink-faint);">High chairs</div>
+        </div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:16px;text-align:center;border:1px solid rgba(122,158,126,.12);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-soft);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          <div style="font-size:11px;color:var(--ink-faint);">Auto door</div>
+        </div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:16px;text-align:center;border:1px solid rgba(122,158,126,.12);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-soft);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;"><circle cx="12" cy="5" r="1"/><path d="M15 14H9M8 20v-4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><path d="M8 11V9a4 4 0 0 1 8 0v2"/></svg>
+          <div style="font-size:11px;color:var(--ink-faint);">Stroller layout</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="ds-label" style="margin-bottom:16px;">UI &amp; navigation icons (20px)</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:12px;text-align:center;border:1px solid rgba(122,158,126,.12);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sage);margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><div style="font-size:10px;color:var(--ink-faint);">Search</div></div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:12px;text-align:center;border:1px solid rgba(122,158,126,.12);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sage);margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg><div style="font-size:10px;color:var(--ink-faint);">Explore</div></div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:12px;text-align:center;border:1px solid rgba(122,158,126,.12);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-soft);margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><div style="font-size:10px;color:var(--ink-faint);">Save</div></div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:12px;text-align:center;border:1px solid rgba(122,158,126,.12);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-soft);margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div style="font-size:10px;color:var(--ink-faint);">Profile</div></div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:12px;text-align:center;border:1px solid rgba(122,158,126,.12);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-soft);margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div style="font-size:10px;color:var(--ink-faint);">Location</div></div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:12px;text-align:center;border:1px solid rgba(122,158,126,.12);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-soft);margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg><div style="font-size:10px;color:var(--ink-faint);">Menu</div></div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:12px;text-align:center;border:1px solid rgba(122,158,126,.12);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-soft);margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg><div style="font-size:10px;color:var(--ink-faint);">Filters</div></div>
+        <div style="background:var(--warm-white);border-radius:var(--r-md);padding:12px;text-align:center;border:1px solid rgba(122,158,126,.12);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-soft);margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div style="font-size:10px;color:var(--ink-faint);">Verify</div></div>
+      </div>
+      <div class="ds-note-sage" style="margin-top:14px;">Use <code>lucide-react</code> in production. Icons: 20px / stroke 1.5 for UI, 16px for chips and row labels. Colour always inherits — never hardcode.</div>
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- ════════════════════════════════════════
+     03 COMPONENTS — NAVIGATION
+═════════════════════════════════════════ -->
+<div id="components"></div>
+<div class="ds-section">
+  <div class="ds-label">03 — Components · Navigation</div>
+  <h2 class="ds-title">Finding your <em>way</em></h2>
+
+  <!-- Mobile + desktop pair -->
+  <div class="frame-pair" style="margin-bottom:40px;">
+    <div>
+      <div class="frame-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        Mobile — bottom tab bar
+      </div>
+      <div class="bottom-nav" style="border-radius:var(--r-lg) var(--r-lg) 0 0;max-width:100%;">
+        <div class="nav-item active">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          <div class="nav-label">Explore</div>
+          <div class="nav-dot"></div>
+        </div>
+        <div class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <div class="nav-label">Saved</div>
+        </div>
+        <div class="nav-item" style="padding-bottom:0;">
+          <div class="nav-contribute-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+        </div>
+        <div class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg>
+          <div class="nav-label">Activity</div>
+        </div>
+        <div class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <div class="nav-label">Profile</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="frame-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Desktop — top nav bar
+      </div>
+      <div class="top-nav" style="border-radius:var(--r-md);">
+        <div class="top-nav-brand">Stroll<em>able</em></div>
+        <div class="top-nav-search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Search spots near you…
+        </div>
+        <div class="top-nav-links">
+          <div class="top-nav-link active">Explore</div>
+          <div class="top-nav-link">Saved</div>
+          <div class="top-nav-link">Activity</div>
+        </div>
+        <div class="top-nav-actions">
+          <div class="btn btn-sage btn-sm" style="gap:6px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Contribute
+          </div>
+          <div class="top-nav-avatar">S</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ds-note">
+    <strong>Mobile:</strong> 5-tab bottom bar. Centre slot is always the Contribute FAB (52px, elevated, sage). Active tab shows sage icon + sage-deep label + 4px dot underline.<br>
+    <strong>Desktop:</strong> Top nav. Brand mark left, search centre-left, page links, Contribute CTA + avatar right. Contribute is always visible and actionable.
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 03 COMPONENTS — SEARCH BAR -->
+<div class="ds-section">
+  <div class="ds-label">03 — Components · Search Bar</div>
+  <h2 class="ds-title">Instant <em>discovery</em></h2>
+  <div class="two-col" style="gap:48px;">
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="ds-label" style="margin-bottom:4px;">Idle state</div>
+      <div class="search-bar" style="max-width:100%;">
+        <svg class="search-bar-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <div class="search-bar-input">Search spots near you…</div>
+        <div class="search-bar-kbd">⌘K</div>
+      </div>
+
+      <div class="ds-label" style="margin-bottom:4px;">Active with suggestions</div>
+      <div class="search-bar" style="max-width:100%;border-color:var(--sage);box-shadow:var(--focus-ring);">
+        <svg class="search-bar-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <div class="search-bar-input" style="color:var(--ink);">Broad</div>
+      </div>
+      <div class="search-suggestions" style="max-width:100%;">
+        <div class="search-suggestion-item nearby">
+          <div class="search-suggestion-icon nearby-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>
+          <div><div class="search-suggestion-text nearby-text">Near you now</div><div class="search-suggestion-sub">3 step-free spots within 200m</div></div>
+        </div>
+        <div class="search-suggestion-item">
+          <div class="search-suggestion-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M15 7V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2"/></svg></div>
+          <div><div class="search-suggestion-text">Broadview Espresso</div><div class="search-suggestion-sub">Café · Leslieville · 0.3 km</div></div>
+        </div>
+        <div class="search-suggestion-item">
+          <div class="search-suggestion-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div><div class="search-suggestion-text">Broadview neighbourhood</div><div class="search-suggestion-sub">Neighbourhood · Toronto</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ds-note">
+      <strong>Idle:</strong> Pill shape, sage border at 25% opacity, ⌘K shortcut hint on desktop. Placeholder text is action-oriented.<br><br>
+      <strong>Active:</strong> Sage border at full opacity + focus ring. Suggestions appear below with 3 types: nearby (sage icon, priority row), establishments (place icon), and neighbourhoods (pin icon).<br><br>
+      <strong>Nearby row:</strong> Always first. Shows count of qualifying spots within ~200m. Tapping this is the fastest path to relevant results.
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 03 COMPONENTS — FILTER MODAL -->
+<div class="ds-section">
+  <div class="ds-label">03 — Components · Filter Modal</div>
+  <h2 class="ds-title">Focused <em>filtering</em></h2>
+  <div class="frame-pair">
+    <div>
+      <div class="frame-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+        Mobile — bottom sheet
+      </div>
+      <div class="filter-modal">
+        <div class="filter-modal-handle"></div>
+        <div class="filter-modal-header">
+          <div class="filter-modal-title">Filter spots</div>
+          <div class="filter-modal-clear">Clear all</div>
+        </div>
+        <div class="filter-section-divider"></div>
+        <div class="filter-section">
+          <div class="filter-section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>
+            Strollability features
+          </div>
+          <div class="filter-feature-grid">
+            <div class="filter-feature-btn active">
+              <div class="filter-feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg></div>
+              <div class="filter-feature-label">Step-free entry</div>
+            </div>
+            <div class="filter-feature-btn active">
+              <div class="filter-feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></div>
+              <div class="filter-feature-label">Accessible WC</div>
+            </div>
+            <div class="filter-feature-btn">
+              <div class="filter-feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="8" r="2"/></svg></div>
+              <div class="filter-feature-label">Change table</div>
+            </div>
+            <div class="filter-feature-btn">
+              <div class="filter-feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M15 7V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2"/></svg></div>
+              <div class="filter-feature-label">High chairs</div>
+            </div>
+            <div class="filter-feature-btn">
+              <div class="filter-feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="5" r="1"/><path d="M15 14H9M8 20v-4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><path d="M8 11V9a4 4 0 0 1 8 0v2"/></svg></div>
+              <div class="filter-feature-label">Stroller layout</div>
+            </div>
+            <div class="filter-feature-btn">
+              <div class="filter-feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div>
+              <div class="filter-feature-label">Auto door</div>
+            </div>
+          </div>
+        </div>
+        <div class="filter-section-divider"></div>
+        <div class="filter-section">
+          <div class="filter-section-title">Establishment type</div>
+          <div class="filter-type-row">
+            <div class="filter-type-btn active">Café</div>
+            <div class="filter-type-btn">Restaurant</div>
+            <div class="filter-type-btn">Shop</div>
+            <div class="filter-type-btn">Park</div>
+          </div>
+        </div>
+        <div class="filter-section-divider"></div>
+        <div class="filter-section">
+          <div class="filter-section-title">Neighbourhood</div>
+          <div class="filter-neighbourhood-grid">
+            <div class="filter-nbhd-btn active">Leslieville</div>
+            <div class="filter-nbhd-btn">Trinity Bellwoods</div>
+            <div class="filter-nbhd-btn">Roncesvalles</div>
+            <div class="filter-nbhd-btn">The Annex</div>
+            <div class="filter-nbhd-btn">Kensington</div>
+            <div class="filter-nbhd-btn">Bloor West</div>
+          </div>
+        </div>
+        <div class="filter-modal-footer">
+          <div class="btn btn-secondary" style="flex:1;justify-content:center;">Reset</div>
+          <div class="btn btn-sage" style="flex:2;justify-content:center;">Show 24 spots</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="frame-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+        Desktop — side panel
+      </div>
+      <div style="background:var(--warm-white);border-radius:var(--r-lg);padding:24px;border:1px solid rgba(122,158,126,.12);max-width:280px;">
+        <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:400;letter-spacing:-.015em;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">
+          Filters <span style="font-size:12px;font-family:'DM Sans',sans-serif;color:var(--sage-deep);text-decoration:underline;cursor:pointer;font-weight:300;">Clear</span>
+        </div>
+        <!-- Features as checkboxes on desktop -->
+        <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px;">Features</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+          <div class="checkbox-wrap"><div class="checkbox checked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label" style="font-size:13px;">Step-free entry</span></div>
+          <div class="checkbox-wrap"><div class="checkbox checked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label" style="font-size:13px;">Accessible WC</span></div>
+          <div class="checkbox-wrap"><div class="checkbox"></div><span class="checkbox-label" style="font-size:13px;color:var(--ink-faint);">Change table</span></div>
+          <div class="checkbox-wrap"><div class="checkbox"></div><span class="checkbox-label" style="font-size:13px;color:var(--ink-faint);">High chairs</span></div>
+          <div class="checkbox-wrap"><div class="checkbox"></div><span class="checkbox-label" style="font-size:13px;color:var(--ink-faint);">Stroller layout</span></div>
+        </div>
+        <div style="height:1px;background:rgba(122,158,126,.12);margin-bottom:20px;"></div>
+        <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px;">Venue type</div>
+        <div class="chip-row" style="gap:6px;margin-bottom:20px;">
+          <div class="chip chip-type active" style="font-size:11px;padding:6px 12px;">Café</div>
+          <div class="chip chip-type" style="font-size:11px;padding:6px 12px;">Restaurant</div>
+          <div class="chip chip-type" style="font-size:11px;padding:6px 12px;">Shop</div>
+          <div class="chip chip-type" style="font-size:11px;padding:6px 12px;">Park</div>
+        </div>
+        <div class="btn btn-sage" style="width:100%;justify-content:center;">Show 24 spots</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 03 COMPONENTS — ESTABLISHMENT CARD -->
+<div class="ds-section">
+  <div class="ds-label">03 — Components · Establishment Card</div>
+  <h2 class="ds-title">The <em>core listing</em> unit</h2>
+  <div class="card-grid">
+    <!-- Fully verified -->
+    <div class="est-card">
+      <div class="est-card-img photo-cafe">
+        <div class="est-card-img-overlay"></div>
+        <div class="est-card-save">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+      </div>
+      <div class="est-card-body">
+        <div class="est-card-name">Broadview Espresso</div>
+        <div class="est-card-meta">Café · Leslieville · 0.3 km</div>
+        <div class="est-card-chips">
+          <div class="fc fc-confirmed">Step-free</div>
+          <div class="fc fc-confirmed">Accessible WC</div>
+          <div class="fc fc-confirmed">Change table</div>
+          <div class="fc fc-confirmed">High chairs</div>
+        </div>
+        <div class="est-card-footer"><div class="est-card-contrib">Reported by <strong>6 parents</strong></div><div class="est-card-dist"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg> 0.3 km</div></div>
+      </div>
+    </div>
+    <!-- Partial data -->
+    <div class="est-card">
+      <div class="est-card-img photo-resto">
+        <div class="est-card-img-overlay"></div>
+        <div class="est-card-save saved">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+      </div>
+      <div class="est-card-body">
+        <div class="est-card-name">Sunday Brunch Co.</div>
+        <div class="est-card-meta">Restaurant · Trinity Bellwoods · 0.8 km</div>
+        <div class="est-card-chips">
+          <div class="fc fc-reported">Step-free</div>
+          <div class="fc fc-unknown">Accessible WC?</div>
+          <div class="fc fc-unknown">Change table?</div>
+        </div>
+        <div class="est-card-footer" style="background:var(--amber-light);"><div class="est-card-contrib" style="color:var(--amber);font-weight:500;">Help fill this in</div><div class="est-card-dist"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg> 0.8 km</div></div>
+      </div>
+    </div>
+    <!-- No data -->
+    <div class="est-card">
+      <div class="est-card-img photo-shop" style="filter:saturate(.7);">
+        <div class="est-card-img-overlay"></div>
+        <div class="est-card-save">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+      </div>
+      <div class="est-card-body">
+        <div class="est-card-name">Little Sprout Market</div>
+        <div class="est-card-meta">Shop · Roncesvalles · 1.1 km</div>
+        <div class="est-card-chips">
+          <div class="fc fc-unknown">Step-free?</div>
+          <div class="fc fc-unknown">Accessible WC?</div>
+          <div class="fc fc-unknown">Change table?</div>
+        </div>
+        <div class="est-card-footer"><div class="est-card-contrib" style="color:var(--sage-deep);font-weight:500;">Be the first to report</div><div class="est-card-dist"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg> 1.1 km</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="ds-note" style="margin-top:24px;">
+    <strong>Card states:</strong> Fully verified (mist footer, sage contributor count) · Partial data (amber footer, contribution nudge) · No data (desaturated image, first-reporter prompt). The save heart fills terracotta + white icon when saved. Card hovers lift 3px on spring easing.
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 03 COMPONENTS — CARD GRID -->
+<div class="ds-section">
+  <div class="ds-label">03 — Components · Card Grid</div>
+  <h2 class="ds-title">The <em>list</em> view</h2>
+  <div class="two-col" style="gap:48px;align-items:start;">
+    <div>
+      <div class="ds-label" style="margin-bottom:12px;">Mobile — single column scroll</div>
+      <div style="background:var(--cream);border-radius:var(--r-lg);padding:16px;box-shadow:var(--shadow-card);max-width:390px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding:0 4px;">
+          <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:400;letter-spacing:-.015em;">24 spots near you</div>
+          <div style="font-size:12px;color:var(--sage-deep);cursor:pointer;">Sort ↓</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="est-card">
+            <div class="est-card-img photo-cafe" style="height:130px;"><div class="est-card-img-overlay"></div><div class="est-card-save"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div>
+            <div class="est-card-body" style="padding:12px 14px 14px;"><div class="est-card-name" style="font-size:15px;">Broadview Espresso</div><div class="est-card-meta">Café · 0.3 km</div><div class="est-card-chips"><div class="fc fc-confirmed">Step-free</div><div class="fc fc-confirmed">Change table</div></div><div class="est-card-footer"><div class="est-card-contrib">Reported by <strong>6 parents</strong></div></div></div>
+          </div>
+          <div class="est-card">
+            <div class="est-card-img photo-resto" style="height:130px;"><div class="est-card-img-overlay"></div></div>
+            <div class="est-card-body" style="padding:12px 14px 14px;"><div class="est-card-name" style="font-size:15px;">Sunday Brunch Co.</div><div class="est-card-meta">Restaurant · 0.8 km</div><div class="est-card-chips"><div class="fc fc-reported">Step-free</div><div class="fc fc-unknown">Change table?</div></div><div class="est-card-footer" style="background:var(--amber-light);"><div class="est-card-contrib" style="color:var(--amber);">Help fill this in</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ds-note" style="height:fit-content;">
+      <strong>Grid layout rules:</strong><br>
+      Mobile: single column, full-width cards, reduced image height (130px).<br>
+      Tablet: 2-column grid, standard card height.<br>
+      Desktop: 3-column grid (minmax 280px, 1fr) with 20px gap.<br><br>
+      Sort options: Distance (default) · Most verified · Newest. Sort control top-right, never a modal.<br><br>
+      Infinite scroll, not pagination. Skeleton cards fill in as data loads — never show a blank list.
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 03 COMPONENTS — MAP VIEW -->
+<div class="ds-section">
+  <div class="ds-label">03 — Components · Map View</div>
+  <h2 class="ds-title">See it <em>spatially</em></h2>
+  <div class="frame-pair" style="margin-bottom:24px;">
+    <div>
+      <div class="frame-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+        Mobile map view
+      </div>
+      <div class="map-mockup">
+        <div class="map-grid"></div>
+        <div class="map-road map-road-h major" style="top:40%"></div>
+        <div class="map-road map-road-h" style="top:65%"></div>
+        <div class="map-road map-road-v" style="left:30%"></div>
+        <div class="map-road map-road-v" style="left:70%"></div>
+        <div class="map-marker" style="top:30%;left:25%"><div class="marker-bubble marker-verified">Broadview Esp.</div></div>
+        <div class="map-marker" style="top:52%;left:55%"><div class="marker-bubble marker-active">Sunday Brunch ↓</div></div>
+        <div class="map-marker" style="top:22%;left:60%"><div class="marker-bubble marker-partial">Little Sprout</div></div>
+        <div class="map-marker" style="top:60%;left:20%"><div class="marker-bubble marker-verified">Bird &amp; Bear</div></div>
+        <div class="map-top-bar">
+          <div class="map-search-pill">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            Search spots…
+          </div>
+          <div class="map-ctrl-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          </div>
+        </div>
+        <div class="map-filter-row">
+          <div class="map-filter-chip active"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>Step-free</div>
+          <div class="map-filter-chip">Change table</div>
+          <div class="map-filter-chip">High chairs</div>
+          <div class="map-filter-chip">Accessible WC</div>
+          <div class="map-filter-chip">Auto door</div>
+        </div>
+        <div class="map-card-peek">
+          <div class="map-card-peek-img"><div class="photo-resto" style="height:100%;"></div></div>
+          <div class="map-card-peek-info">
+            <div class="map-card-peek-name">Sunday Brunch Co.</div>
+            <div class="map-card-peek-meta">Restaurant · Trinity Bellwoods</div>
+            <div class="map-card-peek-chips">
+              <div class="fc fc-reported" style="font-size:10px;padding:3px 8px;">Step-free</div>
+              <div class="fc fc-unknown" style="font-size:10px;padding:3px 8px;">Change table?</div>
+            </div>
+          </div>
+          <div class="map-card-peek-arrow">›</div>
+        </div>
+        <div class="map-locate-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        </div>
+        <div class="map-toggle">
+          <div class="map-toggle-btn"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg> Map</div>
+          <div class="map-toggle-btn active"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg> List</div>
+        </div>
+      </div>
+    </div>
+    <div class="ds-note">
+      <strong>Map marker states:</strong><br>
+      Ink / dark = Fully verified · Amber = Partially reported · Sage = Currently selected (active). Active marker scales 1.15x.<br><br>
+      <strong>Interactions:</strong><br>
+      Tap marker → peek card slides up from bottom. Tap peek card → full detail page. Double tap map → zooms. Map/List toggle bottom-centre.<br><br>
+      <strong>Desktop:</strong><br>
+      Map takes left 60% of Explore page. Card grid scrolls on the right 40%. Tapping a map marker highlights the corresponding card in the list and vice versa. Filter sidebar lives above the card grid, not in a modal.<br><br>
+      <strong>Locate button:</strong><br>
+      Sits above the map/list toggle. Triggers geolocation and recentres map on user's position.
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 03 COMPONENTS — TRUST INDICATOR -->
+<div class="ds-section">
+  <div class="ds-label">03 — Components · Trust Indicator</div>
+  <h2 class="ds-title">Earned <em>confidence</em></h2>
+  <div class="two-col" style="gap:48px;">
+    <div class="verify-states">
+      <div class="verify-row">
+        <div class="verify-indicator vi-unknown"></div>
+        <div class="verify-info"><div class="verify-state-label">Unknown</div><div class="verify-state-desc">No one has reported this feature yet. Tap to be the first.</div></div>
+        <div class="verify-count">0 reports</div>
+      </div>
+      <div class="verify-row">
+        <div class="verify-indicator vi-reported"></div>
+        <div class="verify-info"><div class="verify-state-label">Reported</div><div class="verify-state-desc">1–2 parents have seen this. Not yet verified by consensus.</div></div>
+        <div class="verify-count">2 reports</div>
+      </div>
+      <div class="verify-row">
+        <div class="verify-indicator vi-confirmed"></div>
+        <div class="verify-info"><div class="verify-state-label">Confirmed</div><div class="verify-state-desc">3+ parents agree. You can rely on this information.</div></div>
+        <div class="verify-count">6 reports</div>
+      </div>
+      <div class="verify-row">
+        <div class="verify-indicator vi-disputed"></div>
+        <div class="verify-info"><div class="verify-state-label">Disputed</div><div class="verify-state-desc">Conflicting reports. Community is working to resolve it.</div></div>
+        <div class="verify-count">4 vs 2</div>
+      </div>
+    </div>
+    <div class="ds-note">
+      <strong>Thresholds:</strong><br>
+      Unknown → Reported: 1 report<br>
+      Reported → Confirmed: 3+ agreeing reports<br>
+      Any state → Disputed: significant conflict (threshold TBD by product)<br><br>
+      <strong>Usage:</strong><br>
+      Used on Establishment Detail page for each feature row. On cards, simplified to the fc (feature chip) atom. On map markers, simplified to marker colour (ink / amber / sage / terracotta).
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 03 COMPONENTS — TOASTS -->
+<div class="ds-section">
+  <div class="ds-label">03 — Components · Toast &amp; Snackbar</div>
+  <h2 class="ds-title">Quiet <em>feedback</em></h2>
+  <div class="two-col" style="gap:48px;">
+    <div class="toast-stack">
+      <!-- Success -->
+      <div class="toast toast-success">
+        <div class="toast-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--sage-light)" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="toast-body"><div class="toast-title light">Thanks for contributing!</div><div class="toast-text light">Your report on Broadview Espresso has been saved.</div></div>
+      </div>
+      <!-- Warning -->
+      <div class="toast toast-warning">
+        <div class="toast-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="toast-body"><div class="toast-title dark">Info may be outdated</div><div class="toast-text dark">This spot hasn't been updated in 6 months.</div></div>
+      </div>
+      <!-- Error -->
+      <div class="toast toast-error">
+        <div class="toast-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--error)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div class="toast-body"><div class="toast-title dark">Couldn't save your report</div><div class="toast-text dark">Check your connection and try again.</div></div>
+      </div>
+      <!-- Badge earned -->
+      <div class="toast toast-badge">
+        <div class="toast-icon" style="font-size:20px;">🏆</div>
+        <div class="toast-body"><div class="toast-title dark">Badge earned: Pathfinder</div><div class="toast-text dark">You've made 10 verified contributions. Keep it up!</div></div>
+      </div>
+    </div>
+    <div class="ds-note">
+      <strong>Variants:</strong><br>
+      Success (ink bg, sage icon) · Warning (butter-light bg, amber icon) · Error (error-light bg, error icon) · Badge (butter-light bg, emoji)<br><br>
+      <strong>Positioning:</strong> Top-centre on mobile, bottom-right on desktop. Max width 340px.<br><br>
+      <strong>Duration:</strong> Auto-dismiss after 4s (success/info), 6s (warning/error). Always include an × close button in production. Swipe-to-dismiss on mobile.
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 03 COMPONENTS — EMPTY STATES -->
+<div class="ds-section">
+  <div class="ds-label">03 — Components · Empty States</div>
+  <h2 class="ds-title">When there's <em>nothing</em> yet</h2>
+  <div class="three-col">
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+      <div class="empty-state-title">No spots found</div>
+      <div class="empty-state-body">Try widening your filters or searching a different neighbourhood.</div>
+      <div class="btn btn-ghost btn-sm">Clear filters</div>
+    </div>
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <div class="empty-state-title">Nothing saved yet</div>
+      <div class="empty-state-body">Tap the heart on any spot to save it for your next outing.</div>
+      <div class="btn btn-ghost btn-sm">Explore spots nearby</div>
+    </div>
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      </div>
+      <div class="empty-state-title">You're offline</div>
+      <div class="empty-state-body">Strollable needs a connection to show spots near you.</div>
+      <div class="btn btn-ghost btn-sm">Try again</div>
+    </div>
+  </div>
+  <div class="ds-note-sage" style="margin-top:16px;">Empty states always include an action. Never leave the user stranded — give them the most useful next step.</div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 03 COMPONENTS — SKELETON LOADERS -->
+<div class="ds-section">
+  <div class="ds-label">03 — Components · Skeleton Loaders</div>
+  <h2 class="ds-title">Loading <em>gracefully</em></h2>
+  <div class="card-grid" style="max-width:900px;">
+    <div class="skel-card">
+      <div class="skel skel-img"></div>
+      <div class="skel-body">
+        <div class="skel skel-line skel-line-mid" style="margin-bottom:6px;"></div>
+        <div class="skel skel-line skel-line-short"></div>
+        <div class="skel-chips">
+          <div class="skel skel-chip"></div>
+          <div class="skel skel-chip"></div>
+          <div class="skel skel-chip"></div>
+        </div>
+        <div class="skel skel-footer"></div>
+      </div>
+    </div>
+    <div class="skel-card">
+      <div class="skel skel-img"></div>
+      <div class="skel-body">
+        <div class="skel skel-line" style="width:75%;margin-bottom:6px;"></div>
+        <div class="skel skel-line skel-line-short"></div>
+        <div class="skel-chips">
+          <div class="skel skel-chip"></div>
+          <div class="skel skel-chip"></div>
+        </div>
+        <div class="skel skel-footer"></div>
+      </div>
+    </div>
+    <div class="skel-card">
+      <div class="skel skel-img"></div>
+      <div class="skel-body">
+        <div class="skel skel-line skel-line-mid" style="margin-bottom:6px;"></div>
+        <div class="skel skel-line skel-line-short"></div>
+        <div class="skel-chips">
+          <div class="skel skel-chip"></div>
+          <div class="skel skel-chip"></div>
+          <div class="skel skel-chip"></div>
+          <div class="skel skel-chip"></div>
+        </div>
+        <div class="skel skel-footer"></div>
+      </div>
+    </div>
+  </div>
+  <div class="ds-note-sage" style="margin-top:16px;">Skeleton uses shimmer animation (1.4s, ease-in-out). Show skeletons immediately on page load — never show a spinner for list/grid views. Replace with real content as data arrives, staggering cards by 50ms each.</div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- ════════════════════════════════════════
+     04 PAGES
+═════════════════════════════════════════ -->
+<div id="pages"></div>
+
+<!-- 04 PAGES — EXPLORE -->
+<div class="ds-section">
+  <div class="ds-label">04 — Pages · Explore</div>
+  <h2 class="ds-title">Where <em>discovery</em> begins</h2>
+  <div class="frame-pair" style="align-items:start;">
+    <div>
+      <div class="frame-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+        Mobile — map view (default)
+      </div>
+      <div style="background:var(--cream);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-float);">
+        <div class="map-mockup" style="border-radius:0;height:400px;">
+          <div class="map-grid"></div>
+          <div class="map-road map-road-h major" style="top:40%"></div>
+          <div class="map-road map-road-h" style="top:65%"></div>
+          <div class="map-road map-road-v" style="left:30%"></div>
+          <div class="map-road map-road-v" style="left:70%"></div>
+          <div class="map-marker" style="top:28%;left:22%"><div class="marker-bubble marker-verified">Broadview Esp.</div></div>
+          <div class="map-marker" style="top:50%;left:52%"><div class="marker-bubble marker-active">Sunday Brunch</div></div>
+          <div class="map-marker" style="top:20%;left:62%"><div class="marker-bubble marker-partial">Little Sprout</div></div>
+          <div class="map-top-bar">
+            <div class="map-search-pill"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Search spots…</div>
+            <div class="map-ctrl-btn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
+          </div>
+          <div class="map-filter-row">
+            <div class="map-filter-chip active">Step-free</div>
+            <div class="map-filter-chip">Change table</div>
+            <div class="map-filter-chip">High chairs</div>
+          </div>
+          <div class="map-card-peek" style="bottom:56px;">
+            <div class="map-card-peek-img"><div class="photo-resto" style="height:100%;"></div></div>
+            <div class="map-card-peek-info"><div class="map-card-peek-name">Sunday Brunch Co.</div><div class="map-card-peek-meta">Restaurant · 0.8 km</div><div class="map-card-peek-chips"><div class="fc fc-reported" style="font-size:10px;padding:3px 8px;">Step-free</div></div></div>
+            <div class="map-card-peek-arrow">›</div>
+          </div>
+          <div class="map-toggle" style="bottom:10px;">
+            <div class="map-toggle-btn active" style="font-size:12px;padding:8px 16px;">Map</div>
+            <div class="map-toggle-btn" style="font-size:12px;padding:8px 16px;">List</div>
+          </div>
+        </div>
+        <div class="bottom-nav" style="max-width:100%;">
+          <div class="nav-item active"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg><div class="nav-label">Explore</div><div class="nav-dot"></div></div>
+          <div class="nav-item"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><div class="nav-label">Saved</div></div>
+          <div class="nav-item" style="padding-bottom:0;"><div class="nav-contribute-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+          <div class="nav-item"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg><div class="nav-label">Activity</div></div>
+          <div class="nav-item"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="nav-label">Profile</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ds-note">
+      <strong>Explore is the home screen.</strong> Opens on Map view by default (the primary mental model is spatial). The map/list toggle lets users switch to a scrollable card grid.<br><br>
+      <strong>Mobile layout layers (top → bottom):</strong><br>
+      1. Map fills full screen<br>
+      2. Search pill + filter icon float top<br>
+      3. Filter chip strip below search<br>
+      4. Locate button bottom-right<br>
+      5. Peek card appears on marker tap<br>
+      6. Map/List toggle bottom-centre<br>
+      7. Bottom nav always visible<br><br>
+      <strong>Desktop layout:</strong><br>
+      Top nav spans full width. Below that: map 60% left, card list 40% right with filter panel above list. No bottom nav on desktop.
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 04 PAGES — ESTABLISHMENT DETAIL -->
+<div class="ds-section">
+  <div class="ds-label">04 — Pages · Establishment Detail</div>
+  <h2 class="ds-title">The <em>full picture</em></h2>
+  <div class="frame-pair">
+    <div>
+      <div class="frame-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+        Mobile
+      </div>
+      <div class="detail-mockup">
+        <div class="detail-hero photo-cafe">
+          <div class="est-card-img-overlay" style="background:linear-gradient(to top,rgba(26,31,27,.5) 0%,transparent 50%);"></div>
+          <div class="detail-back"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></div>
+          <div class="detail-save"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        </div>
+        <div class="detail-body">
+          <div class="detail-name">Broadview Espresso</div>
+          <div class="detail-meta">Café · Leslieville · 0.3 km away</div>
+          <div class="detail-info-row">
+            <div class="detail-info-item"><div class="detail-info-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>789 Broadview Ave, Toronto</div>
+            <div class="detail-info-item"><div class="detail-info-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>Mon–Fri 7am–5pm · Sat–Sun 8am–4pm</div>
+          </div>
+          <div class="detail-section-title">Strollability features</div>
+          <div class="detail-feature-list">
+            <div class="detail-feature-row"><div class="detail-feature-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>Step-free entry</div><div class="detail-feature-right"><div class="detail-feature-state state-confirmed"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Confirmed</div><div class="detail-feature-count">6 reports</div></div></div>
+            <div class="detail-feature-row"><div class="detail-feature-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>Accessible WC</div><div class="detail-feature-right"><div class="detail-feature-state state-confirmed"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Confirmed</div><div class="detail-feature-count">4 reports</div></div></div>
+            <div class="detail-feature-row"><div class="detail-feature-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6M9 16h6M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="8" r="2"/></svg>Change table</div><div class="detail-feature-right"><div class="detail-feature-state state-reported"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg> Reported</div><div class="detail-feature-count">2 reports</div></div></div>
+            <div class="detail-feature-row"><div class="detail-feature-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M15 7V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2"/></svg>High chairs</div><div class="detail-feature-right"><div class="detail-feature-state state-unknown">? Unknown</div></div></div>
+          </div>
+          <div class="detail-section-title">Community notes</div>
+          <div class="review-card">
+            <div class="review-header"><div class="review-avatar" style="background:var(--sage);">S</div><div><div class="review-name">Sarah M.</div><div class="review-date">2 days ago</div></div></div>
+            <div class="review-text">Ramp at the front entrance. Staff were so lovely with the stroller — helped move chairs to make room.</div>
+          </div>
+          <div class="review-card">
+            <div class="review-header"><div class="review-avatar" style="background:var(--terracotta);">R</div><div><div class="review-name">Raquel T.</div><div class="review-date">1 week ago</div></div></div>
+            <div class="review-text">Wide enough for a Bugaboo Fox. Change table is in the accessible washroom at the back.</div>
+          </div>
+        </div>
+        <div class="detail-contribute-bar">
+          <div class="btn btn-secondary" style="flex:1;justify-content:center;font-size:13px;">Report issue</div>
+          <div class="btn btn-sage" style="flex:2;justify-content:center;font-size:13px;">Add / update info</div>
+        </div>
+      </div>
+    </div>
+    <div class="ds-note">
+      <strong>Page structure:</strong><br>
+      Hero photo (220px) with back + save controls. Establishment name + meta. Address + hours. Feature list with trust states + report counts. Community notes section. Sticky bottom bar with contribute CTA.<br><br>
+      <strong>Desktop:</strong><br>
+      Two-column layout. Left: hero image + feature list. Right: map with pin, address/hours, community notes. Sticky contribute bar becomes a sidebar CTA panel instead.<br><br>
+      <strong>Feature rows:</strong><br>
+      Each row shows icon + label on left, trust state (with icon) + report count on right. Tapping any row opens the contribution flow pre-filled for that feature.
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 04 PAGES — CONTRIBUTION FLOW -->
+<div class="ds-section">
+  <div class="ds-label">04 — Pages · Contribution Flow</div>
+  <h2 class="ds-title">Making it <em>better</em></h2>
+  <div class="three-col" style="gap:24px;align-items:start;">
+    <!-- Step 1 -->
+    <div>
+      <div class="frame-label" style="margin-bottom:10px;">Step 1 of 3 — Feature check</div>
+      <div class="contrib-flow">
+        <div class="contrib-handle"></div>
+        <div class="contrib-progress">
+          <div class="contrib-progress-bar"><div class="contrib-progress-fill" style="width:33%;"></div></div>
+          <div class="contrib-step">Step 1 of 3</div>
+        </div>
+        <div style="padding:0 24px;">
+          <div class="contrib-question">Is there step-free access?</div>
+          <div class="contrib-sub">At Broadview Espresso · Leslieville</div>
+        </div>
+        <div class="contrib-options">
+          <div class="contrib-option selected">
+            <div class="contrib-option-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="contrib-option-text">Yes, step-free</div>
+          </div>
+          <div class="contrib-option">
+            <div class="contrib-option-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+            <div class="contrib-option-text">No, there are steps</div>
+          </div>
+          <div class="contrib-option">
+            <div class="contrib-option-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="contrib-option-text">Not sure / couldn't tell</div>
+          </div>
+        </div>
+        <div class="contrib-footer">
+          <div class="btn btn-sage" style="flex:1;justify-content:center;">Continue</div>
+          <div class="contrib-skip">Skip</div>
+        </div>
+      </div>
+    </div>
+    <!-- Step 2 -->
+    <div>
+      <div class="frame-label" style="margin-bottom:10px;">Step 2 of 3 — Add notes</div>
+      <div class="contrib-flow">
+        <div class="contrib-handle"></div>
+        <div class="contrib-progress">
+          <div class="contrib-progress-bar"><div class="contrib-progress-fill" style="width:66%;"></div></div>
+          <div class="contrib-step">Step 2 of 3</div>
+        </div>
+        <div style="padding:0 24px;">
+          <div class="contrib-question">Any details for other parents?</div>
+          <div class="contrib-sub">Optional — but really helpful!</div>
+        </div>
+        <div style="padding:0 24px;">
+          <textarea class="input-field" style="height:100px;" placeholder="e.g. Ramp at side entrance, narrow inside but manageable…"></textarea>
+          <div style="margin-top:12px;margin-bottom:16px;">
+            <div style="font-size:12px;color:var(--ink-faint);margin-bottom:8px;">Add a photo</div>
+            <div style="display:flex;gap:8px;">
+              <div style="width:72px;height:72px;border-radius:var(--r-md);border:1.5px dashed rgba(122,158,126,.3);display:flex;align-items:center;justify-content:center;color:var(--ink-faint);cursor:pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="contrib-footer">
+          <div class="btn btn-sage" style="flex:1;justify-content:center;">Continue</div>
+          <div class="contrib-skip">Skip</div>
+        </div>
+      </div>
+    </div>
+    <!-- Success -->
+    <div>
+      <div class="frame-label" style="margin-bottom:10px;">Step 3 of 3 — Success</div>
+      <div class="contrib-success">
+        <div class="contrib-success-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="contrib-success-title">Thanks for contributing!</div>
+        <div class="contrib-success-body">Your report helps parents in Leslieville plan their outings. The community appreciates it.</div>
+        <div style="background:var(--butter-light);border-radius:var(--r-md);padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;border:1px solid rgba(212,149,42,.2);">
+          <div style="font-size:24px;">🏆</div>
+          <div><div style="font-size:13px;font-weight:500;color:var(--ink);">7 / 10 to Pathfinder</div><div style="font-size:11px;color:var(--ink-faint);">3 more contributions to go</div></div>
+        </div>
+        <div class="btn btn-sage" style="width:100%;justify-content:center;">Back to Broadview Espresso</div>
+        <div style="margin-top:12px;"><div class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;">Report another feature</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="ds-note" style="margin-top:24px;">
+    <strong>Flow rules:</strong> Maximum 3 steps. Each step is one clear question. Progress bar always visible. Skip always available — never block the user. Badge progress shown on success to reinforce contribution motivation. Desktop: contribution flow is a centred modal, not a bottom sheet.
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 04 PAGES — PROFILE -->
+<div class="ds-section">
+  <div class="ds-label">04 — Pages · Profile</div>
+  <h2 class="ds-title">Your <em>impact</em></h2>
+  <div class="frame-pair">
+    <div>
+      <div class="frame-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+        Mobile
+      </div>
+      <div class="profile-mockup">
+        <div class="profile-header">
+          <div class="profile-avatar">S</div>
+          <div class="profile-name">Sarah M.</div>
+          <div class="profile-handle">@sarahm · joined March 2024</div>
+          <div class="profile-stats">
+            <div><div class="profile-stat-num">47</div><div class="profile-stat-label">Contributions</div></div>
+            <div><div class="profile-stat-num">12</div><div class="profile-stat-label">Spots scouted</div></div>
+            <div><div class="profile-stat-num">3</div><div class="profile-stat-label">Badges</div></div>
+          </div>
+        </div>
+        <div class="profile-body">
+          <div class="ds-label" style="margin-bottom:12px;">Badges</div>
+          <div class="profile-badge-row">
+            <div class="profile-badge"><div class="profile-badge-icon ring-sage" style="font-size:22px;">🗺️</div><div class="profile-badge-label">Scout</div></div>
+            <div class="profile-badge"><div class="profile-badge-icon ring-terra" style="font-size:22px;">🏆</div><div class="profile-badge-label">Champion</div></div>
+            <div class="profile-badge"><div class="profile-badge-icon ring-sky" style="font-size:22px;">⭐</div><div class="profile-badge-label">Pathfinder</div></div>
+            <div class="profile-badge" style="opacity:.35;"><div class="profile-badge-icon ring-gold" style="font-size:22px;">🌟</div><div class="profile-badge-label">Legend<br><span style="color:var(--amber);">53/100</span></div></div>
+          </div>
+          <div class="ds-label" style="margin-bottom:12px;">Recent activity</div>
+          <div>
+            <div class="profile-activity-row">
+              <div class="profile-activity-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="profile-activity-text">Confirmed <strong>step-free entry</strong> at Broadview Espresso</div>
+              <div class="profile-activity-time">2d</div>
+            </div>
+            <div class="profile-activity-row">
+              <div class="profile-activity-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+              <div class="profile-activity-text">Saved <strong>Sunday Brunch Co.</strong></div>
+              <div class="profile-activity-time">4d</div>
+            </div>
+            <div class="profile-activity-row">
+              <div class="profile-activity-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+              <div class="profile-activity-text">Scouted <strong>Parkette Café</strong> — not yet in app</div>
+              <div class="profile-activity-time">1w</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ds-note">
+      <strong>Profile design rules:</strong><br>
+      Dark ink header with sage radial glow grounds contributor identity.<br>
+      Stats row (contributions / spots / badges) creates immediate social proof.<br>
+      Badges: earned at full opacity, locked at 35% with progress label.<br>
+      Activity feed keeps profile dynamic — shows what you've done recently.<br><br>
+      <strong>Desktop:</strong><br>
+      Two-column layout. Left column: fixed sidebar (avatar, name, stats, badges). Right column: scrollable activity feed + saved places list. No bottom nav.
+    </div>
+  </div>
+</div>
+
+<div class="ds-divider"></div>
+
+<!-- 04 PAGES — AUTH FLOW -->
+<div class="ds-section">
+  <div class="ds-label">04 — Pages · Auth Flow</div>
+  <h2 class="ds-title">Welcome to <em>Strollable</em></h2>
+  <div class="three-col" style="gap:24px;align-items:start;">
+    <!-- Sign Up -->
+    <div>
+      <div class="frame-label" style="margin-bottom:10px;">Sign up</div>
+      <div class="auth-mockup">
+        <div class="auth-header">
+          <div class="auth-logo">Stroll<em>able</em></div>
+          <div class="auth-tagline">Find spots your stroller will love</div>
+        </div>
+        <div class="auth-body">
+          <div class="auth-title">Create account</div>
+          <div class="auth-subtitle">Join the community helping parents explore Toronto.</div>
+          <div class="auth-form">
+            <div class="input-group">
+              <label class="input-label">Your name</label>
+              <input class="input-field" type="text" placeholder="Sarah">
+            </div>
+            <div class="input-group">
+              <label class="input-label">Email <span class="req">*</span></label>
+              <input class="input-field" type="email" placeholder="hello@example.com">
+            </div>
+            <div class="input-group">
+              <label class="input-label">Password <span class="req">*</span></label>
+              <input class="input-field" type="password" placeholder="8+ characters">
+            </div>
+            <div class="btn btn-sage" style="width:100%;justify-content:center;">Create account</div>
+          </div>
+          <div class="auth-divider" style="margin-top:20px;"><div class="auth-divider-line"></div><div class="auth-divider-text">or</div><div class="auth-divider-line"></div></div>
+          <div class="auth-social-btn" style="margin-top:12px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Continue with Google
+          </div>
+          <div class="auth-footer-text">Already have an account? <a>Log in</a></div>
+        </div>
+      </div>
+    </div>
+    <!-- Log In -->
+    <div>
+      <div class="frame-label" style="margin-bottom:10px;">Log in</div>
+      <div class="auth-mockup">
+        <div class="auth-header">
+          <div class="auth-logo">Stroll<em>able</em></div>
+          <div class="auth-tagline">Find spots your stroller will love</div>
+        </div>
+        <div class="auth-body">
+          <div class="auth-title">Welcome back</div>
+          <div class="auth-subtitle">Good to see you again.</div>
+          <div class="auth-form">
+            <div class="input-group">
+              <label class="input-label">Email</label>
+              <input class="input-field" type="email" placeholder="hello@example.com">
+            </div>
+            <div class="input-group">
+              <label class="input-label">Password</label>
+              <input class="input-field" type="password" placeholder="Your password">
+            </div>
+            <div class="auth-forgot">Forgot password?</div>
+            <div class="btn btn-primary" style="width:100%;justify-content:center;">Log in</div>
+          </div>
+          <div class="auth-divider" style="margin-top:20px;"><div class="auth-divider-line"></div><div class="auth-divider-text">or</div><div class="auth-divider-line"></div></div>
+          <div class="auth-social-btn" style="margin-top:12px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Continue with Google
+          </div>
+          <div class="auth-footer-text">No account yet? <a>Sign up free</a></div>
+        </div>
+      </div>
+    </div>
+    <!-- Forgot Password -->
+    <div>
+      <div class="frame-label" style="margin-bottom:10px;">Forgot password</div>
+      <div class="auth-mockup">
+        <div class="auth-header">
+          <div class="auth-logo">Stroll<em>able</em></div>
+          <div class="auth-tagline">Find spots your stroller will love</div>
+        </div>
+        <div class="auth-body">
+          <div style="width:48px;height:48px;border-radius:50%;background:var(--mist);display:flex;align-items:center;justify-content:center;margin-bottom:16px;color:var(--sage-deep);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+          </div>
+          <div class="auth-title">Forgot your password?</div>
+          <div class="auth-subtitle">Enter your email and we'll send a reset link. No stroller left behind.</div>
+          <div class="auth-form">
+            <div class="input-group">
+              <label class="input-label">Email</label>
+              <div class="input-icon-wrap">
+                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <input class="input-field" type="email" placeholder="hello@example.com">
+              </div>
+            </div>
+            <div class="btn btn-sage" style="width:100%;justify-content:center;">Send reset link</div>
+          </div>
+          <!-- Sent confirmation state -->
+          <div style="background:var(--mist);border-radius:var(--r-md);padding:16px;margin-top:20px;border:1px solid rgba(122,158,126,.2);text-align:center;">
+            <div style="font-size:24px;margin-bottom:8px;">📬</div>
+            <div style="font-size:14px;font-weight:500;color:var(--sage-deep);margin-bottom:4px;">Check your inbox</div>
+            <div style="font-size:13px;color:var(--ink-faint);">We sent a link to hello@example.com. Expires in 15 minutes.</div>
+          </div>
+          <div class="auth-footer-text" style="margin-top:16px;"><a>← Back to log in</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ds-note" style="margin-top:24px;">
+    <strong>Auth design rules:</strong><br>
+    Ink header with brand mark gives every auth screen a consistent, trusted anchor. Sign up collects name (for contribution attribution) + email + password. Google OAuth always available as a secondary option. Forgot password shows a "sent" confirmation inline — no separate screen needed. Desktop auth: centred card (max 440px) on a cream background.
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<div style="background:var(--ink);padding:48px 64px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+  <div>
+    <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:300;color:var(--sage-light);letter-spacing:-.02em;margin-bottom:4px;">Strollable</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.2);letter-spacing:.06em;">UI Design System v2.0</div>
+  </div>
+  <div style="font-size:12px;color:rgba(255,255,255,.15);letter-spacing:.08em;text-align:right;">April 2026 · Toronto<br>00 Foundations → 01 Tokens → 02 Atoms → 03 Components → 04 Pages</div>
+</div>
+
+<script>
+lucide.createIcons();
+// Smooth scroll for nav links
+document.querySelectorAll('.ds-nav-link').forEach(link => {
+  link.addEventListener('click', e => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({behavior:'smooth'}); }
+  });
+});
+</script>
+</body>
+</html>
