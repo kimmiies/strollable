@@ -2,7 +2,11 @@
 
 import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
-import { Search, X, SlidersHorizontal, ChevronRight, ArrowLeft, AlignJustify } from "lucide-react";
+import {
+  Search, X, SlidersHorizontal, ChevronRight, ArrowLeft, AlignJustify, Map,
+  Footprints, LockOpen, Baby, Armchair, DoorOpen, Navigation, Sofa, User, Users,
+  type LucideIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { useMapStore } from "@/stores/mapStore";
 import { useEstablishments } from "@/hooks/useEstablishments";
@@ -13,7 +17,8 @@ import FilterPanel from "@/components/map/FilterPanel";
 import MapControls from "@/components/map/MapControls";
 import EstablishmentSheet from "@/components/establishment/EstablishmentSheet";
 import EstablishmentList from "@/components/establishment/EstablishmentList";
-import type { Establishment } from "@/types";
+import type { Establishment, FeatureType } from "@/types";
+import { FEATURE_LABELS } from "@/types";
 import { cn, getNeighbourhoodFromAddress, getTypePlaceholder, getEstablishmentTypeLabel, formatDistance } from "@/lib/utils";
 
 const MapContainer = dynamic(() => import("@/components/map/MapContainer"), {
@@ -25,11 +30,17 @@ const MapContainer = dynamic(() => import("@/components/map/MapContainer"), {
   ),
 });
 
-// Baby-friendly feature chips shown floating over the mobile map
-const MOBILE_FEATURE_CHIPS = [
-  { value: "step_free_entrance", label: "Step-free", emoji: "♿" },
-  { value: "accessible_bathroom", label: "Accessible WC", emoji: "🚻" },
-  { value: "change_table", label: "Change table", emoji: "🍼" },
+// Feature chips shown as pills on mobile map and in peek card
+const FEATURE_CHIPS: { value: FeatureType; Icon: LucideIcon }[] = [
+  { value: "step_free_entrance",       Icon: Footprints },
+  { value: "accessible_bathroom",      Icon: LockOpen },
+  { value: "change_table",             Icon: Baby },
+  { value: "high_chairs",              Icon: Armchair },
+  { value: "auto_door_opener",         Icon: DoorOpen },
+  { value: "stroller_friendly_layout", Icon: Navigation },
+  { value: "booster_seats",            Icon: Sofa },
+  { value: "change_table_mens",        Icon: User },
+  { value: "change_table_family",      Icon: Users },
 ];
 
 export default function ExplorePage() {
@@ -173,9 +184,8 @@ export default function ExplorePage() {
         {/* Filter bar */}
         <div className="flex items-center gap-2 border-b border-[rgba(122,158,126,0.15)] pr-4 flex-shrink-0">
           <MapFilters
-            neighbourhoods={neighbourhoods}
-            activeNeighbourhood={activeNeighbourhood}
-            onNeighbourhoodChange={setActiveNeighbourhood}
+            activeFeatureFilters={activeFeatureFilters}
+            onToggleFeature={toggleFeatureFilter}
             className="flex-1 px-6 py-2"
           />
           <button
@@ -300,7 +310,7 @@ export default function ExplorePage() {
 
             {/* Feature chips */}
             <div className="flex gap-2 overflow-x-auto no-scrollbar pointer-events-auto pb-0.5">
-              {MOBILE_FEATURE_CHIPS.map(({ value, label, emoji }) => {
+              {FEATURE_CHIPS.map(({ value, Icon }) => {
                 const active = activeFeatureFilters.includes(value);
                 return (
                   <button
@@ -308,9 +318,7 @@ export default function ExplorePage() {
                     onClick={() => toggleFeatureFilter(value)}
                     className={cn(
                       "flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--r-pill)] text-[13px] transition-all",
-                      active
-                        ? "text-white"
-                        : "text-[var(--ink-soft)]"
+                      active ? "text-white" : "text-[var(--ink-soft)]"
                     )}
                     style={{
                       background: active ? "var(--ink)" : "rgba(255,254,249,0.92)",
@@ -319,8 +327,8 @@ export default function ExplorePage() {
                       backdropFilter: "blur(8px)",
                     }}
                   >
-                    <span>{emoji}</span>
-                    <span>{label}</span>
+                    <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span>{FEATURE_LABELS[value]}</span>
                   </button>
                 );
               })}
@@ -346,7 +354,7 @@ export default function ExplorePage() {
         {/* Peek card — shown when a marker is selected */}
         {!showList && sheetEstablishment && (() => {
           const { gradient, emoji } = getTypePlaceholder(sheetEstablishment.type);
-          const confirmedFeatures = MOBILE_FEATURE_CHIPS.filter(({ value }) => {
+          const confirmedFeatures = FEATURE_CHIPS.filter(({ value }) => {
             const f = sheetEstablishment.features[value as keyof typeof sheetEstablishment.features];
             return f?.status === "confirmed" && f?.value === "yes";
           });
@@ -376,13 +384,14 @@ export default function ExplorePage() {
                   </p>
                   {confirmedFeatures.length > 0 && (
                     <div className="flex gap-1 mt-1.5 flex-wrap">
-                      {confirmedFeatures.map(({ value, label, emoji: chipEmoji }) => (
+                      {confirmedFeatures.map(({ value, Icon }) => (
                         <span
                           key={value}
                           className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[var(--r-pill)] text-[11px] text-[var(--sage-deep)]"
                           style={{ background: "var(--mist)", border: "1px solid rgba(122,158,126,0.2)" }}
                         >
-                          {chipEmoji} {label}
+                          <Icon className="w-3 h-3 flex-shrink-0" />
+                          {FEATURE_LABELS[value]}
                         </span>
                       ))}
                     </div>
@@ -403,7 +412,7 @@ export default function ExplorePage() {
             <span
               className="flex items-center gap-1.5 px-5 py-2.5 rounded-[var(--r-pill)] bg-white text-[var(--ink)] text-sm font-medium"
             >
-              🗺️ Map
+              <Map className="w-4 h-4" /> Map
             </span>
             <button
               onClick={() => setShowList(true)}

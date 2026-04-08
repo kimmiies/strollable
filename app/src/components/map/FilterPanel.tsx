@@ -1,8 +1,9 @@
 "use client";
 
-import { X, Check } from "lucide-react";
+import { X, Check, Footprints, LockOpen, Baby, Armchair, DoorOpen, Navigation, Sofa, User, Users, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMapStore } from "@/stores/mapStore";
+import { FEATURE_LABELS, type FeatureType } from "@/types";
 
 const TYPES = [
   { value: "all", label: "All types" },
@@ -13,10 +14,16 @@ const TYPES = [
   { value: "other", label: "Other" },
 ];
 
-const FEATURES = [
-  { value: "step_free_entrance", label: "Step-free entrance", emoji: "♿" },
-  { value: "accessible_bathroom", label: "Accessible bathroom", emoji: "🚻" },
-  { value: "change_table", label: "Change table", emoji: "🍼" },
+const FEATURES: { value: FeatureType; Icon: LucideIcon }[] = [
+  { value: "step_free_entrance",       Icon: Footprints },
+  { value: "accessible_bathroom",      Icon: LockOpen },
+  { value: "change_table",             Icon: Baby },
+  { value: "high_chairs",              Icon: Armchair },
+  { value: "auto_door_opener",         Icon: DoorOpen },
+  { value: "stroller_friendly_layout", Icon: Navigation },
+  { value: "booster_seats",            Icon: Sofa },
+  { value: "change_table_mens",        Icon: User },
+  { value: "change_table_family",      Icon: Users },
 ];
 
 interface FilterPanelProps {
@@ -144,7 +151,7 @@ export default function FilterPanel({ isOpen, onClose, neighbourhoods }: FilterP
               Show only places with these confirmed features
             </p>
             <div className="space-y-2">
-              {FEATURES.map(({ value, label, emoji }) => {
+              {FEATURES.map(({ value, Icon }) => {
                 const active = activeFeatureFilters.includes(value);
                 return (
                   <button
@@ -157,8 +164,8 @@ export default function FilterPanel({ isOpen, onClose, neighbourhoods }: FilterP
                         : "border-[rgba(26,31,27,0.1)] bg-[var(--warm-white)] hover:border-[var(--sage-light)]"
                     )}
                   >
-                    <span className="text-lg">{emoji}</span>
-                    <span className="flex-1 text-sm font-medium">{label}</span>
+                    <Icon className="w-4 h-4 flex-shrink-0 text-[var(--sage-deep)]" />
+                    <span className="flex-1 text-sm font-medium">{FEATURE_LABELS[value]}</span>
                     {active && <Check className="w-4 h-4 text-green-600" />}
                   </button>
                 );
