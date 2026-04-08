@@ -46,7 +46,7 @@ export function getFeatureChipStyle(
   }
   // unknown
   return {
-    bg: "bg-[rgba(26,31,27,0.05)]",
+    bg: "bg-transparent border border-[rgba(26,31,27,0.18)]",
     text: "text-[var(--ink-faint)]",
     label: "?",
   };
@@ -65,7 +65,7 @@ export function getEstablishmentTypeLabel(type: string): string {
 
 // CSS gradient + emoji for photo placeholders — aligned to design system palette
 export function getTypePlaceholder(type: string): {
-  gradient: string; // CSS background value (use as inline style)
+  gradient: string;
   emoji: string;
 } {
   const map: Record<string, { gradient: string; emoji: string }> = {
@@ -92,13 +92,6 @@ export function getNeighbourhoodFromAddress(address?: string | null): string {
   if (!address) return "";
   const street = address.split(",")[0].trim();
   return street.replace(/^\d+\s+/, "");
-}
-
-export function isBabyFriendly(features: {
-  step_free_entrance?: { status: string; value: string | null };
-}): boolean {
-  const entrance = features.step_free_entrance;
-  return entrance?.status === "confirmed" && entrance?.value === "yes";
 }
 
 export function formatRating(rating: number | null): string {

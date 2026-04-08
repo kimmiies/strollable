@@ -1,18 +1,37 @@
 "use client";
 
 import { useRef } from "react";
-import { Camera, X } from "lucide-react";
+import { Camera, X, Footprints, LockOpen, Baby, Armchair, DoorOpen, Navigation, Sofa, User, Users, type LucideIcon } from "lucide-react";
 import type { Establishment, FeatureType } from "@/types";
-import { FEATURE_LABELS, FEATURE_ICONS } from "@/types";
+import { FEATURE_LABELS } from "@/types";
 import { useContribution } from "@/hooks/useContribution";
 import { cn } from "@/lib/utils";
 import ContributionComplete from "./ContributionComplete";
 
+// All 9 features — flat list, no hierarchy
 const FEATURE_TYPES: FeatureType[] = [
   "step_free_entrance",
   "accessible_bathroom",
   "change_table",
+  "high_chairs",
+  "auto_door_opener",
+  "stroller_friendly_layout",
+  "booster_seats",
+  "change_table_mens",
+  "change_table_family",
 ];
+
+const FEATURE_ICON_MAP: Record<FeatureType, LucideIcon> = {
+  step_free_entrance:       Footprints,
+  accessible_bathroom:      LockOpen,
+  change_table:             Baby,
+  high_chairs:              Armchair,
+  auto_door_opener:         DoorOpen,
+  stroller_friendly_layout: Navigation,
+  booster_seats:            Sofa,
+  change_table_mens:        User,
+  change_table_family:      Users,
+};
 
 interface ContributionFormProps {
   establishment: Establishment;
@@ -32,7 +51,6 @@ export default function ContributionForm({
   } = useContribution(establishment.place_id);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const hasAnyAnswer = Object.keys(state.answers).length > 0;
 
   if (state.status === "complete") {
@@ -47,28 +65,31 @@ export default function ContributionForm({
   }
 
   return (
-    <div className="flex flex-col gap-6 px-4 py-6 pb-nav">
+    <div className="flex flex-col gap-5 px-4 py-6 pb-nav">
       <div>
-        <h2 className="font-semibold text-base text-[var(--foreground)]">
+        <h2 className="font-display font-normal text-xl tracking-[-0.02em] text-[var(--ink)]">
           What did you notice?
         </h2>
-        <p className="text-sm text-[var(--muted-foreground)] mt-0.5">
-          Answer as many as you know. Your info helps other parents.
+        <p className="text-sm text-[var(--ink-faint)] mt-1">
+          Answer any features you know about. All are optional.
         </p>
       </div>
 
-      {/* Feature questions */}
-      <div className="space-y-4">
+      {/* Feature questions — all 9, flat list */}
+      <div className="space-y-3">
         {FEATURE_TYPES.map((type) => {
           const currentAnswer = state.answers[type];
+          const Icon = FEATURE_ICON_MAP[type];
           return (
             <div
               key={type}
-              className="bg-white rounded-2xl border border-[var(--border)] p-4"
+              className="bg-[var(--warm-white)] rounded-[var(--r-md)] border border-[var(--border)] p-4"
             >
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xl">{FEATURE_ICONS[type]}</span>
-                <p className="font-medium text-sm text-[var(--foreground)]">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-8 h-8 rounded-[var(--r-sm)] bg-[var(--mist)] flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-4 h-4 text-[var(--ink-soft)]" />
+                </div>
+                <p className="text-sm font-medium text-[var(--ink)]">
                   {FEATURE_LABELS[type]}
                 </p>
               </div>
@@ -80,14 +101,14 @@ export default function ContributionForm({
                       : setAnswer(type, "yes")
                   }
                   className={cn(
-                    "flex-1 py-2.5 rounded-xl text-sm font-medium transition-all",
+                    "flex-1 py-2.5 rounded-[var(--r-md)] text-sm font-medium transition-all",
                     "border focus:outline-none min-h-[44px]",
                     currentAnswer === "yes"
-                      ? "bg-green-100 text-green-800 border-green-300"
-                      : "bg-white text-[var(--foreground)] border-[var(--border)] hover:border-green-300"
+                      ? "bg-[var(--mist)] text-[var(--sage-deep)] border-[var(--sage)]"
+                      : "bg-[var(--warm-white)] text-[var(--ink-soft)] border-[var(--border)] hover:border-[var(--sage-light)]"
                   )}
                 >
-                  ✓ Yes
+                  Yes
                 </button>
                 <button
                   onClick={() =>
@@ -96,14 +117,14 @@ export default function ContributionForm({
                       : setAnswer(type, "no")
                   }
                   className={cn(
-                    "flex-1 py-2.5 rounded-xl text-sm font-medium transition-all",
+                    "flex-1 py-2.5 rounded-[var(--r-md)] text-sm font-medium transition-all",
                     "border focus:outline-none min-h-[44px]",
                     currentAnswer === "no"
-                      ? "bg-red-100 text-red-800 border-red-300"
-                      : "bg-white text-[var(--foreground)] border-[var(--border)] hover:border-red-300"
+                      ? "bg-[var(--terra-light)] text-[var(--terracotta)] border-[var(--terracotta)]"
+                      : "bg-[var(--warm-white)] text-[var(--ink-soft)] border-[var(--border)] hover:border-[rgba(201,113,74,0.3)]"
                   )}
                 >
-                  ✗ No
+                  No
                 </button>
               </div>
             </div>
@@ -112,48 +133,56 @@ export default function ContributionForm({
       </div>
 
       {/* Optional comment */}
-      <div className="bg-white rounded-2xl border border-[var(--border)] p-4">
-        <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
-          Comment <span className="text-[var(--muted-foreground)] font-normal">(optional)</span>
+      <div className="bg-[var(--warm-white)] rounded-[var(--r-md)] border border-[var(--border)] p-4">
+        <label className="block text-sm font-medium text-[var(--ink)] mb-2">
+          Add a note{" "}
+          <span className="text-[var(--ink-faint)] font-normal">(optional · max 280 characters)</span>
         </label>
         <textarea
           value={state.comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="e.g. Change table is in the back, past the counter"
-          rows={2}
+          onChange={(e) => setComment(e.target.value.slice(0, 280))}
+          placeholder="e.g. Back entrance is flat, easier than the front door"
+          rows={3}
+          maxLength={280}
           className={cn(
-            "w-full text-sm rounded-xl border border-[var(--border)] px-3 py-2.5",
-            "focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent",
-            "resize-none text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]"
+            "w-full text-sm rounded-[var(--r-md)] border border-[var(--border)] px-3 py-2.5",
+            "focus:outline-none focus:ring-2 focus:ring-[var(--sage)] focus:border-transparent",
+            "resize-none text-[var(--ink)] placeholder:text-[var(--ink-faint)]",
+            "bg-[var(--cream)]"
           )}
         />
+        <p className="text-right text-[11px] text-[var(--ink-faint)] mt-1.5">
+          {state.comment.length} / 280
+        </p>
       </div>
 
       {/* Optional photo */}
-      <div className="bg-white rounded-2xl border border-[var(--border)] p-4">
-        <p className="text-sm font-medium text-[var(--foreground)] mb-2">
-          Photo <span className="text-[var(--muted-foreground)] font-normal">(optional)</span>
+      <div className="bg-[var(--warm-white)] rounded-[var(--r-md)] border border-[var(--border)] p-4">
+        <p className="text-sm font-medium text-[var(--ink)] mb-3">
+          Photo{" "}
+          <span className="text-[var(--ink-faint)] font-normal">(optional)</span>
         </p>
         {state.photoFile ? (
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-[var(--foreground)] truncate flex-1">
+          <div className="flex items-center gap-3 px-3 py-2.5 rounded-[var(--r-md)] bg-[var(--mist)]">
+            <Camera className="w-4 h-4 text-[var(--sage-deep)] flex-shrink-0" />
+            <span className="text-sm text-[var(--ink)] truncate flex-1">
               {state.photoFile.name}
             </span>
             <button
               onClick={() => setPhotoFile(null)}
-              className="p-1 rounded-full hover:bg-[var(--muted)] min-w-[32px] min-h-[32px] flex items-center justify-center"
+              className="p-1 rounded-full hover:bg-[var(--border)] min-w-[32px] min-h-[32px] flex items-center justify-center"
               aria-label="Remove photo"
             >
-              <X className="w-4 h-4 text-[var(--muted-foreground)]" />
+              <X className="w-4 h-4 text-[var(--ink-faint)]" />
             </button>
           </div>
         ) : (
           <button
             onClick={() => fileInputRef.current?.click()}
             className={cn(
-              "flex items-center gap-2 text-sm text-[var(--primary)] font-medium",
-              "py-2 px-3 rounded-xl border border-dashed border-[var(--primary)]/40",
-              "hover:bg-[var(--primary)]/5 transition-colors"
+              "w-full flex items-center justify-center gap-2 text-sm text-[var(--sage-deep)] font-medium",
+              "py-3 px-4 rounded-[var(--r-md)] border border-dashed border-[rgba(122,158,126,0.4)]",
+              "hover:bg-[var(--mist)] transition-colors"
             )}
           >
             <Camera className="w-4 h-4" />
@@ -172,7 +201,7 @@ export default function ContributionForm({
 
       {/* Error */}
       {state.status === "error" && state.errorMessage && (
-        <div className="p-3 rounded-xl bg-red-50 text-red-700 text-sm">
+        <div className="p-3 rounded-[var(--r-md)] bg-[var(--terra-light)] text-[var(--terracotta)] text-sm">
           {state.errorMessage}
         </div>
       )}
@@ -182,8 +211,8 @@ export default function ContributionForm({
         onClick={submit}
         disabled={!hasAnyAnswer || state.status === "submitting"}
         className={cn(
-          "w-full py-4 rounded-2xl font-semibold text-sm text-white",
-          "bg-[var(--primary)] hover:bg-[var(--primary-hover)] transition-colors",
+          "w-full py-4 rounded-[var(--r-lg)] font-medium text-sm text-white",
+          "bg-[var(--sage)] hover:bg-[var(--sage-deep)] transition-colors",
           "disabled:opacity-40 disabled:cursor-not-allowed"
         )}
       >
@@ -191,8 +220,8 @@ export default function ContributionForm({
       </button>
 
       {!hasAnyAnswer && (
-        <p className="text-xs text-center text-[var(--muted-foreground)] -mt-3">
-          Select Yes or No for at least one feature above.
+        <p className="text-xs text-center text-[var(--ink-faint)] -mt-2">
+          Select Yes or No for at least one feature to submit.
         </p>
       )}
     </div>

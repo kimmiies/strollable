@@ -1,7 +1,13 @@
 export type FeatureType =
   | "step_free_entrance"
   | "accessible_bathroom"
-  | "change_table";
+  | "change_table"
+  | "high_chairs"
+  | "auto_door_opener"
+  | "stroller_friendly_layout"
+  | "booster_seats"
+  | "change_table_mens"
+  | "change_table_family";
 
 export type FeatureStatus = "unknown" | "reported" | "confirmed" | "disputed";
 
@@ -30,6 +36,12 @@ export interface FeatureMap {
   step_free_entrance: Feature;
   accessible_bathroom: Feature;
   change_table: Feature;
+  high_chairs: Feature;
+  auto_door_opener: Feature;
+  stroller_friendly_layout: Feature;
+  booster_seats: Feature;
+  change_table_mens: Feature;
+  change_table_family: Feature;
 }
 
 export interface GoogleHours {
@@ -123,15 +135,42 @@ export interface NearbyParams {
 }
 
 export const FEATURE_LABELS: Record<FeatureType, string> = {
-  step_free_entrance: "Step-free entrance",
-  accessible_bathroom: "Accessible bathroom",
-  change_table: "Change table",
+  step_free_entrance:       "Step-free entry",
+  accessible_bathroom:      "Accessible bathroom",
+  change_table:             "Change table",
+  high_chairs:              "High chairs",
+  auto_door_opener:         "Auto door opener",
+  stroller_friendly_layout: "Stroller-friendly layout",
+  booster_seats:            "Booster seats",
+  change_table_mens:        "Change table (men's WC)",
+  change_table_family:      "Change table (family WC)",
 };
 
+// Lucide icon names — used to render <LucideIcon name={FEATURE_ICON_NAMES[type]} />
+// or imported directly via lucide-react
+export const FEATURE_ICON_NAMES: Record<FeatureType, string> = {
+  step_free_entrance:       "Footprints",
+  accessible_bathroom:      "LockOpen",
+  change_table:             "Baby",
+  high_chairs:              "Armchair",
+  auto_door_opener:         "DoorOpen",
+  stroller_friendly_layout: "Navigation",
+  booster_seats:            "Sofa",
+  change_table_mens:        "User",
+  change_table_family:      "Users",
+};
+
+// Kept for legacy compatibility — components should migrate to Lucide icons
 export const FEATURE_ICONS: Record<FeatureType, string> = {
-  step_free_entrance: "🚪",
-  accessible_bathroom: "🚻",
-  change_table: "👶",
+  step_free_entrance:       "🚪",
+  accessible_bathroom:      "🚻",
+  change_table:             "👶",
+  high_chairs:              "🪑",
+  auto_door_opener:         "🔁",
+  stroller_friendly_layout: "🛤",
+  booster_seats:            "🪑",
+  change_table_mens:        "🚹",
+  change_table_family:      "⚥",
 };
 
 export const BADGE_DEFINITIONS: BadgeDefinition[] = [
@@ -145,22 +184,22 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: "reporter",
     name: "Reporter",
-    description: "Submitted your first feature report.",
+    description: "Added features to 5 establishments.",
     icon: "✏️",
-    requirement: "Submit your first report",
+    requirement: "Add features to 5 different spots",
   },
   {
     id: "verifier",
     name: "Verifier",
-    description: "Verified features at 3+ establishments.",
+    description: "Verified features at 5+ establishments.",
     icon: "✅",
-    requirement: "Verify features at 3 establishments",
+    requirement: "Verify features at 5 establishments",
   },
   {
     id: "scout",
     name: "Scout",
-    description: "First to report on 3+ establishments.",
+    description: "Added 5+ new locations not yet in the app.",
     icon: "🔭",
-    requirement: "Be first to report at 3 new places",
+    requirement: "Scout 5 new places",
   },
 ];

@@ -15,11 +15,16 @@
     --warm-white: #FFFEF9;
     --ink: #1A1F1B;
     --ink-soft: #3D4740;
+    --ink-faint: rgba(26,31,27,0.4);
     --terracotta: #C9714A;
+    --terra-light: #F2DDD4;
     --butter: #F2D98B;
-    --blush: #E8C4B2;
+    --butter-light: #FBF3D4;
     --sky: #A8C5D6;
+    --sky-light: #D6EAF2;
     --mist: #EDF2EE;
+    --amber: #D4952A;
+    --amber-light: #FDF0D5;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -559,7 +564,8 @@
     letter-spacing: 0.01em;
   }
 
-  .btn-primary { background: var(--sage); color: white; }
+  .btn-primary { background: var(--ink); color: white; }
+  .btn-sage { background: var(--sage); color: white; }
   .btn-secondary { background: transparent; color: var(--ink); border: 1.5px solid rgba(26,31,27,0.15); }
   .btn-ghost { background: var(--mist); color: var(--sage-deep); }
 
@@ -584,9 +590,9 @@
   }
 
   .chip.active {
-    background: var(--sage);
+    background: var(--sage-deep);
     color: white;
-    border-color: var(--sage);
+    border-color: var(--sage-deep);
   }
 
   /* ── BADGE SYSTEM ── */
@@ -616,10 +622,10 @@
     font-size: 26px;
   }
 
-  .badge-icon-wrap.gold { background: linear-gradient(135deg, #f2d98b, #e8c07a); }
-  .badge-icon-wrap.sage { background: linear-gradient(135deg, #B8D4BB, #7A9E7E); }
-  .badge-icon-wrap.terra { background: linear-gradient(135deg, #e8c4b2, #c9714a); }
-  .badge-icon-wrap.sky { background: linear-gradient(135deg, #d6e9f2, #a8c5d6); }
+  .badge-icon-wrap.gold { background: linear-gradient(135deg, #fff7d6, #f2d98b); }
+  .badge-icon-wrap.sage { background: linear-gradient(135deg, #e2ede3, #b8d4bb); }
+  .badge-icon-wrap.terra { background: linear-gradient(135deg, #f5e0d6, #e8c4b2); }
+  .badge-icon-wrap.sky { background: linear-gradient(135deg, #deeef5, #a8c5d6); }
 
   .badge-name {
     font-family: 'Fraunces', serif;
@@ -958,7 +964,7 @@
       <div class="swatch-info">
         <div class="swatch-name">Stroller Sage</div>
         <div class="swatch-hex">#7A9E7E</div>
-        <div class="swatch-role">Primary</div>
+        <div class="swatch-role">Primary brand</div>
       </div>
     </div>
     <div class="swatch">
@@ -966,7 +972,7 @@
       <div class="swatch-info">
         <div class="swatch-name">Sage Light</div>
         <div class="swatch-hex">#B8D4BB</div>
-        <div class="swatch-role">Tint / Highlight</div>
+        <div class="swatch-role">Tint / bg</div>
       </div>
     </div>
     <div class="swatch">
@@ -974,7 +980,7 @@
       <div class="swatch-info">
         <div class="swatch-name">Sage Deep</div>
         <div class="swatch-hex">#4A7350</div>
-        <div class="swatch-role">Emphasis</div>
+        <div class="swatch-role">Emphasis / text</div>
       </div>
     </div>
     <div class="swatch">
@@ -982,7 +988,7 @@
       <div class="swatch-info">
         <div class="swatch-name">Forest Ink</div>
         <div class="swatch-hex">#1A1F1B</div>
-        <div class="swatch-role">Text / Dark BG</div>
+        <div class="swatch-role">Primary text</div>
       </div>
     </div>
     <div class="swatch">
@@ -990,7 +996,15 @@
       <div class="swatch-info">
         <div class="swatch-name">Parchment</div>
         <div class="swatch-hex">#FAF7F2</div>
-        <div class="swatch-role">Background</div>
+        <div class="swatch-role">App background</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#FFFEF9;border:1px solid #e8e4dc;"><div class="swatch-dot" style="background:rgba(0,0,0,0.1);"></div></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Warm White</div>
+        <div class="swatch-hex">#FFFEF9</div>
+        <div class="swatch-role">Card surface</div>
       </div>
     </div>
     <div class="swatch">
@@ -998,7 +1012,15 @@
       <div class="swatch-info">
         <div class="swatch-name">Mist</div>
         <div class="swatch-hex">#EDF2EE</div>
-        <div class="swatch-role">Surface</div>
+        <div class="swatch-role">UI surface</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#D4952A;"><div class="swatch-dot"></div></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Amber</div>
+        <div class="swatch-hex">#D4952A</div>
+        <div class="swatch-role">Reported state</div>
       </div>
     </div>
     <div class="swatch">
@@ -1006,7 +1028,7 @@
       <div class="swatch-info">
         <div class="swatch-name">Terracotta</div>
         <div class="swatch-hex">#C9714A</div>
-        <div class="swatch-role">Accent / Alert</div>
+        <div class="swatch-role">Disputed / alert</div>
       </div>
     </div>
     <div class="swatch">
@@ -1064,16 +1086,24 @@
       <div style="font-family:'Fraunces',serif; font-size:32px; font-weight:300; letter-spacing:-0.025em;">Find your next spot</div>
     </div>
     <div class="type-scale-row">
-      <div class="type-scale-label">H3</div>
-      <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:400; letter-spacing:-0.015em;">Broadview Espresso</div>
+      <div class="type-scale-label">H3 / Card</div>
+      <div style="font-family:'Fraunces',serif; font-size:18px; font-weight:400; letter-spacing:-0.015em;">Broadview Espresso</div>
     </div>
     <div class="type-scale-row">
       <div class="type-scale-label">Body</div>
       <div style="font-size:16px; font-weight:300; color:var(--ink-soft);">Step-free entry · Accessible bathroom · Change table</div>
     </div>
     <div class="type-scale-row">
+      <div class="type-scale-label">Body SM</div>
+      <div style="font-size:14px; font-weight:300; line-height:1.6; color:var(--ink-soft);">Confirmed by 4 parents · Last checked 2 weeks ago</div>
+    </div>
+    <div class="type-scale-row">
+      <div class="type-scale-label">Caption</div>
+      <div style="font-size:12px; font-weight:400; color:rgba(26,31,27,0.4);">Leslieville · 0.3 km · Café</div>
+    </div>
+    <div class="type-scale-row">
       <div class="type-scale-label">Label / UI</div>
-      <div style="font-size:12px; font-weight:400; letter-spacing:0.1em; text-transform:uppercase; color:var(--sage);">Verified by community</div>
+      <div style="font-size:11px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--sage);">Community verified</div>
     </div>
   </div>
 </section>
@@ -1108,6 +1138,7 @@
       <div class="ui-card-label">Buttons</div>
       <div class="btn-row">
         <div class="btn btn-primary">Find spots near me</div>
+        <div class="btn btn-sage">Contribute now</div>
         <div class="btn btn-secondary">View all neighbourhoods</div>
         <div class="btn btn-ghost">Report an update</div>
       </div>
@@ -1134,8 +1165,12 @@
           Sage — verified features, CTAs, active states
         </div>
         <div style="display:flex; align-items:center; gap:12px; font-size:13px; color:var(--ink-soft);">
+          <div style="width:14px;height:14px;border-radius:50%;background:var(--amber);flex-shrink:0;"></div>
+          Amber — reported state (unconfirmed features)
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; font-size:13px; color:var(--ink-soft);">
           <div style="width:14px;height:14px;border-radius:50%;background:var(--terracotta);flex-shrink:0;"></div>
-          Terracotta — alerts, unverified, report flags
+          Terracotta — disputed / alert flags
         </div>
         <div style="display:flex; align-items:center; gap:12px; font-size:13px; color:var(--ink-soft);">
           <div style="width:14px;height:14px;border-radius:50%;background:var(--butter);flex-shrink:0;"></div>
