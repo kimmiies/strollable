@@ -7,7 +7,10 @@ import { z } from "zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { cn } from "@/lib/utils";
+import { Input, InputLabel, InputHint } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+
+// ─── Schema ──────────────────────────────────────────────────────────────────
 
 const schema = z.object({
   email: z.email("Enter a valid email"),
@@ -16,9 +19,25 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
+// ─── Google SVG ──────────────────────────────────────────────────────────────
+
+function GoogleIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+    </svg>
+  );
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export default function LoginForm() {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const {
     register,
@@ -27,89 +46,121 @@ export default function LoginForm() {
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   async function onSubmit(data: FormData) {
-    setError(null);
+    setAuthError(null);
     const supabase = createClient();
-    const { error: authError } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: data.email,
       password: data.password,
     });
-    if (authError) {
-      setError(authError.message);
-      return;
-    }
+    if (error) { setAuthError(error.message); return; }
     router.push("/explore");
     router.refresh();
   }
 
+  async function handleGoogleSignIn() {
+    setGoogleLoading(true);
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/callback` },
+    });
+    setGoogleLoading(false);
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
-          Email
-        </label>
-        <input
-          {...register("email")}
-          type="email"
-          autoComplete="email"
-          className={cn(
-            "w-full px-4 py-3 rounded-xl border bg-white text-[var(--foreground)] text-sm",
-            "focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent",
-            errors.email ? "border-red-400" : "border-[var(--border)]"
-          )}
-          placeholder="you@example.com"
-        />
-        {errors.email && (
-          <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
-        )}
-      </div>
+    <div>
+      {/* Title */}
+      <h1 className="font-display text-[26px] font-light tracking-[-0.025em] text-[var(--ink)] mb-1.5">
+        Welcome back
+      </h1>
+      <p className="text-sm text-[var(--ink-faint)] mb-7 leading-relaxed">
+        Good to see you again.
+      </p>
 
-      <div>
-        <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
-          Password
-        </label>
-        <input
-          {...register("password")}
-          type="password"
-          autoComplete="current-password"
-          className={cn(
-            "w-full px-4 py-3 rounded-xl border bg-white text-[var(--foreground)] text-sm",
-            "focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent",
-            errors.password ? "border-red-400" : "border-[var(--border)]"
-          )}
-          placeholder="••••••••"
-        />
-        {errors.password && (
-          <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
-        )}
-      </div>
-
-      {error && (
-        <div className="p-3 rounded-xl bg-red-50 text-red-700 text-sm">
-          {error}
+      {/* Form */}
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[18px]">
+        {/* Email */}
+        <div>
+          <InputLabel htmlFor="email">Email</InputLabel>
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            placeholder="hello@example.com"
+            error={!!errors.email}
+            {...register("email")}
+          />
+          {errors.email && <InputHint error>{errors.email.message}</InputHint>}
         </div>
-      )}
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className={cn(
-          "w-full py-3 rounded-xl font-semibold text-sm text-white",
-          "bg-[var(--primary)] hover:bg-[var(--primary-hover)] transition-colors",
-          "disabled:opacity-60 disabled:cursor-not-allowed"
+        {/* Password */}
+        <div>
+          <InputLabel htmlFor="password">Password</InputLabel>
+          <Input
+            id="password"
+            type="password"
+            autoComplete="current-password"
+            placeholder="Your password"
+            error={!!errors.password}
+            {...register("password")}
+          />
+          {errors.password && <InputHint error>{errors.password.message}</InputHint>}
+          {/* Forgot password link — right-aligned, below field */}
+          <div className="text-right mt-1.5">
+            <Link
+              href="/forgot-password"
+              className="text-xs text-[var(--sage-deep)] underline hover:text-[var(--sage)]"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        </div>
+
+        {/* Auth error */}
+        {authError && (
+          <p className="text-sm text-[var(--error)] bg-[var(--error-light)] px-4 py-3 rounded-[var(--r-md)]">
+            {authError}
+          </p>
         )}
+
+        {/* CTA */}
+        <Button
+          type="submit"
+          variant="sage"
+          size="default"
+          disabled={isSubmitting}
+          className="w-full"
+        >
+          {isSubmitting ? "Signing in…" : "Log in"}
+        </Button>
+      </form>
+
+      {/* "or" divider */}
+      <div className="flex items-center gap-3 my-5">
+        <div className="flex-1 h-px" style={{ background: "rgba(122,158,126,.15)" }} />
+        <span className="text-xs text-[var(--ink-faint)]">or</span>
+        <div className="flex-1 h-px" style={{ background: "rgba(122,158,126,.15)" }} />
+      </div>
+
+      {/* Google OAuth */}
+      <button
+        type="button"
+        onClick={handleGoogleSignIn}
+        disabled={googleLoading}
+        className="w-full flex items-center justify-center gap-2.5 px-5 py-3 rounded-[var(--r-pill)] text-sm text-[var(--ink-soft)] bg-[var(--warm-white)] transition-colors hover:bg-[var(--mist)] disabled:opacity-50"
+        style={{ border: "1.5px solid rgba(26,31,27,.12)" }}
       >
-        {isSubmitting ? "Signing in…" : "Sign in"}
+        <GoogleIcon />
+        {googleLoading ? "Redirecting…" : "Continue with Google"}
       </button>
 
-      <p className="text-center text-sm text-[var(--muted-foreground)]">
-        No account?{" "}
-        <Link
-          href="/signup"
-          className="font-medium text-[var(--primary)] hover:underline"
-        >
-          Create one
+      {/* Footer */}
+      <p className="text-[13px] text-[var(--ink-faint)] text-center mt-4">
+        No account yet?{" "}
+        <Link href="/signup" className="text-[var(--sage-deep)] underline hover:text-[var(--sage)]">
+          Sign up free
         </Link>
       </p>
-    </form>
+    </div>
   );
 }
