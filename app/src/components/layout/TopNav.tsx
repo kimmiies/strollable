@@ -2,9 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, Bell, Heart, User, X } from "lucide-react";
+import { Search, X, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMapStore } from "@/stores/mapStore";
+
+const NAV_LINKS = [
+  { href: "/explore",       label: "Explore" },
+  { href: "/saved",         label: "Saved" },
+  { href: "/notifications", label: "Activity" },
+];
 
 export default function TopNav() {
   const pathname = usePathname();
@@ -13,93 +19,131 @@ export default function TopNav() {
   const isExplore = pathname === "/explore" || pathname.startsWith("/place/");
 
   return (
-    <header className="hidden lg:flex items-center gap-3 px-6 h-16 border-b border-[var(--border)] bg-white flex-shrink-0 z-30">
-      {/* Logo */}
+    <header
+      className="hidden lg:flex items-center gap-0 flex-shrink-0 z-30"
+      style={{
+        background: "var(--warm-white)",
+        borderBottom: "1px solid rgba(122,158,126,0.12)",
+        height: 60,
+        boxShadow: "var(--shadow-sm)",
+        paddingLeft: 32,
+        paddingRight: 32,
+      }}
+    >
+      {/* Brand mark */}
       <Link
         href="/explore"
-        className="font-display text-xl font-normal italic text-[var(--sage-deep)] flex-shrink-0 mr-1 tracking-[-0.02em]"
+        className="font-display font-light text-[var(--ink)] flex-shrink-0 tracking-[-0.02em]"
+        style={{ fontSize: 18, marginRight: 32 }}
       >
-        Strollable
+        Stroll<em className="not-italic text-[var(--sage-deep)]" style={{ fontStyle: "italic" }}>able</em>
       </Link>
 
-      {/* Search */}
-      <div className="flex-1 max-w-xl relative">
+      {/* Search — left-centre, max 320px */}
+      <div className="relative flex-shrink-0" style={{ width: 320 }}>
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-faint)]" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by name, neighbourhood, or type…"
+          placeholder="Search spots near you…"
           disabled={!isExplore}
           className={cn(
-            "w-full pl-11 pr-20 py-2.5 text-sm rounded-[var(--r-pill)]",
-            "border border-[rgba(122,158,126,0.2)] bg-[var(--warm-white)]",
-            "shadow-[var(--shadow-sm)] placeholder:text-[var(--ink-faint)]",
-            "focus:outline-none focus:border-[var(--sage)] focus:bg-white transition-colors",
+            "w-full pl-10 pr-10 text-sm",
+            "focus:outline-none transition-colors",
             !isExplore && "opacity-40 cursor-not-allowed"
           )}
+          style={{
+            height: 38,
+            borderRadius: "var(--r-pill)",
+            border: "1.5px solid transparent",
+            background: "var(--mist)",
+            color: "var(--ink)",
+            fontFamily: "inherit",
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.background = "var(--warm-white)";
+            e.currentTarget.style.borderColor = "var(--sage)";
+            e.currentTarget.style.boxShadow = "var(--focus-ring)";
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.background = "var(--mist)";
+            e.currentTarget.style.borderColor = "transparent";
+            e.currentTarget.style.boxShadow = "none";
+          }}
         />
-        {/* Keyboard hint */}
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none">
-          {searchQuery && isExplore ? (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="pointer-events-auto text-[var(--muted-foreground)] hover:text-[var(--foreground)] p-0.5"
-              aria-label="Clear search"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          ) : (
-            <kbd className="text-[10px] font-mono bg-zinc-200 text-zinc-500 px-1.5 py-0.5 rounded border border-zinc-300">
-              ⌘K
-            </kbd>
-          )}
-        </span>
+        {searchQuery && isExplore && (
+          <button
+            onClick={() => setSearchQuery("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--ink-faint)] hover:text-[var(--ink)]"
+            aria-label="Clear search"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
 
-      <div className="flex-1" />
-
-      {/* Nav icons */}
-      <nav className="flex items-center gap-1">
-        {[
-          { href: "/notifications", Icon: Bell, label: "Notifications" },
-          { href: "/saved", Icon: Heart, label: "Saved" },
-        ].map(({ href, Icon, label }) => {
-          const isActive = pathname.startsWith(href);
+      {/* Page links — sit between search and actions */}
+      <nav className="flex items-stretch ml-6">
+        {NAV_LINKS.map(({ href, label }) => {
+          const isActive =
+            href === "/explore"
+              ? pathname === "/explore" || pathname.startsWith("/place/")
+              : pathname.startsWith(href);
           return (
             <Link
               key={href}
               href={href}
-              aria-label={label}
               className={cn(
-                "w-9 h-9 flex items-center justify-center rounded-full transition-colors",
+                "flex items-center px-4 text-sm transition-colors border-b-2",
                 isActive
-                  ? "bg-[var(--mist)] text-[var(--sage-deep)]"
-                  : "text-[var(--ink-faint)] hover:bg-[var(--mist)] hover:text-[var(--ink)]"
+                  ? "text-[var(--sage-deep)] border-[var(--sage)]"
+                  : "text-[var(--ink-faint)] border-transparent hover:text-[var(--ink-soft)]"
               )}
+              style={{ height: 60 }}
             >
-              <Icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
+              {label}
             </Link>
           );
         })}
+      </nav>
 
-        {/* Profile avatar */}
+      {/* Push actions to the right */}
+      <div className="flex-1" />
+
+      {/* Right-side actions */}
+      <div className="flex items-center gap-2">
+        {/* Contribute CTA */}
+        <Link
+          href="/contribute"
+          className="flex items-center gap-1.5 text-sm font-medium text-white transition-colors"
+          style={{
+            background: "var(--sage)",
+            borderRadius: "var(--r-pill)",
+            padding: "9px 18px",
+            height: 38,
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "var(--sage-deep)")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "var(--sage)")}
+        >
+          <Plus className="w-3.5 h-3.5" />
+          Contribute
+        </Link>
+
+        {/* Avatar */}
         <Link
           href="/profile"
           aria-label="Profile"
-          className={cn(
-            "ml-1 flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-[var(--r-pill)] transition-colors",
-            pathname.startsWith("/profile")
-              ? "bg-[var(--mist)] text-[var(--sage-deep)]"
-              : "hover:bg-[var(--mist)] text-[var(--ink-soft)]"
-          )}
+          className="flex items-center justify-center rounded-full text-white font-display font-light text-sm flex-shrink-0 transition-opacity hover:opacity-80"
+          style={{
+            width: 34,
+            height: 34,
+            background: "linear-gradient(135deg, var(--sage-light), var(--sage))",
+          }}
         >
-          <div className="w-7 h-7 rounded-full bg-[var(--sage-light)]/40 flex items-center justify-center flex-shrink-0">
-            <User className="w-4 h-4 text-[var(--sage-deep)]" />
-          </div>
-          <span className="text-sm font-normal">Profile</span>
+          S
         </Link>
-      </nav>
+      </div>
     </header>
   );
 }

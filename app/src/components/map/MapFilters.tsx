@@ -50,7 +50,7 @@ export default function MapFilters({
               "flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-[var(--r-pill)] text-[13px] transition-all",
               "border focus:outline-none min-h-[34px]",
               active
-                ? "bg-[var(--ink)] text-white border-[var(--ink)]"
+                ? "bg-[var(--sage-deep)] text-white border-[var(--sage-deep)]"
                 : "bg-[var(--warm-white)] text-[var(--ink-soft)] border-[rgba(26,31,27,0.12)] hover:border-[var(--sage)] hover:text-[var(--sage-deep)]"
             )}
           >
