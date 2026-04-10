@@ -155,7 +155,7 @@ export default function SearchBar({
                   Near you now
                 </div>
                 <div className="text-[12px]" style={{ color: "var(--ink-faint)" }}>
-                  {nearbyCount} step-free spot{nearbyCount !== 1 ? "s" : ""} within 200m
+                  {nearbyCount} step-free spot{nearbyCount !== 1 ? "s" : ""} within 1km
                 </div>
               </div>
             </button>

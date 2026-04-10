@@ -124,7 +124,7 @@ export default function FilterPanel({
         </div>
 
         {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto min-h-0">
 
           {/* ── Strollability features ── */}
           <section className="px-6 py-6" style={{ borderBottom: "6px solid var(--cream)" }}>
