@@ -307,7 +307,7 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
 .filter-modal-handle{width:36px;height:4px;border-radius:2px;background:rgba(26,31,27,.15);margin:12px auto;}
 .filter-modal-header{padding:16px 24px 0;display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
 .filter-modal-title{font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.02em;}
-.filter-modal-clear{font-size:13px;color:var(--sage-deep);text-decoration:underline;cursor:pointer;}
+.filter-modal-clear{font-size:13px;color:var(--ink-soft);text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
 .filter-section{padding:0 24px;margin-bottom:24px;}
 .filter-section-title{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .filter-section-divider{height:6px;background:var(--cream);border-top:1px solid rgba(122,158,126,.1);border-bottom:1px solid rgba(122,158,126,.1);margin-bottom:24px;}
@@ -323,7 +323,7 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
 .filter-neighbourhood-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .filter-nbhd-btn{padding:10px 14px;border-radius:var(--r-md);border:1.5px solid rgba(26,31,27,.1);background:var(--warm-white);font-size:13px;color:var(--ink-soft);cursor:pointer;transition:all var(--dur-base);text-align:center;}
 .filter-nbhd-btn.active{border-color:var(--sage);background:var(--mist);color:var(--sage-deep);}
-.filter-modal-footer{padding:0 24px;display:flex;gap:12px;}
+.filter-modal-footer{padding:0 24px;display:flex;justify-content:space-between;align-items:center;}
 
 /* ── MAP ── */
 .map-mockup{border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-float);position:relative;height:480px;background:linear-gradient(160deg,#e8ede9 0%,#d4e0d6 40%,#c8d8ca 100%);}
@@ -908,7 +908,6 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
   <h2 class="ds-title">Forms that <em>feel good</em></h2>
   <div class="two-col" style="gap:64px;">
     <div style="display:flex;flex-direction:column;gap:24px;">
-      <!-- Default text input -->
       <div class="input-group">
         <label class="input-label">Email address <span class="req">*</span></label>
         <div class="input-icon-wrap">
@@ -917,13 +916,11 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
         </div>
         <span class="input-hint">We'll only send you stroller-related goodness.</span>
       </div>
-      <!-- Focus state -->
       <div class="input-group">
         <label class="input-label">Your name</label>
         <input class="input-field" type="text" value="Sarah M." style="border-color:var(--sage);box-shadow:var(--focus-ring);">
         <span class="input-hint">Shown on your contributions</span>
       </div>
-      <!-- Error state -->
       <div class="input-group">
         <label class="input-label">Password <span class="req">*</span></label>
         <input class="input-field error" type="password" value="pass">
@@ -932,14 +929,12 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
           Must be at least 8 characters
         </span>
       </div>
-      <!-- Disabled state -->
       <div class="input-group">
         <label class="input-label" style="opacity:.5;">Location (auto-detected)</label>
         <input class="input-field" type="text" value="Toronto, ON" disabled>
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:24px;">
-      <!-- Select -->
       <div class="input-group">
         <label class="input-label">Establishment type</label>
         <select class="input-field input-field-select">
@@ -950,19 +945,16 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
           <option>Community space</option>
         </select>
       </div>
-      <!-- Textarea -->
       <div class="input-group">
         <label class="input-label">Notes for other parents</label>
         <textarea class="input-field" placeholder="e.g. Ramp at the side entrance, staff super helpful…"></textarea>
         <span class="input-hint">Optional but appreciated by the community</span>
       </div>
-      <!-- Toggle row -->
       <div style="background:var(--warm-white);border-radius:var(--r-md);padding:16px;border:1px solid rgba(122,158,126,.12);display:flex;flex-direction:column;gap:14px;">
         <div class="ds-label" style="margin-bottom:0;">Toggles</div>
         <div class="toggle-wrap"><div class="toggle on"></div><span class="toggle-label">Push notifications</span></div>
         <div class="toggle-wrap"><div class="toggle"></div><span class="toggle-label" style="color:var(--ink-faint);">Email digest (off)</span></div>
       </div>
-      <!-- Checkbox & radio row -->
       <div style="background:var(--warm-white);border-radius:var(--r-md);padding:16px;border:1px solid rgba(122,158,126,.12);">
         <div class="ds-label" style="margin-bottom:12px;">Checkboxes</div>
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
@@ -1095,8 +1087,6 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
 <div class="ds-section">
   <div class="ds-label">03 — Components · Navigation</div>
   <h2 class="ds-title">Finding your <em>way</em></h2>
-
-  <!-- Mobile + desktop pair -->
   <div class="frame-pair" style="margin-bottom:40px;">
     <div>
       <div class="frame-label">
@@ -1174,7 +1164,6 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
         <div class="search-bar-input">Search spots near you…</div>
         <div class="search-bar-kbd">⌘K</div>
       </div>
-
       <div class="ds-label" style="margin-bottom:4px;">Active with suggestions</div>
       <div class="search-bar" style="max-width:100%;border-color:var(--sage);box-shadow:var(--focus-ring);">
         <svg class="search-bar-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -1217,9 +1206,12 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
       </div>
       <div class="filter-modal">
         <div class="filter-modal-handle"></div>
+        <!-- Header: title + X only, no Clear all here -->
         <div class="filter-modal-header">
           <div class="filter-modal-title">Filter spots</div>
-          <div class="filter-modal-clear">Clear all</div>
+          <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);cursor:pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
         </div>
         <div class="filter-section-divider"></div>
         <div class="filter-section">
@@ -1276,41 +1268,67 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
             <div class="filter-nbhd-btn">Bloor West</div>
           </div>
         </div>
+        <!-- Footer: Clear all bottom-left, ink CTA bottom-right -->
         <div class="filter-modal-footer">
-          <div class="btn btn-secondary" style="flex:1;justify-content:center;">Reset</div>
-          <div class="btn btn-sage" style="flex:2;justify-content:center;">Show 24 spots</div>
+          <span class="filter-modal-clear">Clear all</span>
+          <div class="btn btn-primary" style="padding:12px 28px;">Show 24 spots</div>
         </div>
       </div>
     </div>
     <div>
       <div class="frame-label">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
-        Desktop — side panel
+        Desktop — same modal, centred overlay
       </div>
-      <div style="background:var(--warm-white);border-radius:var(--r-lg);padding:24px;border:1px solid rgba(122,158,126,.12);max-width:280px;">
-        <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:400;letter-spacing:-.015em;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">
-          Filters <span style="font-size:12px;font-family:'DM Sans',sans-serif;color:var(--sage-deep);text-decoration:underline;cursor:pointer;font-weight:300;">Clear</span>
+      <div style="background:var(--warm-white);border-radius:var(--r-lg);padding:24px;border:1px solid rgba(122,158,126,.12);max-width:320px;">
+        <!-- Header: title + X only -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(122,158,126,.12);">
+          <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.02em;">Filter spots</div>
+          <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);cursor:pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
         </div>
-        <!-- Features as checkboxes on desktop -->
-        <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px;">Features</div>
-        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
-          <div class="checkbox-wrap"><div class="checkbox checked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label" style="font-size:13px;">Step-free entry</span></div>
-          <div class="checkbox-wrap"><div class="checkbox checked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><span class="checkbox-label" style="font-size:13px;">Accessible WC</span></div>
-          <div class="checkbox-wrap"><div class="checkbox"></div><span class="checkbox-label" style="font-size:13px;color:var(--ink-faint);">Change table</span></div>
-          <div class="checkbox-wrap"><div class="checkbox"></div><span class="checkbox-label" style="font-size:13px;color:var(--ink-faint);">High chairs</span></div>
-          <div class="checkbox-wrap"><div class="checkbox"></div><span class="checkbox-label" style="font-size:13px;color:var(--ink-faint);">Stroller layout</span></div>
+        <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>
+          Strollability features
         </div>
-        <div style="height:1px;background:rgba(122,158,126,.12);margin-bottom:20px;"></div>
-        <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px;">Venue type</div>
-        <div class="chip-row" style="gap:6px;margin-bottom:20px;">
-          <div class="chip chip-type active" style="font-size:11px;padding:6px 12px;">Café</div>
-          <div class="chip chip-type" style="font-size:11px;padding:6px 12px;">Restaurant</div>
-          <div class="chip chip-type" style="font-size:11px;padding:6px 12px;">Shop</div>
-          <div class="chip chip-type" style="font-size:11px;padding:6px 12px;">Park</div>
+        <div class="filter-feature-grid" style="margin-bottom:20px;">
+          <div class="filter-feature-btn active">
+            <div class="filter-feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg></div>
+            <div class="filter-feature-label">Step-free entry</div>
+          </div>
+          <div class="filter-feature-btn active">
+            <div class="filter-feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></div>
+            <div class="filter-feature-label">Accessible WC</div>
+          </div>
+          <div class="filter-feature-btn">
+            <div class="filter-feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6M9 16h6M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="8" r="2"/></svg></div>
+            <div class="filter-feature-label">Change table</div>
+          </div>
+          <div class="filter-feature-btn">
+            <div class="filter-feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M15 7V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2"/></svg></div>
+            <div class="filter-feature-label">High chairs</div>
+          </div>
         </div>
-        <div class="btn btn-sage" style="width:100%;justify-content:center;">Show 24 spots</div>
+        <div style="height:6px;background:var(--cream);border-top:1px solid rgba(122,158,126,.1);border-bottom:1px solid rgba(122,158,126,.1);margin:0 -24px 20px;"></div>
+        <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px;">Establishment type</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+          <div class="filter-type-btn active" style="flex:none;padding:9px 16px;">Café</div>
+          <div class="filter-type-btn" style="flex:none;padding:9px 16px;">Restaurant</div>
+          <div class="filter-type-btn" style="flex:none;padding:9px 16px;">Shop</div>
+          <div class="filter-type-btn" style="flex:none;padding:9px 16px;">Park</div>
+        </div>
+        <!-- Footer: Clear all bottom-left, ink CTA bottom-right -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid rgba(122,158,126,.12);">
+          <span class="filter-modal-clear">Clear all</span>
+          <div class="btn btn-primary" style="padding:12px 24px;">Show 24 spots</div>
+        </div>
       </div>
     </div>
+  </div>
+  <div class="ds-note">
+    <strong>Footer pattern (both breakpoints):</strong> "Clear all" as underlined <code>ink-soft</code> text bottom-left — only visible when filters are active. "Show N spots" as <code>btn-primary</code> (forest ink) bottom-right. Header contains title + X close only — no Clear all in the header.<br><br>
+    <strong>Mobile:</strong> Bottom sheet, rounded top corners, drag handle. <strong>Desktop:</strong> Centred overlay (max-width 580px). Same component on both breakpoints.
   </div>
 </div>
 
@@ -1321,7 +1339,6 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
   <div class="ds-label">03 — Components · Establishment Card</div>
   <h2 class="ds-title">The <em>core listing</em> unit</h2>
   <div class="card-grid">
-    <!-- Fully verified -->
     <div class="est-card">
       <div class="est-card-img photo-cafe">
         <div class="est-card-img-overlay"></div>
@@ -1341,7 +1358,6 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
         <div class="est-card-footer"><div class="est-card-contrib">Reported by <strong>6 parents</strong></div><div class="est-card-dist"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg> 0.3 km</div></div>
       </div>
     </div>
-    <!-- Partial data -->
     <div class="est-card">
       <div class="est-card-img photo-resto">
         <div class="est-card-img-overlay"></div>
@@ -1360,7 +1376,6 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
         <div class="est-card-footer" style="background:var(--amber-light);"><div class="est-card-contrib" style="color:var(--amber);font-weight:500;">Help fill this in</div><div class="est-card-dist"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg> 0.8 km</div></div>
       </div>
     </div>
-    <!-- No data -->
     <div class="est-card">
       <div class="est-card-img photo-shop" style="filter:saturate(.7);">
         <div class="est-card-img-overlay"></div>
@@ -1542,22 +1557,18 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
   <h2 class="ds-title">Quiet <em>feedback</em></h2>
   <div class="two-col" style="gap:48px;">
     <div class="toast-stack">
-      <!-- Success -->
       <div class="toast toast-success">
         <div class="toast-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--sage-light)" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div>
         <div class="toast-body"><div class="toast-title light">Thanks for contributing!</div><div class="toast-text light">Your report on Broadview Espresso has been saved.</div></div>
       </div>
-      <!-- Warning -->
       <div class="toast toast-warning">
         <div class="toast-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
         <div class="toast-body"><div class="toast-title dark">Info may be outdated</div><div class="toast-text dark">This spot hasn't been updated in 6 months.</div></div>
       </div>
-      <!-- Error -->
       <div class="toast toast-error">
         <div class="toast-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--error)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
         <div class="toast-body"><div class="toast-title dark">Couldn't save your report</div><div class="toast-text dark">Check your connection and try again.</div></div>
       </div>
-      <!-- Badge earned -->
       <div class="toast toast-badge">
         <div class="toast-icon" style="font-size:20px;">🏆</div>
         <div class="toast-body"><div class="toast-title dark">Badge earned: Pathfinder</div><div class="toast-text dark">You've made 10 verified contributions. Keep it up!</div></div>
@@ -1580,25 +1591,19 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
   <h2 class="ds-title">When there's <em>nothing</em> yet</h2>
   <div class="three-col">
     <div class="empty-state">
-      <div class="empty-state-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      </div>
+      <div class="empty-state-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
       <div class="empty-state-title">No spots found</div>
       <div class="empty-state-body">Try widening your filters or searching a different neighbourhood.</div>
       <div class="btn btn-ghost btn-sm">Clear filters</div>
     </div>
     <div class="empty-state">
-      <div class="empty-state-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-      </div>
+      <div class="empty-state-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
       <div class="empty-state-title">Nothing saved yet</div>
       <div class="empty-state-body">Tap the heart on any spot to save it for your next outing.</div>
       <div class="btn btn-ghost btn-sm">Explore spots nearby</div>
     </div>
     <div class="empty-state">
-      <div class="empty-state-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-      </div>
+      <div class="empty-state-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></div>
       <div class="empty-state-title">You're offline</div>
       <div class="empty-state-body">Strollable needs a connection to show spots near you.</div>
       <div class="btn btn-ghost btn-sm">Try again</div>
@@ -1614,45 +1619,9 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
   <div class="ds-label">03 — Components · Skeleton Loaders</div>
   <h2 class="ds-title">Loading <em>gracefully</em></h2>
   <div class="card-grid" style="max-width:900px;">
-    <div class="skel-card">
-      <div class="skel skel-img"></div>
-      <div class="skel-body">
-        <div class="skel skel-line skel-line-mid" style="margin-bottom:6px;"></div>
-        <div class="skel skel-line skel-line-short"></div>
-        <div class="skel-chips">
-          <div class="skel skel-chip"></div>
-          <div class="skel skel-chip"></div>
-          <div class="skel skel-chip"></div>
-        </div>
-        <div class="skel skel-footer"></div>
-      </div>
-    </div>
-    <div class="skel-card">
-      <div class="skel skel-img"></div>
-      <div class="skel-body">
-        <div class="skel skel-line" style="width:75%;margin-bottom:6px;"></div>
-        <div class="skel skel-line skel-line-short"></div>
-        <div class="skel-chips">
-          <div class="skel skel-chip"></div>
-          <div class="skel skel-chip"></div>
-        </div>
-        <div class="skel skel-footer"></div>
-      </div>
-    </div>
-    <div class="skel-card">
-      <div class="skel skel-img"></div>
-      <div class="skel-body">
-        <div class="skel skel-line skel-line-mid" style="margin-bottom:6px;"></div>
-        <div class="skel skel-line skel-line-short"></div>
-        <div class="skel-chips">
-          <div class="skel skel-chip"></div>
-          <div class="skel skel-chip"></div>
-          <div class="skel skel-chip"></div>
-          <div class="skel skel-chip"></div>
-        </div>
-        <div class="skel skel-footer"></div>
-      </div>
-    </div>
+    <div class="skel-card"><div class="skel skel-img"></div><div class="skel-body"><div class="skel skel-line skel-line-mid" style="margin-bottom:6px;"></div><div class="skel skel-line skel-line-short"></div><div class="skel-chips"><div class="skel skel-chip"></div><div class="skel skel-chip"></div><div class="skel skel-chip"></div></div><div class="skel skel-footer"></div></div></div>
+    <div class="skel-card"><div class="skel skel-img"></div><div class="skel-body"><div class="skel skel-line" style="width:75%;margin-bottom:6px;"></div><div class="skel skel-line skel-line-short"></div><div class="skel-chips"><div class="skel skel-chip"></div><div class="skel skel-chip"></div></div><div class="skel skel-footer"></div></div></div>
+    <div class="skel-card"><div class="skel skel-img"></div><div class="skel-body"><div class="skel skel-line skel-line-mid" style="margin-bottom:6px;"></div><div class="skel skel-line skel-line-short"></div><div class="skel-chips"><div class="skel skel-chip"></div><div class="skel skel-chip"></div><div class="skel skel-chip"></div><div class="skel skel-chip"></div></div><div class="skel skel-footer"></div></div></div>
   </div>
   <div class="ds-note-sage" style="margin-top:16px;">Skeleton uses shimmer animation (1.4s, ease-in-out). Show skeletons immediately on page load — never show a spinner for list/grid views. Replace with real content as data arrives, staggering cards by 50ms each.</div>
 </div>
@@ -1794,7 +1763,6 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
   <div class="ds-label">04 — Pages · Contribution Flow</div>
   <h2 class="ds-title">Making it <em>better</em></h2>
   <div class="three-col" style="gap:24px;align-items:start;">
-    <!-- Step 1 -->
     <div>
       <div class="frame-label" style="margin-bottom:10px;">Step 1 of 3 — Feature check</div>
       <div class="contrib-flow">
@@ -1827,7 +1795,6 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
         </div>
       </div>
     </div>
-    <!-- Step 2 -->
     <div>
       <div class="frame-label" style="margin-bottom:10px;">Step 2 of 3 — Add notes</div>
       <div class="contrib-flow">
@@ -1857,13 +1824,10 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
         </div>
       </div>
     </div>
-    <!-- Success -->
     <div>
       <div class="frame-label" style="margin-bottom:10px;">Step 3 of 3 — Success</div>
       <div class="contrib-success">
-        <div class="contrib-success-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
+        <div class="contrib-success-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div>
         <div class="contrib-success-title">Thanks for contributing!</div>
         <div class="contrib-success-body">Your report helps parents in Leslieville plan their outings. The community appreciates it.</div>
         <div style="background:var(--butter-light);border-radius:var(--r-md);padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;border:1px solid rgba(212,149,42,.2);">
@@ -1951,7 +1915,6 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
   <div class="ds-label">04 — Pages · Auth Flow</div>
   <h2 class="ds-title">Welcome to <em>Strollable</em></h2>
   <div class="three-col" style="gap:24px;align-items:start;">
-    <!-- Sign Up -->
     <div>
       <div class="frame-label" style="margin-bottom:10px;">Sign up</div>
       <div class="auth-mockup">
@@ -1963,18 +1926,9 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
           <div class="auth-title">Create account</div>
           <div class="auth-subtitle">Join the community helping parents explore Toronto.</div>
           <div class="auth-form">
-            <div class="input-group">
-              <label class="input-label">Your name</label>
-              <input class="input-field" type="text" placeholder="Sarah">
-            </div>
-            <div class="input-group">
-              <label class="input-label">Email <span class="req">*</span></label>
-              <input class="input-field" type="email" placeholder="hello@example.com">
-            </div>
-            <div class="input-group">
-              <label class="input-label">Password <span class="req">*</span></label>
-              <input class="input-field" type="password" placeholder="8+ characters">
-            </div>
+            <div class="input-group"><label class="input-label">Your name</label><input class="input-field" type="text" placeholder="Sarah"></div>
+            <div class="input-group"><label class="input-label">Email <span class="req">*</span></label><input class="input-field" type="email" placeholder="hello@example.com"></div>
+            <div class="input-group"><label class="input-label">Password <span class="req">*</span></label><input class="input-field" type="password" placeholder="8+ characters"></div>
             <div class="btn btn-sage" style="width:100%;justify-content:center;">Create account</div>
           </div>
           <div class="auth-divider" style="margin-top:20px;"><div class="auth-divider-line"></div><div class="auth-divider-text">or</div><div class="auth-divider-line"></div></div>
@@ -1986,7 +1940,6 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
         </div>
       </div>
     </div>
-    <!-- Log In -->
     <div>
       <div class="frame-label" style="margin-bottom:10px;">Log in</div>
       <div class="auth-mockup">
@@ -1998,14 +1951,8 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
           <div class="auth-title">Welcome back</div>
           <div class="auth-subtitle">Good to see you again.</div>
           <div class="auth-form">
-            <div class="input-group">
-              <label class="input-label">Email</label>
-              <input class="input-field" type="email" placeholder="hello@example.com">
-            </div>
-            <div class="input-group">
-              <label class="input-label">Password</label>
-              <input class="input-field" type="password" placeholder="Your password">
-            </div>
+            <div class="input-group"><label class="input-label">Email</label><input class="input-field" type="email" placeholder="hello@example.com"></div>
+            <div class="input-group"><label class="input-label">Password</label><input class="input-field" type="password" placeholder="Your password"></div>
             <div class="auth-forgot">Forgot password?</div>
             <div class="btn btn-primary" style="width:100%;justify-content:center;">Log in</div>
           </div>
@@ -2018,7 +1965,6 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
         </div>
       </div>
     </div>
-    <!-- Forgot Password -->
     <div>
       <div class="frame-label" style="margin-bottom:10px;">Forgot password</div>
       <div class="auth-mockup">
@@ -2042,11 +1988,10 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
             </div>
             <div class="btn btn-sage" style="width:100%;justify-content:center;">Send reset link</div>
           </div>
-          <!-- Sent confirmation state -->
           <div style="background:var(--mist);border-radius:var(--r-md);padding:16px;margin-top:20px;border:1px solid rgba(122,158,126,.2);text-align:center;">
             <div style="font-size:24px;margin-bottom:8px;">📬</div>
             <div style="font-size:14px;font-weight:500;color:var(--sage-deep);margin-bottom:4px;">Check your inbox</div>
-            <div style="font-size:13px;color:var(--ink-faint);">We sent a link to hello@example.com. Expires in 15 minutes.</div>
+            <div style="font-size:13px;color:var(--ink-faint);">We sent a link to your email. Expires in 15 minutes.</div>
           </div>
           <div class="auth-footer-text" style="margin-top:16px;"><a>← Back to log in</a></div>
         </div>
@@ -2070,11 +2015,16 @@ textarea.input-field{resize:vertical;min-height:96px;line-height:1.6;}
 
 <script>
 lucide.createIcons();
-// Smooth scroll for nav links
 document.querySelectorAll('.ds-nav-link').forEach(link => {
-  link.addEventListener('click', e => {
-    const target = document.querySelector(link.getAttribute('href'));
-    if (target) { e.preventDefault(); target.scrollIntoView({behavior:'smooth'}); }
+  link.addEventListener('click', () => {
+    const id = link.getAttribute('href').slice(1);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+document.querySelectorAll('.ds-toc-item').forEach((item, i) => {
+  const ids = ['foundations','tokens','atoms','components','pages'];
+  item.addEventListener('click', () => {
+    document.getElementById(ids[i])?.scrollIntoView({ behavior: 'smooth' });
   });
 });
 </script>

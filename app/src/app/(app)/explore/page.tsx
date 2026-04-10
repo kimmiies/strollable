@@ -273,6 +273,7 @@ export default function ExplorePage() {
         isOpen={filterPanelOpen}
         onClose={() => setFilterPanelOpen(false)}
         neighbourhoods={neighbourhoods}
+        filteredCount={filtered.length}
       />
 
       {/* ── MOBILE LAYOUT (<lg) ─────────────────────────────────────── */}
