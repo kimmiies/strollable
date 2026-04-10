@@ -26,7 +26,6 @@ const FEATURE_ICON_MAP: Record<FeatureType, LucideIcon> = {
   change_table_family:      Users,
 };
 
-// Pill colour reflects state only — label is always the feature name
 function getChipStyle(
   status: FeatureStatus,
   value: FeatureValue
@@ -38,7 +37,6 @@ function getChipStyle(
         text: "text-[var(--sage-deep)]",
       };
     }
-    // confirmed no
     return {
       bg:   "bg-[var(--terra-light)] border border-[rgba(201,113,74,0.25)]",
       text: "text-[var(--terracotta)]",
@@ -68,6 +66,8 @@ interface FeatureChipProps {
   status: FeatureStatus;
   value: FeatureValue;
   size?: "sm" | "md";
+  /** Optional suffix appended to the label — used for "?" on unknown chips */
+  labelSuffix?: string;
   onClick?: () => void;
 }
 
@@ -76,11 +76,12 @@ export default function FeatureChip({
   status,
   value,
   size = "sm",
+  labelSuffix,
   onClick,
 }: FeatureChipProps) {
   const { bg, text } = getChipStyle(status, value);
   const Icon = FEATURE_ICON_MAP[featureType];
-  const label = FEATURE_LABELS[featureType];
+  const label = FEATURE_LABELS[featureType] + (labelSuffix ?? "");
 
   return (
     <span

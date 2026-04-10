@@ -1,7 +1,7 @@
 import type { FeatureMap, FeatureType } from "@/types";
 import FeatureChip from "./FeatureChip";
 
-// All 9 features — flat list, no hierarchy
+// v1 launch features first, then v2
 const ALL_FEATURE_TYPES: FeatureType[] = [
   "step_free_entrance",
   "accessible_bathroom",
@@ -17,19 +17,30 @@ const ALL_FEATURE_TYPES: FeatureType[] = [
 interface FeatureChipRowProps {
   features: FeatureMap;
   size?: "sm" | "md";
-  // compact: on cards — cap at 3 chips, prioritise features with data
+  /**
+   * compact: card mode — show top 3 chips, prioritised by data richness.
+   * Unknown chips get a "?" suffix so parents know the data is missing.
+   */
   compact?: boolean;
+  /** onlyConfirmed: peek card / map mode — show only confirmed-yes chips */
+  onlyConfirmed?: boolean;
 }
 
 export default function FeatureChipRow({
   features,
   size = "sm",
   compact = false,
+  onlyConfirmed = false,
 }: FeatureChipRowProps) {
   let typesToShow: FeatureType[];
 
-  if (compact) {
-    // Sort: confirmed first, then reported, then disputed, then unknown
+  if (onlyConfirmed) {
+    // Map peek card: confirmed-yes only, no cap
+    typesToShow = ALL_FEATURE_TYPES.filter(
+      (type) => features[type]?.status === "confirmed" && features[type]?.value === "yes"
+    );
+  } else if (compact) {
+    // Card: sort by richness, cap at 3
     const priority = (type: FeatureType) => {
       const s = features[type]?.status;
       if (s === "confirmed") return 0;
@@ -44,17 +55,24 @@ export default function FeatureChipRow({
     typesToShow = ALL_FEATURE_TYPES;
   }
 
+  if (typesToShow.length === 0) return null;
+
   return (
     <div className="flex flex-wrap gap-1.5">
       {typesToShow.map((type) => {
         const feature = features[type];
+        const status = feature?.status ?? "unknown";
+        // In compact mode, append "?" to unknown chip labels so parents
+        // understand this field hasn't been checked yet
+        const unknownSuffix = compact && status === "unknown";
         return (
           <FeatureChip
             key={type}
             featureType={type}
-            status={feature?.status ?? "unknown"}
+            status={status}
             value={feature?.value ?? null}
             size={size}
+            labelSuffix={unknownSuffix ? "?" : undefined}
           />
         );
       })}

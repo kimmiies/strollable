@@ -3,23 +3,23 @@
 import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import {
-  Search, X, SlidersHorizontal, ChevronRight, ArrowLeft, AlignJustify, Map,
+  Search, X, SlidersHorizontal, ArrowLeft, AlignJustify, Map,
   Footprints, LockOpen, Baby, Armchair, DoorOpen, Navigation, Sofa, User, Users,
   type LucideIcon,
 } from "lucide-react";
-import Link from "next/link";
 import { useMapStore } from "@/stores/mapStore";
 import { useEstablishments } from "@/hooks/useEstablishments";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import { useSaved } from "@/hooks/useSaved";
 import { DEMO_CENTER } from "@/lib/demo/data";
 import MapFilters from "@/components/map/MapFilters";
 import FilterPanel from "@/components/map/FilterPanel";
 import MapControls from "@/components/map/MapControls";
-import EstablishmentSheet from "@/components/establishment/EstablishmentSheet";
+import EstablishmentCard from "@/components/establishment/EstablishmentCard";
 import EstablishmentList from "@/components/establishment/EstablishmentList";
 import type { Establishment, FeatureType } from "@/types";
 import { FEATURE_LABELS } from "@/types";
-import { cn, getNeighbourhoodFromAddress, getTypePlaceholder, getEstablishmentTypeLabel, formatDistance } from "@/lib/utils";
+import { cn, getNeighbourhoodFromAddress } from "@/lib/utils";
 
 const MapContainer = dynamic(() => import("@/components/map/MapContainer"), {
   ssr: false,
@@ -30,7 +30,6 @@ const MapContainer = dynamic(() => import("@/components/map/MapContainer"), {
   ),
 });
 
-// Feature chips shown as pills on mobile map and in peek card
 const FEATURE_CHIPS: { value: FeatureType; Icon: LucideIcon }[] = [
   { value: "step_free_entrance",       Icon: Footprints },
   { value: "accessible_bathroom",      Icon: LockOpen },
@@ -54,8 +53,6 @@ export default function ExplorePage() {
     showList,
     searchQuery,
     setCenter,
-    setActiveTypeFilter,
-    setActiveNeighbourhood,
     toggleFeatureFilter,
     setSelectedPlaceId,
     setShowList,
@@ -63,7 +60,8 @@ export default function ExplorePage() {
   } = useMapStore();
 
   const { coords, loading: geoLoading, requestLocation } = useGeolocation();
-  const [sheetEstablishment, setSheetEstablishment] = useState<Establishment | null>(null);
+  const { savedIds, toggle: toggleSaved } = useSaved();
+  const [selectedEstablishment, setSelectedEstablishment] = useState<Establishment | null>(null);
   const [showMap, setShowMap] = useState(true);
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [mobileSearch, setMobileSearch] = useState(searchQuery);
@@ -124,9 +122,9 @@ export default function ExplorePage() {
   useEffect(() => {
     if (selectedPlaceId) {
       const found = filtered.find((e) => e.place_id === selectedPlaceId);
-      setSheetEstablishment(found ?? null);
+      setSelectedEstablishment(found ?? null);
     } else {
-      setSheetEstablishment(null);
+      setSelectedEstablishment(null);
     }
   }, [selectedPlaceId, filtered]);
 
@@ -138,9 +136,9 @@ export default function ExplorePage() {
     setSelectedPlaceId(establishment.place_id);
   }
 
-  function handleSheetClose() {
+  function handleDismiss() {
     setSelectedPlaceId(null);
-    setSheetEstablishment(null);
+    setSelectedEstablishment(null);
   }
 
   return (
@@ -230,11 +228,26 @@ export default function ExplorePage() {
                 className="w-full h-full"
               />
               <MapControls onLocate={requestLocation} locating={geoLoading} />
-              <EstablishmentSheet
-                establishment={sheetEstablishment}
-                isOpen={!!sheetEstablishment}
-                onClose={handleSheetClose}
-              />
+
+              {/* Desktop peek card — flex row so justify-center works inside overflow-hidden parent */}
+              {selectedEstablishment && (
+                <div
+                  className="absolute bottom-4 left-0 right-0 z-30 flex justify-center px-4 pointer-events-none"
+                >
+                  <div
+                    className="w-[360px] pointer-events-auto transition-all duration-300"
+                    style={{ transitionTimingFunction: "cubic-bezier(.16,1,.3,1)" }}
+                  >
+                    <EstablishmentCard
+                      establishment={selectedEstablishment}
+                      isSaved={savedIds.has(selectedEstablishment.place_id)}
+                      onSaveToggle={toggleSaved}
+                      isSelected
+                      onDismiss={handleDismiss}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -258,10 +271,9 @@ export default function ExplorePage() {
             establishments={filtered}
             selectedPlaceId={selectedPlaceId}
             onMarkerClick={handleMarkerClick}
-            onMapClick={() => { setSelectedPlaceId(null); }}
+            onMapClick={() => setSelectedPlaceId(null)}
             className="w-full h-full"
           />
-          {/* Locate button — above toggle/peek */}
           <MapControls
             onLocate={requestLocation}
             locating={geoLoading}
@@ -272,7 +284,6 @@ export default function ExplorePage() {
         {/* Floating: search pill + feature chips */}
         {!showList && (
           <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-3 space-y-2 pointer-events-none">
-            {/* Search row */}
             <div className="flex gap-2 pointer-events-auto">
               <div
                 className="flex-1 flex items-center gap-2 px-4 rounded-[var(--r-pill)] bg-[var(--warm-white)]"
@@ -287,17 +298,13 @@ export default function ExplorePage() {
                   className="flex-1 py-3 text-sm bg-transparent placeholder:text-[var(--ink-faint)] focus:outline-none text-[var(--ink)]"
                 />
                 {mobileSearch ? (
-                  <button
-                    onClick={() => { setMobileSearch(""); setSearchQuery(""); }}
-                    className="text-[var(--ink-faint)] flex-shrink-0"
-                  >
+                  <button onClick={() => { setMobileSearch(""); setSearchQuery(""); }} className="text-[var(--ink-faint)] flex-shrink-0">
                     <X className="w-4 h-4" />
                   </button>
                 ) : (
                   <kbd className="text-[10px] font-mono bg-[var(--mist)] text-[var(--ink-faint)] px-1.5 py-0.5 rounded-[4px] flex-shrink-0">⌘K</kbd>
                 )}
               </div>
-              {/* List view toggle */}
               <button
                 onClick={() => setShowList(true)}
                 className="w-12 h-12 rounded-[var(--r-md)] flex items-center justify-center flex-shrink-0"
@@ -308,7 +315,6 @@ export default function ExplorePage() {
               </button>
             </div>
 
-            {/* Feature chips */}
             <div className="flex gap-2 overflow-x-auto no-scrollbar pointer-events-auto pb-0.5">
               {FEATURE_CHIPS.map(({ value, Icon }) => {
                 const active = activeFeatureFilters.includes(value);
@@ -321,8 +327,8 @@ export default function ExplorePage() {
                       active ? "text-white" : "text-[var(--ink-soft)]"
                     )}
                     style={{
-                      background: active ? "var(--ink)" : "rgba(255,254,249,0.92)",
-                      border: active ? "1.5px solid var(--ink)" : "1.5px solid rgba(26,31,27,0.12)",
+                      background: active ? "var(--sage-deep)" : "rgba(255,254,249,0.92)",
+                      border: active ? "1.5px solid var(--sage-deep)" : "1.5px solid rgba(26,31,27,0.12)",
                       boxShadow: "var(--shadow-sm)",
                       backdropFilter: "blur(8px)",
                     }}
@@ -332,14 +338,13 @@ export default function ExplorePage() {
                   </button>
                 );
               })}
-              {/* All filters button */}
               <button
                 onClick={() => setFilterPanelOpen(true)}
-                className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--r-pill)] text-[13px] text-[var(--ink-soft)] transition-all"
+                className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--r-pill)] text-[13px] transition-all"
                 style={{
                   background: activeFilterCount > 0 ? "var(--sage)" : "rgba(255,254,249,0.92)",
                   border: `1.5px solid ${activeFilterCount > 0 ? "var(--sage)" : "rgba(26,31,27,0.12)"}`,
-                  color: activeFilterCount > 0 ? "white" : undefined,
+                  color: activeFilterCount > 0 ? "white" : "var(--ink-soft)",
                   boxShadow: "var(--shadow-sm)",
                   backdropFilter: "blur(8px)",
                 }}
@@ -351,57 +356,24 @@ export default function ExplorePage() {
           </div>
         )}
 
-        {/* Peek card — shown when a marker is selected */}
-        {!showList && sheetEstablishment && (() => {
-          const { gradient, emoji } = getTypePlaceholder(sheetEstablishment.type);
-          const confirmedFeatures = FEATURE_CHIPS.filter(({ value }) => {
-            const f = sheetEstablishment.features[value as keyof typeof sheetEstablishment.features];
-            return f?.status === "confirmed" && f?.value === "yes";
-          });
-          return (
-            <div className="absolute left-4 right-4 z-20" style={{ bottom: 148 }}>
-              <Link
-                href={`/place/${sheetEstablishment.place_id}`}
-                className="flex gap-3.5 items-center rounded-[var(--r-lg)] p-4"
-                style={{ background: "var(--warm-white)", boxShadow: "var(--shadow-float)" }}
-                onClick={() => setSelectedPlaceId(sheetEstablishment.place_id)}
-              >
-                {/* Thumbnail */}
-                <div
-                  className="w-14 h-14 rounded-[var(--r-md)] flex items-center justify-center flex-shrink-0 text-2xl"
-                  style={{ background: gradient }}
-                >
-                  {emoji}
-                </div>
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <p className="font-display text-base font-normal tracking-[-0.015em] text-[var(--ink)] line-clamp-1">
-                    {sheetEstablishment.name}
-                  </p>
-                  <p className="text-xs text-[var(--ink-faint)] mt-0.5">
-                    {getEstablishmentTypeLabel(sheetEstablishment.type)}
-                    {sheetEstablishment.distance_meters !== undefined && ` · ${formatDistance(sheetEstablishment.distance_meters)}`}
-                  </p>
-                  {confirmedFeatures.length > 0 && (
-                    <div className="flex gap-1 mt-1.5 flex-wrap">
-                      {confirmedFeatures.map(({ value, Icon }) => (
-                        <span
-                          key={value}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[var(--r-pill)] text-[11px] text-[var(--sage-deep)]"
-                          style={{ background: "var(--mist)", border: "1px solid rgba(122,158,126,0.2)" }}
-                        >
-                          <Icon className="w-3 h-3 flex-shrink-0" />
-                          {FEATURE_LABELS[value]}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <ChevronRight className="w-4 h-4 text-[var(--ink-faint)] flex-shrink-0" />
-              </Link>
-            </div>
-          );
-        })()}
+        {/* Mobile peek card — full width, above toggle */}
+        {!showList && selectedEstablishment && (
+          <div
+            className="absolute left-4 right-4 z-20 transition-all duration-300"
+            style={{
+              bottom: 148,
+              transitionTimingFunction: "cubic-bezier(.16,1,.3,1)",
+            }}
+          >
+            <EstablishmentCard
+              establishment={selectedEstablishment}
+              isSaved={savedIds.has(selectedEstablishment.place_id)}
+              onSaveToggle={toggleSaved}
+              isSelected
+              onDismiss={handleDismiss}
+            />
+          </div>
+        )}
 
         {/* Map / List toggle pill */}
         {!showList && (
@@ -409,9 +381,7 @@ export default function ExplorePage() {
             className="absolute left-1/2 -translate-x-1/2 z-20 flex p-[3px] rounded-[var(--r-pill)]"
             style={{ bottom: 84, background: "var(--ink)", boxShadow: "var(--shadow-float)" }}
           >
-            <span
-              className="flex items-center gap-1.5 px-5 py-2.5 rounded-[var(--r-pill)] bg-white text-[var(--ink)] text-sm font-medium"
-            >
+            <span className="flex items-center gap-1.5 px-5 py-2.5 rounded-[var(--r-pill)] bg-white text-[var(--ink)] text-sm font-medium">
               <Map className="w-4 h-4" /> Map
             </span>
             <button
@@ -426,7 +396,6 @@ export default function ExplorePage() {
         {/* List view overlay */}
         {showList && (
           <div className="absolute inset-0 z-30 overflow-y-auto pb-nav" style={{ background: "var(--cream)" }}>
-            {/* List header */}
             <div
               className="sticky top-0 z-10 flex items-center gap-3 px-4 py-3"
               style={{ background: "var(--cream)", borderBottom: "1px solid rgba(122,158,126,0.15)" }}
@@ -454,7 +423,6 @@ export default function ExplorePage() {
               </button>
             </div>
 
-            {/* Search in list mode */}
             <div className="px-4 py-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-faint)]" />
