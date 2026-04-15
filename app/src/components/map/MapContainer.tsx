@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import type { Establishment, FeatureStatus, FeatureValue } from "@/types";
 import { loadGoogleMaps } from "@/lib/google/maps";
 import { getBestFeatureStatus } from "@/lib/utils";
@@ -94,6 +94,7 @@ export default function MapContainer({
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<Map<string, google.maps.marker.AdvancedMarkerElement>>(new Map());
+  const [mapReady, setMapReady] = useState(false);
 
   const initMap = useCallback(async () => {
     if (!mapRef.current || mapInstanceRef.current) return;
@@ -110,6 +111,7 @@ export default function MapContainer({
 
     map.addListener("click", () => onMapClick());
     mapInstanceRef.current = map;
+    setMapReady(true);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -168,7 +170,7 @@ export default function MapContainer({
       marker.addListener("gmp-click", () => onMarkerClick(establishment));
       markersRef.current.set(establishment.place_id, marker);
     }
-  }, [establishments, selectedPlaceId, onMarkerClick]);
+  }, [establishments, selectedPlaceId, onMarkerClick, mapReady]);
 
   // Pan to selected marker
   useEffect(() => {

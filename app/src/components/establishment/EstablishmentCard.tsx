@@ -8,9 +8,21 @@ import {
   formatDistance,
   formatRating,
   getEstablishmentTypeLabel,
-  getTypePlaceholder,
   getNeighbourhoodFromAddress,
 } from "@/lib/utils";
+
+const PHOTO_GRADIENTS = [
+  "linear-gradient(160deg,#c8b89a 0%,#a08060 40%,#6b5040 100%)",
+  "linear-gradient(140deg,#b8c8b0 0%,#8aaa80 50%,#5a7850 100%)",
+  "linear-gradient(150deg,#d0c0a8 0%,#b09878 40%,#806848 100%)",
+  "linear-gradient(160deg,#c0d0d8 0%,#90b0c0 50%,#608098 100%)",
+];
+
+function pickGradient(placeId: string): string {
+  let hash = 0;
+  for (let i = 0; i < placeId.length; i++) hash = (hash * 31 + placeId.charCodeAt(i)) | 0;
+  return PHOTO_GRADIENTS[Math.abs(hash) % PHOTO_GRADIENTS.length];
+}
 import FeatureChipRow from "./FeatureChipRow";
 
 interface EstablishmentCardProps {
@@ -24,24 +36,6 @@ interface EstablishmentCardProps {
   onDismiss?: () => void;
 }
 
-function getFooterState(establishment: Establishment): "confirmed" | "partial" | "empty" {
-  const features = Object.values(establishment.features);
-  const confirmedCount = features.filter(
-    (f) => f?.status === "confirmed" && f?.value === "yes"
-  ).length;
-  const reportedCount = features.filter((f) => f?.status === "reported").length;
-  if (confirmedCount >= 2) return "confirmed";
-  if (confirmedCount >= 1 || reportedCount >= 1) return "partial";
-  return "empty";
-}
-
-function getContributorCount(establishment: Establishment): number {
-  return Object.values(establishment.features).reduce(
-    (sum, f) => sum + (f?.report_count ?? 0),
-    0
-  );
-}
-
 export default function EstablishmentCard({
   establishment,
   isSaved,
@@ -50,10 +44,8 @@ export default function EstablishmentCard({
   isSelected = false,
   onDismiss,
 }: EstablishmentCardProps) {
-  const { gradient, emoji } = getTypePlaceholder(establishment.type);
+  const gradient = pickGradient(establishment.place_id);
   const neighbourhood = getNeighbourhoodFromAddress(establishment.address);
-  const footerState = getFooterState(establishment);
-  const contributorCount = getContributorCount(establishment);
 
   const metaParts = [
     getEstablishmentTypeLabel(establishment.type),
@@ -90,8 +82,6 @@ export default function EstablishmentCard({
             background: "linear-gradient(to top, rgba(26,31,27,0.35) 0%, transparent 60%)",
           }}
         />
-
-        <span className="text-5xl opacity-60 relative z-[1]">{emoji}</span>
 
         {/* Dismiss button — top-left, only when onDismiss is provided */}
         {onDismiss && (
@@ -151,43 +141,6 @@ export default function EstablishmentCard({
         </p>
 
         <FeatureChipRow features={establishment.features} compact />
-      </div>
-
-      {/* Footer — state-driven inset strip */}
-      <div
-        className="mx-[18px] mb-[18px] rounded-[var(--r-md)] px-3.5 py-2.5 flex items-center justify-between"
-        style={{
-          background: footerState === "partial" ? "var(--amber-light)" : "var(--mist)",
-        }}
-      >
-        <span
-          className="text-[11px]"
-          style={{
-            color:
-              footerState === "partial"
-                ? "var(--amber)"
-                : footerState === "confirmed"
-                ? "var(--sage-deep)"
-                : "var(--ink-soft)",
-            fontWeight: footerState === "partial" ? 500 : 400,
-          }}
-        >
-          {footerState === "confirmed" &&
-            (contributorCount > 0
-              ? `Reported by ${contributorCount} parent${contributorCount !== 1 ? "s" : ""}`
-              : "Community verified")}
-          {footerState === "partial" && "Help fill this in"}
-          {footerState === "empty" && "Be the first to report"}
-        </span>
-
-        {establishment.distance_meters !== undefined && (
-          <span className="text-[11px] flex items-center gap-1" style={{ color: "var(--ink-faint)" }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="3 11 22 2 13 21 11 13 3 11" />
-            </svg>
-            {formatDistance(establishment.distance_meters)}
-          </span>
-        )}
       </div>
     </Link>
   );

@@ -324,7 +324,7 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
           {/* Community summary */}
           <div className="px-4 py-5 lg:px-0 lg:py-7 lg:border-b flex flex-col gap-2.5" style={{ borderColor: "rgba(122,158,126,0.12)" }}>
             <p className="hidden lg:block text-[13px] uppercase tracking-[0.08em] font-medium" style={{ color: "var(--ink-soft)" }}>Community summary</p>
-            <div className="rounded-[var(--r-lg)] overflow-hidden" style={{ background: "var(--warm-white)", border: "1px solid rgba(122,158,126,0.12)" }}>
+            <div className="lg:hidden rounded-[var(--r-lg)] overflow-hidden" style={{ background: "var(--warm-white)", border: "1px solid rgba(122,158,126,0.12)" }}>
               <div className="px-4 py-3.5 flex items-center gap-3 border-b" style={{ borderColor: "rgba(122,158,126,0.08)" }}>
                 <div className="flex flex-col items-center">
                   <span className="font-display font-normal text-xl leading-none" style={{ color: "var(--ink)" }}>{confirmedCount}</span>
