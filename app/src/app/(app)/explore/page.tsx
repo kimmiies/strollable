@@ -156,6 +156,14 @@ export default function ExplorePage() {
     setMobileSearch(searchQuery);
   }, [searchQuery]);
 
+  // Dismiss the preview card whenever the user leaves the explore view
+  // (e.g. tapping the card routes to /place/[id]).
+  useEffect(() => {
+    return () => {
+      setSelectedPlaceId(null);
+    };
+  }, [setSelectedPlaceId]);
+
   function handleMarkerClick(establishment: Establishment) {
     setSelectedPlaceId(establishment.place_id);
   }
@@ -325,21 +333,26 @@ export default function ExplorePage() {
                 locating={geoLoading}
                 className="bottom-4 right-4"
               />
-              {/* Compact peek card on map when marker selected */}
-              {selectedEstablishment && (
-                <div
-                  className="absolute left-4 right-4 z-10 transition-all duration-300"
-                  style={{ bottom: 12, transitionTimingFunction: "var(--ease-spring)" }}
-                >
-                  <EstablishmentCard
-                    establishment={selectedEstablishment}
-                    isSaved={savedIds.has(selectedEstablishment.place_id)}
-                    onSaveToggle={toggleSaved}
-                    isSelected
-                    onDismiss={handleDismiss}
-                  />
-                </div>
-              )}
+            </div>
+          )}
+
+          {/* Compact peek card — fixed above the bottom nav so it can't be
+              clipped by the map container or the sticky header. */}
+          {selectedEstablishment && (
+            <div
+              className="lg:hidden fixed left-4 right-4 z-40 transition-all duration-300"
+              style={{
+                bottom: "calc(64px + env(safe-area-inset-bottom, 0px) + 12px)",
+                transitionTimingFunction: "var(--ease-spring)",
+              }}
+            >
+              <EstablishmentCard
+                establishment={selectedEstablishment}
+                isSaved={savedIds.has(selectedEstablishment.place_id)}
+                onSaveToggle={toggleSaved}
+                isSelected
+                onDismiss={handleDismiss}
+              />
             </div>
           )}
 

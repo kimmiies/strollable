@@ -133,7 +133,7 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
 
           {/* Back button — top-left */}
           <button
-            onClick={() => router.back()}
+            onClick={() => router.push("/explore")}
             className="absolute rounded-full flex items-center justify-center transition-all active:scale-90"
             style={{
               top: "max(14px, env(safe-area-inset-top, 14px))",
@@ -202,8 +202,24 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
         </div>
       </div>
 
+      {/* DESKTOP: back button */}
+      <div className="hidden lg:block max-w-[1180px] mx-auto px-10 pt-6">
+        <button
+          onClick={() => router.push("/explore")}
+          className="flex items-center gap-2 text-[14px] transition-colors"
+          style={{ color: "var(--ink-soft)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--ink)")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--ink-soft)")}
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          Back to explore
+        </button>
+      </div>
+
       {/* DESKTOP: photo grid */}
-      <div className="hidden lg:block max-w-[1180px] mx-auto px-10 mt-6">
+      <div className="hidden lg:block max-w-[1180px] mx-auto px-10 mt-4">
         <div className="grid gap-1 rounded-[var(--r-lg)] overflow-hidden" style={{ gridTemplateColumns: "1fr 1fr", gridTemplateRows: "260px 260px" }}>
           <div className="row-span-2 overflow-hidden rounded-l-[var(--r-lg)]">
             <div className="w-full h-full" style={{ background: PHOTO_GRADIENTS[0] }} />

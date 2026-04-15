@@ -68,14 +68,14 @@ export default function EstablishmentCard({
       href={`/place/${establishment.place_id}`}
       className={cn(
         "bg-[var(--warm-white)] rounded-[var(--r-lg)] overflow-hidden block",
-        "border transition-all flex flex-col",
+        "transition-all flex flex-col",
         isSelected
-          ? "border-[var(--sage)] shadow-[var(--shadow-float)] ring-1 ring-[var(--sage)]"
-          : "border-[rgba(122,158,126,0.14)] shadow-[var(--shadow-card)] hover:-translate-y-[3px] hover:shadow-[var(--shadow-float)]"
+          ? "shadow-[var(--shadow-float)]"
+          : "shadow-[var(--shadow-card)] hover:-translate-y-[3px] hover:shadow-[var(--shadow-float)]"
       )}
       style={{
         transition:
-          "transform 0.25s cubic-bezier(.16,1,.3,1), box-shadow 0.25s cubic-bezier(.16,1,.3,1), border-color 0.25s",
+          "transform 0.25s cubic-bezier(.16,1,.3,1), box-shadow 0.25s cubic-bezier(.16,1,.3,1)",
       }}
       onClick={onClick}
     >
