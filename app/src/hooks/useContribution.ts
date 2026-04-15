@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { FeatureType } from "@/types";
 
-export type ContributionStep = 1 | 2 | 3 | "success";
+export type ContributionStep = 1 | 2 | 3 | 4 | 5 | 6 | "success";
 export type FeatureAnswer = "yes" | "no" | "unsure";
 
 export type ContributionStatus =
@@ -16,6 +16,7 @@ export type ContributionStatus =
 export interface ContributionState {
   step: ContributionStep;
   status: ContributionStatus;
+  rating: number | null;
   answers: Partial<Record<FeatureType, FeatureAnswer>>;
   comment: string;
   photoFile: File | null;
@@ -23,42 +24,40 @@ export interface ContributionState {
   errorMessage: string | null;
 }
 
-const ALL_FEATURES: FeatureType[] = [
-  "step_free_entrance",
-  "accessible_bathroom",
-  "change_table",
-  "high_chairs",
-  "auto_door_opener",
-  "stroller_friendly_layout",
-  "booster_seats",
-  "change_table_mens",
-  "change_table_family",
-];
+const STEP_FEATURES: Record<2 | 3 | 4, FeatureType[]> = {
+  2: ["step_free_entrance", "auto_door_opener"],
+  3: [
+    "accessible_bathroom",
+    "change_table",
+    "change_table_mens",
+    "change_table_family",
+  ],
+  4: ["high_chairs", "booster_seats", "stroller_friendly_layout"],
+};
+
+const INITIAL_STATE: ContributionState = {
+  step: 1,
+  status: "filling",
+  rating: null,
+  answers: {},
+  comment: "",
+  photoFile: null,
+  newBadge: null,
+  errorMessage: null,
+};
 
 export function useContribution(placeId: string) {
-  const [state, setState] = useState<ContributionState>({
-    step: 1,
-    status: "filling",
-    answers: {},
-    comment: "",
-    photoFile: null,
-    newBadge: null,
-    errorMessage: null,
-  });
+  const [state, setState] = useState<ContributionState>(INITIAL_STATE);
+
+  function setRating(rating: number) {
+    setState((s) => ({ ...s, rating }));
+  }
 
   function setAnswer(featureType: FeatureType, value: FeatureAnswer) {
     setState((s) => ({
       ...s,
       answers: { ...s.answers, [featureType]: value },
     }));
-  }
-
-  function clearAnswer(featureType: FeatureType) {
-    setState((s) => {
-      const next = { ...s.answers };
-      delete next[featureType];
-      return { ...s, answers: next };
-    });
   }
 
   function setComment(comment: string) {
@@ -69,9 +68,12 @@ export function useContribution(placeId: string) {
     setState((s) => ({ ...s, photoFile: file }));
   }
 
-  /** All 9 features must have an answer to advance from step 1 */
-  function allFeaturesAnswered(): boolean {
-    return ALL_FEATURES.every((f) => state.answers[f] !== undefined);
+  /** Per-step gate: steps 2/3/4 require all their features answered. Others are optional. */
+  function canAdvance(step: ContributionStep): boolean {
+    if (step === 2 || step === 3 || step === 4) {
+      return STEP_FEATURES[step].every((f) => state.answers[f] !== undefined);
+    }
+    return true;
   }
 
   function goToStep(step: ContributionStep) {
@@ -80,14 +82,14 @@ export function useContribution(placeId: string) {
 
   function goBack() {
     setState((s) => {
-      if (s.step === 2) return { ...s, step: 1 };
-      if (s.step === 3) return { ...s, step: 2 };
+      if (typeof s.step === "number" && s.step > 1) {
+        return { ...s, step: (s.step - 1) as ContributionStep };
+      }
       return s;
     });
   }
 
   async function submit() {
-    // Only submit "yes" and "no" answers — "unsure" is UI-only context
     const answeredFeatures = (
       Object.entries(state.answers) as [FeatureType, FeatureAnswer][]
     ).filter(([, v]) => v === "yes" || v === "no") as [
@@ -98,6 +100,7 @@ export function useContribution(placeId: string) {
     setState((s) => ({ ...s, status: "submitting", errorMessage: null }));
 
     try {
+      // TODO: persist overall rating once the schema supports it.
       const res = await fetch("/api/contributions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -133,22 +136,14 @@ export function useContribution(placeId: string) {
   }
 
   function reset() {
-    setState({
-      step: 1,
-      status: "filling",
-      answers: {},
-      comment: "",
-      photoFile: null,
-      newBadge: null,
-      errorMessage: null,
-    });
+    setState(INITIAL_STATE);
   }
 
   return {
     state,
-    allFeaturesAnswered,
+    canAdvance,
+    setRating,
     setAnswer,
-    clearAnswer,
     setComment,
     setPhotoFile,
     goToStep,

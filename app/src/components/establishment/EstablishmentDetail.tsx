@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import ContributionModal from "@/components/contribution/ContributionModal";
 import {
   Heart, Phone, Globe, Star, Share,
   Footprints, LockOpen, Baby, Armchair,
@@ -112,6 +113,7 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
   const router = useRouter();
   const { savedIds, toggle } = useSaved();
   const isSaved = savedIds.has(establishment.place_id);
+  const [contribOpen, setContribOpen] = useState(false);
 
   const confirmedCount = FEATURE_TYPES.filter(
     (t) => establishment.features[t]?.status === "confirmed"
@@ -448,7 +450,8 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
               <p className="text-sm leading-relaxed mb-5" style={{ color: "var(--ink-faint)" }}>
                 Help other parents by reporting what you&apos;ve noticed — stroller access, change table, and more.
               </p>
-              <Link href={`/contribute/${establishment.place_id}`}
+              <button
+                onClick={() => setContribOpen(true)}
                 className="flex items-center justify-center gap-2 w-full py-3.5 rounded-[var(--r-pill)] text-sm font-medium text-white mb-2.5 transition-colors"
                 style={{ background: "var(--ink)" }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "var(--ink-soft)")}
@@ -457,7 +460,7 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
                   <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
                 Add info about this place
-              </Link>
+              </button>
               <button className="flex items-center justify-center gap-1.5 w-full py-3 rounded-[var(--r-pill)] text-sm font-medium transition-colors"
                 style={{ background: "transparent", border: "1.5px solid rgba(26,31,27,0.12)", color: "var(--ink-soft)" }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "var(--mist)")}
@@ -517,15 +520,22 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
           </svg>
           View on map
         </button>
-        <Link href={`/contribute/${establishment.place_id}`}
+        <button
+          onClick={() => setContribOpen(true)}
           className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-[var(--r-pill)] text-sm font-medium text-white"
           style={{ background: "var(--ink)" }}>
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
           Add info about this place
-        </Link>
+        </button>
       </div>
+
+      <ContributionModal
+        establishment={establishment}
+        open={contribOpen}
+        onClose={() => setContribOpen(false)}
+      />
 
     </div>
   );
