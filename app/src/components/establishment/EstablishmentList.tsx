@@ -1,8 +1,11 @@
 "use client";
 
+import { SearchX } from "lucide-react";
 import type { Establishment } from "@/types";
 import EstablishmentCard from "./EstablishmentCard";
+import EmptyState from "@/components/ui/EmptyState";
 import { useSaved } from "@/hooks/useSaved";
+import { useMapStore } from "@/stores/mapStore";
 
 interface EstablishmentListProps {
   establishments: Establishment[];
@@ -21,6 +24,7 @@ export default function EstablishmentList({
   grid = false,
 }: EstablishmentListProps) {
   const { savedIds, toggle } = useSaved();
+  const clearAllFilters = useMapStore((s) => s.clearAllFilters);
 
   if (loading) {
     return (
@@ -47,14 +51,14 @@ export default function EstablishmentList({
 
   if (!establishments.length) {
     return (
-      <div className="px-4 py-16 text-center">
-        <p className="text-4xl mb-3">🗺️</p>
-        <h3 className="font-semibold text-[var(--foreground)] mb-1">
-          No places found
-        </h3>
-        <p className="text-sm text-[var(--muted-foreground)]">
-          Try a different filter or search term.
-        </p>
+      <div className="px-4 py-8">
+        <EmptyState
+          Icon={SearchX}
+          title="No spots found"
+          body="Try widening your filters or searching a different neighbourhood."
+          actionLabel="Clear filters"
+          onAction={clearAllFilters}
+        />
       </div>
     );
   }
