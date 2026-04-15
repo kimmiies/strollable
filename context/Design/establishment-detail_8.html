@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strollable — Broadview Espresso</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --sage:        #7A9E7E;
+  --sage-light:  #B8D4BB;
+  --sage-deep:   #4A7350;
+  --cream:       #FAF7F2;
+  --warm-white:  #FFFEF9;
+  --ink:         #1A1F1B;
+  --ink-soft:    #3D4740;
+  --ink-faint:   rgba(26,31,27,0.4);
+  --terracotta:  #C9714A;
+  --terra-light: #F2DDD4;
+  --butter:      #F2D98B;
+  --butter-light:#FBF3D4;
+  --sky:         #A8C5D6;
+  --mist:        #EDF2EE;
+  --amber:       #D4952A;
+  --amber-light: #FDF0D5;
+  --r-sm:  8px;
+  --r-md:  14px;
+  --r-lg:  24px;
+  --r-xl:  32px;
+  --r-pill:100px;
+  --shadow-sm:   0 2px 8px rgba(26,31,27,.08);
+  --shadow-card: 0 4px 24px rgba(26,31,27,.07),0 1px 4px rgba(26,31,27,.04);
+  --shadow-float:0 8px 32px rgba(26,31,27,.14),0 2px 8px rgba(26,31,27,.07);
+  --ease-spring: cubic-bezier(.16,1,.3,1);
+  --ease-out:    cubic-bezier(.0,0,.2,1);
+  --dur-fast:    120ms;
+  --dur-base:    200ms;
+  --dur-slow:    350ms;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--cream);}
+body{font-family:'DM Sans',sans-serif;font-weight:300;color:var(--ink);}
+
+/* ── TOP NAV — unified across mobile + desktop ── */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(250,247,242,0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  height: 56px;
+  border-bottom: 1px solid rgba(122,158,126,.1);
+}
+
+.nav-brand {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 300;
+  color: var(--ink);
+  letter-spacing: -.02em;
+  flex-shrink: 0;
+}
+.nav-brand em { font-style: italic; color: var(--sage-deep); }
+
+.nav-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-soft);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: var(--r-pill);
+  transition: background var(--dur-fast), color var(--dur-fast);
+  flex-shrink: 0;
+}
+.nav-back-btn:hover { background: var(--mist); color: var(--ink); }
+
+.nav-actions { margin-left: auto; display: flex; gap: 8px; }
+
+.nav-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(26,31,27,.1);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background var(--dur-fast), transform var(--dur-fast);
+  flex-shrink: 0;
+}
+.nav-btn:hover { background: var(--mist); }
+.nav-btn:active { transform: scale(0.92); }
+
+/* ── PHOTO GALLERY ── */
+.gallery {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+  background: var(--ink);
+}
+.gallery-scroll {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.gallery-scroll::-webkit-scrollbar { display: none; }
+
+.gallery-photo {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+}
+
+/* Photo placeholder gradients */
+.photo-1 { background: linear-gradient(160deg,#c8b89a 0%,#a08060 40%,#6b5040 100%); }
+.photo-2 { background: linear-gradient(140deg,#b8c8b0 0%,#8aaa80 50%,#5a7850 100%); }
+.photo-3 { background: linear-gradient(150deg,#d0c0a8 0%,#b09878 40%,#806848 100%); }
+.photo-4 { background: linear-gradient(160deg,#c0d0d8 0%,#90b0c0 50%,#608098 100%); }
+
+/* Gradient overlay on hero */
+.gallery::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(26,31,27,.5) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+/* Photo counter */
+.photo-counter {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  z-index: 2;
+  background: rgba(26,31,27,.6);
+  backdrop-filter: blur(6px);
+  color: white;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  letter-spacing: .04em;
+}
+
+/* Dot indicators */
+.gallery-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  gap: 5px;
+}
+.gallery-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.5);
+  transition: background var(--dur-base), width var(--dur-base);
+}
+.gallery-dot.active {
+  background: white;
+  width: 16px;
+  border-radius: 3px;
+}
+
+/* ── ESTABLISHMENT INFO ── */
+.est-info {
+  padding: 20px 16px 20px;
+}
+
+.est-name {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: -.025em;
+  line-height: 1.08;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.est-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.est-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+.rating-stars { color: var(--amber); display: flex; align-items: center; gap: 2px; }
+
+.est-detail-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.est-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.est-detail-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--ink-faint);
+}
+
+/* ── SECTION HEADING ── */
+.section-block {
+  padding: 20px 16px 4px;
+}
+.section-label {
+  font-size: 13px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -.02em;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+/* ── BABY-FRIENDLY FEATURES ── */
+.features-section {
+  padding: 20px 16px 16px;
+}
+
+
+
+.features-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Core v1 features — full rows */
+.feature-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--warm-white);
+  border-radius: var(--r-md);
+  border: 1px solid rgba(122,158,126,.1);
+  gap: 10px;
+}
+
+.feature-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.feature-icon-wrap {
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.fi-confirmed { background: var(--mist); }
+.fi-reported  { background: var(--amber-light); }
+.fi-unknown   { background: rgba(26,31,27,.05); }
+.fi-disputed  { background: var(--terra-light); }
+
+.feature-name {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink);
+}
+.feature-sublabel {
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin-top: 1px;
+}
+
+/* Status chips on feature rows */
+.fc {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  font-size: 11px;
+  font-weight: 400;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.fc-confirmed { background: var(--mist); color: var(--sage-deep); border: 1px solid rgba(122,158,126,.2); }
+.fc-reported  { background: var(--amber-light); color: var(--amber); border: 1px solid rgba(212,149,42,.2); }
+.fc-unknown   { background: transparent; color: var(--ink-faint); border: 1px solid rgba(26,31,27,.12); }
+.fc-disputed  { background: var(--terra-light); color: var(--terracotta); border: 1px solid rgba(201,113,74,.2); }
+
+
+
+/* ── COMMUNITY SUMMARY BOX ── */
+.community-summary {
+  margin: 0 0 0;
+  background: var(--warm-white);
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(122,158,126,.12);
+  overflow: hidden;
+}
+
+.cs-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(122,158,126,.08);
+}
+
+.cs-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cs-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.cs-stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+}
+.cs-stat-label {
+  font-size: 10px;
+  color: var(--ink-faint);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.cs-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(122,158,126,.15);
+}
+.cs-avatars {
+  display: flex;
+}
+.cs-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: white;
+  border: 2px solid var(--cream);
+  margin-left: -8px;
+}
+.cs-avatar:first-child { margin-left: 0; }
+.av-sage   { background: linear-gradient(135deg, var(--sage-light), var(--sage)); }
+.av-terra  { background: linear-gradient(135deg, #e8b898, var(--terracotta)); }
+.av-sky    { background: linear-gradient(135deg, var(--sky-light, #D6EAF2), var(--sky)); }
+.av-butter { background: linear-gradient(135deg, #fdf3d4, var(--amber)); }
+
+.cs-freshness {
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--ink-faint);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── REVIEWS ── */
+.reviews-section {
+  padding: 20px 16px 0;
+}
+
+.review-card {
+  background: var(--warm-white);
+  border-radius: var(--r-md);
+  padding: 14px;
+  border: 1px solid rgba(122,158,126,.1);
+  margin-bottom: 8px;
+}
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.review-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  color: white;
+  flex-shrink: 0;
+}
+.review-meta { flex: 1; }
+.review-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+.review-date { font-size: 11px; color: var(--ink-faint); margin-top: 1px; }
+.review-text {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+.review-photos {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+.review-photo {
+  width: 68px; height: 68px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.see-all-reviews {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1.5px solid rgba(26,31,27,.1);
+  border-radius: var(--r-pill);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background var(--dur-fast), border-color var(--dur-fast);
+}
+.see-all-reviews:hover { background: var(--mist); border-color: rgba(122,158,126,.3); }
+
+/* ── BOTTOM SPACER for sticky footer ── */
+.page-bottom-spacer { height: 96px; }
+
+/* ── STICKY FOOTER CTA ── */
+.sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: rgba(250,247,242,0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(122,158,126,.15);
+  padding: 12px 16px 24px;
+  z-index: 40;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-primary {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  background: var(--ink);
+  color: white;
+  border: none;
+  border-radius: var(--r-pill);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--dur-base) var(--ease-spring), transform var(--dur-fast) var(--ease-spring);
+  min-height: 48px;
+}
+.btn-primary:hover { background: var(--ink-soft); }
+.btn-primary:active { transform: scale(0.97); }
+
+.btn-secondary {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 16px;
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1.5px solid rgba(26,31,27,.14);
+  border-radius: var(--r-pill);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background var(--dur-base), border-color var(--dur-base);
+  min-height: 48px;
+}
+.btn-secondary:hover { background: var(--mist); border-color: rgba(122,158,126,.3); }
+
+/* ── MOBILE WRAPPER — constrains content on small screens ── */
+.mobile-page {
+  max-width: 430px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════
+   DESKTOP LAYOUT (≥900px)
+═══════════════════════════════════════════ */
+@media (min-width: 900px) {
+
+  /* Hide mobile-only elements */
+  .mobile-only { display: none !important; }
+  .mobile-page { max-width: none; }
+
+  /* ── Desktop top nav — inherits unified nav, just wider padding ── */
+  .top-nav {
+    padding: 0 40px;
+    height: 60px;
+  }
+
+  /* ── Photo grid — Airbnb style ── */
+  .gallery { display: none; }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 260px 260px;
+    gap: 4px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 40px;
+    margin-top: 24px;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+
+  .photo-grid-hero {
+    grid-row: 1 / 3;
+    border-radius: var(--r-lg) 0 0 var(--r-lg);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .photo-grid-side {
+    overflow: hidden;
+    position: relative;
+  }
+  .photo-grid-side:nth-child(2) { border-radius: 0 var(--r-lg) 0 0; }
+  .photo-grid-side:nth-child(3) { border-radius: 0 0 var(--r-lg) 0; }
+
+  .photo-grid-cell {
+    width: 100%;
+    height: 100%;
+  }
+
+  .show-all-photos {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--warm-white);
+    border: 1px solid rgba(26,31,27,.15);
+    border-radius: var(--r-pill);
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background var(--dur-fast);
+  }
+  .show-all-photos:hover { background: var(--mist); }
+
+  /* ── Two-column page layout ── */
+  .page-columns {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 48px;
+    max-width: 1180px;
+    margin: 32px auto 0;
+    padding: 0 40px;
+    align-items: start;
+  }
+
+  /* Left column — main scrollable content */
+  .page-col-main {
+    min-width: 0;
+  }
+
+  /* Right column — sticky CTA panel */
+  .page-col-aside {
+    position: sticky;
+    top: 88px; /* nav height + gap */
+  }
+
+  /* ── Desktop establishment info ── */
+  .est-info {
+    padding: 0 0 24px;
+    border-bottom: 1px solid rgba(122,158,126,.12);
+  }
+
+  .est-name {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  /* ── Section separators on desktop ── */
+  .section-sep {
+    margin: 0;
+    border-top: 1px solid rgba(122,158,126,.12);
+  }
+
+  .features-section { padding: 28px 0 24px; }
+
+  /* ── Summary block on desktop ── */
+  .summary-block-desktop {
+    padding: 28px 0 24px;
+    border-bottom: 1px solid rgba(122,158,126,.12);
+  }
+
+  /* ── Reviews on desktop ── */
+  .reviews-section { padding: 28px 0 40px; }
+
+  /* ── Hide mobile sticky footer ── */
+  .sticky-footer { display: none !important; }
+  .page-bottom-spacer { height: 0; }
+
+  /* ── Desktop aside panel ── */
+  .aside-panel {
+    background: var(--warm-white);
+    border-radius: var(--r-xl);
+    border: 1px solid rgba(122,158,126,.15);
+    box-shadow: var(--shadow-float);
+    overflow: hidden;
+  }
+
+  .aside-cta-block {
+    padding: 24px;
+    border-bottom: 1px solid rgba(122,158,126,.1);
+  }
+
+  .aside-cta-label {
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 6px;
+  }
+
+  .aside-cta-headline {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .aside-cta-sub {
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .aside-btn-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 15px 24px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: var(--r-pill);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--dur-base);
+    margin-bottom: 10px;
+  }
+  .aside-btn-primary:hover { background: var(--ink-soft); }
+
+  .aside-btn-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 13px 24px;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1.5px solid rgba(26,31,27,.12);
+    border-radius: var(--r-pill);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background var(--dur-base), border-color var(--dur-base);
+  }
+  .aside-btn-secondary:hover { background: var(--mist); border-color: rgba(122,158,126,.3); }
+
+  /* Quick feature snapshot in aside */
+  .aside-features {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(122,158,126,.1);
+  }
+
+  .aside-features-label {
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 12px;
+  }
+
+  /* ── Desktop modal — centred overlay, not bottom sheet ── */
+  .modal-backdrop {
+    max-width: none;
+    left: 0;
+    transform: none;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .contrib-sheet {
+    border-radius: var(--r-xl);
+    transform: scale(0.95) translateY(12px);
+    transition: transform var(--dur-slow) var(--ease-spring), opacity var(--dur-slow) var(--ease-out);
+    opacity: 0;
+    width: 540px;
+    max-width: 90vw;
+    max-height: 88vh;
+  }
+
+  .modal-backdrop.open .contrib-sheet {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  /* Adjust sheet body padding for desktop */
+  .sheet-body {
+    padding: 0 28px 20px;
+  }
+
+  .progress-wrap { padding: 20px 28px 0; }
+  .sheet-footer { padding: 14px 28px 24px; }
+
+  .sheet-question { font-size: 24px; margin-top: 20px; }
+}
+
+
+/* ═══════════════════════════════════════════
+   CONTRIBUTION MODAL
+═══════════════════════════════════════════ */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(26,31,27,0);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  pointer-events: none;
+  transition: background var(--dur-slow) var(--ease-out);
+  max-width: 430px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.modal-backdrop.open {
+  background: rgba(26,31,27,.5);
+  pointer-events: all;
+}
+
+.contrib-sheet {
+  background: var(--warm-white);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  transform: translateY(100%);
+  transition: transform var(--dur-slow) var(--ease-spring);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.modal-backdrop.open .contrib-sheet {
+  transform: translateY(0);
+}
+
+/* Handle */
+.sheet-handle {
+  width: 36px; height: 4px;
+  border-radius: 2px;
+  background: rgba(26,31,27,.15);
+  margin: 12px auto 0;
+  flex-shrink: 0;
+}
+
+/* Sheet header */
+.sheet-header {
+  padding: 16px 20px 0;
+  flex-shrink: 0;
+}
+
+/* Progress bar */
+.progress-wrap {
+  padding: 16px 20px 0;
+  flex-shrink: 0;
+}
+.progress-track {
+  height: 3px;
+  background: var(--mist);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--sage);
+  border-radius: 2px;
+  transition: width .4s var(--ease-spring);
+}
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+}
+.progress-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+.progress-step-num {
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 400;
+}
+.progress-step-num.active { color: var(--sage); font-weight: 500; }
+.progress-step-name {
+  font-size: 11px;
+  color: var(--ink-faint);
+  text-align: center;
+  line-height: 1.3;
+}
+.progress-step-name.active { color: var(--ink-soft); }
+
+/* Sheet body — scrollable */
+.sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sheet-question {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -.02em;
+  color: var(--ink);
+  line-height: 1.25;
+  margin: 16px 0 4px;
+}
+.sheet-sub {
+  font-size: 13px;
+  color: var(--ink-faint);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Answer options */
+.answer-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.answer-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--warm-white);
+  border: 1.5px solid rgba(122,158,126,.15);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  text-align: left;
+  transition: all var(--dur-base) var(--ease-spring);
+  min-height: 60px;
+}
+.answer-btn:active { transform: scale(0.98); }
+
+.answer-btn.selected-yes {
+  border-color: var(--sage);
+  background: var(--mist);
+}
+.answer-btn.selected-no {
+  border-color: rgba(201,113,74,.4);
+  background: var(--terra-light);
+}
+.answer-btn.selected-unsure {
+  border-color: rgba(26,31,27,.15);
+  background: var(--cream);
+}
+
+.answer-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background var(--dur-base);
+}
+.ai-yes    { background: rgba(122,158,126,.12); }
+.ai-no     { background: rgba(201,113,74,.1); }
+.ai-unsure { background: var(--mist); }
+
+.answer-btn.selected-yes .ai-yes    { background: var(--sage); }
+.answer-btn.selected-no  .ai-no     { background: var(--terracotta); }
+
+.answer-label {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--ink);
+}
+.answer-desc {
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-top: 2px;
+}
+
+/* Comment / photo step */
+.comment-input {
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: var(--r-md);
+  border: 1.5px solid rgba(26,31,27,.12);
+  background: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ink);
+  resize: none;
+  min-height: 96px;
+  outline: none;
+  transition: border-color var(--dur-base);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.comment-input:focus { border-color: var(--sage); }
+.comment-input::placeholder { color: var(--ink-faint); }
+
+.photo-upload-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1.5px dashed rgba(122,158,126,.35);
+  border-radius: var(--r-md);
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--sage-deep);
+  cursor: pointer;
+  transition: background var(--dur-fast);
+}
+.photo-upload-btn:hover { background: var(--mist); }
+
+/* Success state */
+.success-state {
+  padding: 32px 20px 40px;
+  text-align: center;
+  display: none;
+}
+.success-state.visible { display: block; }
+
+.success-check {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: var(--sage);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.success-title {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: -.02em;
+  color: var(--sage-deep);
+  margin-bottom: 6px;
+}
+.success-body {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.badge-progress-card {
+  background: var(--butter-light);
+  border: 1px solid rgba(212,149,42,.2);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.badge-progress-num {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 1px;
+}
+.badge-progress-sub {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+/* Sheet footer */
+.sheet-footer {
+  padding: 12px 20px 32px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-top: 1px solid rgba(122,158,126,.08);
+  flex-shrink: 0;
+  background: var(--warm-white);
+}
+
+.skip-link {
+  font-size: 13px;
+  color: var(--ink-faint);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  padding: 12px;
+  background: none;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.submit-btn {
+  flex: 1;
+  padding: 14px;
+  background: var(--ink);
+  color: white;
+  border: none;
+  border-radius: var(--r-pill);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--dur-base), opacity var(--dur-base);
+  opacity: .35;
+  pointer-events: none;
+}
+.submit-btn.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.submit-btn.active:hover { background: var(--ink-soft); }
+.submit-btn.sage {
+  background: var(--sage);
+  opacity: 1;
+  pointer-events: all;
+}
+.submit-btn.sage:hover { background: var(--sage-deep); }
+
+/* ── AI SUMMARY STRIP ── */
+.ai-summary {
+  margin: 0;
+  background: var(--warm-white);
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(122,158,126,.12);
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.ai-icon {
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  background: var(--mist);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ai-text {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+.ai-label {
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 4px;
+}
+
+/* Required feature highlight when user tries to continue without answering */
+.fq.required-missing .fq-label { color: var(--terracotta); }
+.fq.required-missing .fq-btns .fq-btn { border-color: rgba(201,113,74,.35); }
+
+/* Back button in footer */
+.back-btn-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--ink-faint);
+  cursor: pointer;
+  padding: 12px;
+  background: none;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: color var(--dur-fast);
+}
+.back-btn-link:hover { color: var(--ink-soft); }
+
+/* Step visibility */
+.step { display: none; }
+.step.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     DESKTOP TOP NAV (hidden on mobile)
+══════════════════════════════════════ -->
+<nav class="top-nav">
+  <div class="nav-brand">Stroll<em>able</em></div>
+  <button class="nav-back-btn" onclick="window.history.back()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Explore
+  </button>
+  <div class="nav-actions">
+    <button class="nav-btn" id="save-btn" aria-label="Save" onclick="toggleSave()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-linecap="round" id="heart-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     MOBILE LAYOUT
+══════════════════════════════════════ -->
+<div class="mobile-page mobile-only">
+
+  <!-- ── PHOTO GALLERY (mobile) ── -->
+  <div class="gallery">
+    <div class="gallery-scroll" id="galleryScroll">
+      <div class="gallery-photo photo-1"></div>
+      <div class="gallery-photo photo-2"></div>
+      <div class="gallery-photo photo-3"></div>
+      <div class="gallery-photo photo-4"></div>
+    </div>
+    <div class="gallery-dots" id="galleryDots">
+      <div class="gallery-dot active"></div>
+      <div class="gallery-dot"></div>
+      <div class="gallery-dot"></div>
+      <div class="gallery-dot"></div>
+    </div>
+    <div class="photo-counter" id="photoCounter">1 / 4</div>
+  </div>
+
+  <!-- ── ESTABLISHMENT INFO ── -->
+  <div class="est-info">
+    <h1 class="est-name">Broadview Espresso</h1>
+    <div class="est-meta-row">
+      <div class="est-meta-item rating-stars"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>4.8 · 48 reviews</div>
+    </div>
+    <div class="est-detail-rows">
+      <div class="est-detail-row"><svg class="est-detail-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>789 Broadview Ave, Leslieville · 0.3 km</span></div>
+      <div class="est-detail-row"><svg class="est-detail-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>(416) 555-0192</span></div>
+      <div class="est-detail-row"><svg class="est-detail-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><a href="#" style="color:var(--sage-deep);text-decoration:none;">broadviewespresso.ca</a></div>
+    </div>
+  </div>
+
+  <div class="section-sep"></div>
+
+  <!-- ── SUMMARY ── -->
+  <div style="padding: 20px 16px; display: flex; flex-direction: column; gap: 10px;">
+    <div class="community-summary">
+      <div class="cs-header">
+        <div class="cs-stat-row">
+          <div class="cs-stat"><div class="cs-stat-num">3</div><div class="cs-stat-label">Features confirmed</div></div>
+          <div class="cs-divider"></div>
+          <div class="cs-avatars">
+            <div class="cs-avatar av-sage">S</div>
+            <div class="cs-avatar av-terra">R</div>
+            <div class="cs-avatar av-sky">J</div>
+            <div class="cs-avatar av-butter">P</div>
+          </div>
+        </div>
+      </div>
+      <div class="cs-freshness"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Last verified 2 weeks ago</div>
+    </div>
+    <div class="ai-summary">
+      <div class="ai-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--sage-deep)" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M20 12a8 8 0 1 1-8-8v8h8z"/></svg></div>
+      <div><div class="ai-label">AI summary</div><div class="ai-text">Parents consistently mention the side ramp entrance and the wide accessible washroom. Staff are noted as stroller-friendly. The change table is in the accessible WC at the back.</div></div>
+    </div>
+  </div>
+
+  <div class="section-sep"></div>
+
+  <!-- ── FEATURES ── -->
+  <div class="features-section" id="featuresSectionMobile">
+    <div style="margin-bottom:14px;"><div class="section-label" style="margin-bottom:0;">Strollability features</div></div>
+    <div class="features-grid" id="featuresGridMobile"></div>
+  </div>
+
+  <div class="section-sep"></div>
+
+  <!-- ── REVIEWS ── -->
+  <div class="reviews-section" id="reviewsSectionMobile">
+    <div class="section-label">Community notes</div>
+    <div id="reviewsContentMobile"></div>
+  </div>
+
+  <div class="page-bottom-spacer"></div>
+</div>
+
+<!-- ── MOBILE STICKY FOOTER ── -->
+<div class="sticky-footer mobile-only">
+  <button class="btn-secondary" onclick="openModal()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    View on map
+  </button>
+  <button class="btn-primary" onclick="openModal()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add info about this place
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════
+     DESKTOP LAYOUT (injected by JS)
+══════════════════════════════════════ -->
+<div id="desktopLayout" style="display:none;">
+
+  <!-- Photo grid -->
+  <div class="photo-grid">
+    <div class="photo-grid-hero">
+      <div class="photo-grid-cell photo-1"></div>
+    </div>
+    <div class="photo-grid-side">
+      <div class="photo-grid-cell photo-2"></div>
+    </div>
+    <div class="photo-grid-side" style="position:relative;">
+      <div class="photo-grid-cell photo-3"></div>
+      <button class="show-all-photos">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Show all photos
+      </button>
+    </div>
+  </div>
+
+  <!-- Two-column layout -->
+  <div class="page-columns">
+
+    <!-- Left: main content -->
+    <div class="page-col-main">
+
+      <!-- Establishment header -->
+      <div class="est-info">
+        <h1 class="est-name">Broadview Espresso</h1>
+        <div class="est-meta-row">
+          <div class="est-meta-item rating-stars"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>4.8 · 48 reviews</div>
+        </div>
+        <div class="est-detail-rows">
+          <div class="est-detail-row"><svg class="est-detail-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>789 Broadview Ave, Leslieville · 0.3 km away</span></div>
+          <div class="est-detail-row"><svg class="est-detail-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>(416) 555-0192</span></div>
+          <div class="est-detail-row"><svg class="est-detail-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><a href="#" style="color:var(--sage-deep);text-decoration:none;">broadviewespresso.ca</a></div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="summary-block-desktop">
+        <div class="section-label" style="margin-bottom:14px;">Community summary</div>
+        <div style="display:flex;gap:10px;flex-direction:column;">
+          <div class="community-summary">
+            <div class="cs-header">
+              <div class="cs-stat-row">
+                <div class="cs-stat"><div class="cs-stat-num">3</div><div class="cs-stat-label">Features confirmed</div></div>
+                <div class="cs-divider"></div>
+                <div class="cs-avatars">
+                  <div class="cs-avatar av-sage">S</div>
+                  <div class="cs-avatar av-terra">R</div>
+                  <div class="cs-avatar av-sky">J</div>
+                  <div class="cs-avatar av-butter">P</div>
+                </div>
+              </div>
+            </div>
+            <div class="cs-freshness"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Last verified 2 weeks ago</div>
+          </div>
+          <div class="ai-summary">
+            <div class="ai-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--sage-deep)" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M20 12a8 8 0 1 1-8-8v8h8z"/></svg></div>
+            <div><div class="ai-label">AI summary</div><div class="ai-text">Parents consistently mention the side ramp entrance and the wide accessible washroom. Staff are noted as stroller-friendly. The change table is in the accessible WC at the back.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="features-section">
+        <div class="section-label" style="margin-bottom:16px;">Strollability features</div>
+        <div class="features-grid" id="featuresGridDesktop"></div>
+      </div>
+
+      <div class="section-sep"></div>
+
+      <!-- Reviews -->
+      <div class="reviews-section">
+        <div class="section-label">Community notes</div>
+        <div id="reviewsContentDesktop"></div>
+      </div>
+
+    </div><!-- /page-col-main -->
+
+    <!-- Right: sticky aside -->
+    <div class="page-col-aside">
+      <div class="aside-panel">
+
+        <div class="aside-cta-block">
+          <div class="aside-cta-label">Contribute</div>
+          <div class="aside-cta-headline">Know this place?</div>
+          <div class="aside-cta-sub">Help other parents by reporting what you've noticed — stroller access, change table, and more.</div>
+          <button class="aside-btn-primary" onclick="openModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add info about this place
+          </button>
+          <button class="aside-btn-secondary" onclick="">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            View on map
+          </button>
+        </div>
+
+        <!-- Community trust block -->
+        <div class="aside-features">
+          <div class="aside-features-label">Verified by the community</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div class="cs-avatars" style="flex-shrink:0;">
+              <div class="cs-avatar av-sage">S</div>
+              <div class="cs-avatar av-terra">R</div>
+              <div class="cs-avatar av-sky">J</div>
+              <div class="cs-avatar av-butter">P</div>
+            </div>
+            <div style="font-size:13px;color:var(--ink-soft);line-height:1.5;">
+              4 parents have contributed to this listing
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-soft);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--sage-deep)" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong style="font-weight:500;">5 of 9</strong> features answered</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-soft);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink-faint)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Last verified <strong style="font-weight:500;">2 weeks ago</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /page-col-aside -->
+
+  </div><!-- /page-columns -->
+</div><!-- /desktopLayout -->
+
+
+<!-- ═══════════════════════════════════════════
+     CONTRIBUTION MODAL
+═══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
+  <div class="contrib-sheet" id="contribSheet">
+
+    <div class="sheet-handle"></div>
+
+    <!-- Progress -->
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:33%"></div>
+      </div>
+      <div class="progress-steps">
+        <div class="progress-step-item">
+          <div class="progress-step-num active" id="pnum1">Step 1</div>
+          <div class="progress-step-name active" id="pname1">Features</div>
+        </div>
+        <div class="progress-step-item">
+          <div class="progress-step-num" id="pnum2">Step 2</div>
+          <div class="progress-step-name" id="pname2">Written review</div>
+        </div>
+        <div class="progress-step-item">
+          <div class="progress-step-num" id="pnum3">Step 3</div>
+          <div class="progress-step-name" id="pname3">Photo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sheet body -->
+    <div class="sheet-body">
+
+      <!-- ── STEP 1: Strollability features — mandatory ── -->
+      <div class="step active" id="step1">
+        <div class="sheet-question">Strollability features</div>
+        <div class="sheet-sub">Broadview Espresso · Leslieville. All nine are required to continue.</div>
+
+        <style>
+        .fq { margin-bottom:10px; }
+        .fq-label { font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:8px;display:flex;align-items:center;gap:6px;transition:color var(--dur-base); }
+        .fq-btns { display:flex;gap:6px; }
+        .fq-btn { flex:1;padding:11px 8px;border-radius:var(--r-md);border:1.5px solid rgba(26,31,27,.1);background:var(--warm-white);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink-soft);cursor:pointer;transition:all var(--dur-base);min-height:44px; }
+        .fq-btn.yes-btn { border-color:rgba(122,158,126,.2); }
+        </style>
+
+        <!-- 1. Step-free entry -->
+        <div class="fq" id="fq-step_free">
+          <div class="fq-label"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>Step-free entry</div>
+          <div class="fq-btns">
+            <button class="fq-btn yes-btn feat-btn" onclick="setFeatureAnswer('step_free','yes',this)" data-feature="step_free" data-value="yes">Yes</button>
+            <button class="fq-btn feat-btn" onclick="setFeatureAnswer('step_free','no',this)" data-feature="step_free" data-value="no">No</button>
+            <button class="fq-btn feat-btn" style="color:var(--ink-faint);" onclick="setFeatureAnswer('step_free','unsure',this)" data-feature="step_free" data-value="unsure">Not sure</button>
+          </div>
+        </div>
+
+        <!-- 2. Accessible bathroom -->
+        <div class="fq" id="fq-bathroom">
+          <div class="fq-label"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>Accessible bathroom</div>
+          <div class="fq-btns">
+            <button class="fq-btn yes-btn feat-btn" onclick="setFeatureAnswer('bathroom','yes',this)" data-feature="bathroom" data-value="yes">Yes</button>
+            <button class="fq-btn feat-btn" onclick="setFeatureAnswer('bathroom','no',this)" data-feature="bathroom" data-value="no">No</button>
+            <button class="fq-btn feat-btn" style="color:var(--ink-faint);" onclick="setFeatureAnswer('bathroom','unsure',this)" data-feature="bathroom" data-value="unsure">Not sure</button>
+          </div>
+        </div>
+
+        <!-- 3. Change table -->
+        <div class="fq" id="fq-change_table">
+          <div class="fq-label"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6M9 16h6M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="8" r="2"/></svg>Change table</div>
+          <div class="fq-btns">
+            <button class="fq-btn yes-btn feat-btn" onclick="setFeatureAnswer('change_table','yes',this)" data-feature="change_table" data-value="yes">Yes</button>
+            <button class="fq-btn feat-btn" onclick="setFeatureAnswer('change_table','no',this)" data-feature="change_table" data-value="no">No</button>
+            <button class="fq-btn feat-btn" style="color:var(--ink-faint);" onclick="setFeatureAnswer('change_table','unsure',this)" data-feature="change_table" data-value="unsure">Not sure</button>
+          </div>
+        </div>
+
+        <!-- 4. High chairs -->
+        <div class="fq" id="fq-high_chairs">
+          <div class="fq-label"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M15 7V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2"/></svg>High chairs</div>
+          <div class="fq-btns">
+            <button class="fq-btn yes-btn feat-btn" onclick="setFeatureAnswer('high_chairs','yes',this)" data-feature="high_chairs" data-value="yes">Yes</button>
+            <button class="fq-btn feat-btn" onclick="setFeatureAnswer('high_chairs','no',this)" data-feature="high_chairs" data-value="no">No</button>
+            <button class="fq-btn feat-btn" style="color:var(--ink-faint);" onclick="setFeatureAnswer('high_chairs','unsure',this)" data-feature="high_chairs" data-value="unsure">Not sure</button>
+          </div>
+        </div>
+
+        <!-- 5. Auto door opener -->
+        <div class="fq" id="fq-auto_door">
+          <div class="fq-label"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>Auto door opener</div>
+          <div class="fq-btns">
+            <button class="fq-btn yes-btn feat-btn" onclick="setFeatureAnswer('auto_door','yes',this)" data-feature="auto_door" data-value="yes">Yes</button>
+            <button class="fq-btn feat-btn" onclick="setFeatureAnswer('auto_door','no',this)" data-feature="auto_door" data-value="no">No</button>
+            <button class="fq-btn feat-btn" style="color:var(--ink-faint);" onclick="setFeatureAnswer('auto_door','unsure',this)" data-feature="auto_door" data-value="unsure">Not sure</button>
+          </div>
+        </div>
+
+        <!-- 6. Stroller-friendly layout -->
+        <div class="fq" id="fq-layout">
+          <div class="fq-label"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="5" r="1"/><path d="M15 14H9M8 20v-4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><path d="M8 11V9a4 4 0 0 1 8 0v2"/></svg>Stroller-friendly layout</div>
+          <div class="fq-btns">
+            <button class="fq-btn yes-btn feat-btn" onclick="setFeatureAnswer('layout','yes',this)" data-feature="layout" data-value="yes">Yes</button>
+            <button class="fq-btn feat-btn" onclick="setFeatureAnswer('layout','no',this)" data-feature="layout" data-value="no">No</button>
+            <button class="fq-btn feat-btn" style="color:var(--ink-faint);" onclick="setFeatureAnswer('layout','unsure',this)" data-feature="layout" data-value="unsure">Not sure</button>
+          </div>
+        </div>
+
+        <!-- 7. Booster seats -->
+        <div class="fq" id="fq-booster">
+          <div class="fq-label"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Booster seats</div>
+          <div class="fq-btns">
+            <button class="fq-btn yes-btn feat-btn" onclick="setFeatureAnswer('booster','yes',this)" data-feature="booster" data-value="yes">Yes</button>
+            <button class="fq-btn feat-btn" onclick="setFeatureAnswer('booster','no',this)" data-feature="booster" data-value="no">No</button>
+            <button class="fq-btn feat-btn" style="color:var(--ink-faint);" onclick="setFeatureAnswer('booster','unsure',this)" data-feature="booster" data-value="unsure">Not sure</button>
+          </div>
+        </div>
+
+        <!-- 8. Change table in men's WC -->
+        <div class="fq" id="fq-ct_mens">
+          <div class="fq-label"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Change table in men's WC</div>
+          <div class="fq-btns">
+            <button class="fq-btn yes-btn feat-btn" onclick="setFeatureAnswer('ct_mens','yes',this)" data-feature="ct_mens" data-value="yes">Yes</button>
+            <button class="fq-btn feat-btn" onclick="setFeatureAnswer('ct_mens','no',this)" data-feature="ct_mens" data-value="no">No</button>
+            <button class="fq-btn feat-btn" style="color:var(--ink-faint);" onclick="setFeatureAnswer('ct_mens','unsure',this)" data-feature="ct_mens" data-value="unsure">Not sure</button>
+          </div>
+        </div>
+
+        <!-- 9. Change table in family WC -->
+        <div class="fq" id="fq-ct_family">
+          <div class="fq-label"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Change table in family WC</div>
+          <div class="fq-btns">
+            <button class="fq-btn yes-btn feat-btn" onclick="setFeatureAnswer('ct_family','yes',this)" data-feature="ct_family" data-value="yes">Yes</button>
+            <button class="fq-btn feat-btn" onclick="setFeatureAnswer('ct_family','no',this)" data-feature="ct_family" data-value="no">No</button>
+            <button class="fq-btn feat-btn" style="color:var(--ink-faint);" onclick="setFeatureAnswer('ct_family','unsure',this)" data-feature="ct_family" data-value="unsure">Not sure</button>
+          </div>
+        </div>
+
+        <!-- Validation message -->
+        <div id="validationMsg" style="display:none;margin-top:4px;padding:10px 14px;background:var(--terra-light);border-radius:var(--r-md);font-size:13px;color:var(--terracotta);display:none;align-items:center;gap:8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Please answer all nine features to continue.
+        </div>
+      </div>
+
+      <!-- ── STEP 2: Written review — optional ── -->
+      <div class="step" id="step2">
+        <div class="sheet-question">Written review</div>
+        <div class="sheet-sub" style="margin-bottom:20px;">Optional — but a short note goes a long way for other parents.</div>
+        <textarea class="comment-input" placeholder="e.g. Ramp at side entrance, staff moved chairs to help, plenty of room for a Bugaboo…" maxlength="280" oninput="updateCharCount(this)"></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;margin-top:-8px;">
+          <span style="font-size:11px;color:var(--ink-faint);">Max 280 characters</span>
+          <span style="font-size:11px;color:var(--ink-faint);" id="charCount">0 / 280</span>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: Photo — optional ── -->
+      <div class="step" id="step3">
+        <div class="sheet-question">Add a photo</div>
+        <div class="sheet-sub" style="margin-bottom:20px;">Optional — a photo of the entrance, bathroom, or change table helps parents know exactly what to expect.</div>
+        <button class="photo-upload-btn" style="margin-bottom:12px;" id="photoUploadBtn" onclick="document.getElementById('photoFileInput').click()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          Choose a photo
+        </button>
+        <input type="file" id="photoFileInput" accept="image/*" style="display:none;" onchange="handlePhotoSelect(this)">
+        <div id="photoPreview" style="display:none;border-radius:var(--r-md);overflow:hidden;margin-bottom:12px;position:relative;">
+          <img id="photoPreviewImg" style="width:100%;max-height:180px;object-fit:cover;display:block;" src="" alt="Preview">
+          <button onclick="clearPhoto()" style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(26,31,27,.6);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <p style="font-size:12px;color:var(--ink-faint);text-align:center;line-height:1.5;">Photos of entrances, bathrooms, and change tables are most useful.</p>
+      </div>
+
+      <!-- ── STEP 4: Success ── -->
+      <div class="step" id="step4">
+        <div class="success-state visible">
+          <div class="success-check">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="success-title">Nice one.</div>
+          <div class="success-body">That helps parents in Leslieville plan their outings. The community really appreciates it.</div>
+          <div class="badge-progress-card">
+            <div style="font-size:24px;">🏆</div>
+            <div>
+              <div class="badge-progress-num">7 / 10 to Pathfinder</div>
+              <div class="badge-progress-sub">3 more contributions to earn it</div>
+            </div>
+          </div>
+          <button class="submit-btn sage" onclick="closeModal()" style="width:100%;margin-bottom:10px;">Back to Broadview Espresso</button>
+          <a href="/profile" style="display:block;width:100%;padding:12px;background:transparent;border:1.5px solid rgba(26,31,27,.1);border-radius:var(--r-pill);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink-soft);cursor:pointer;text-align:center;text-decoration:none;box-sizing:border-box;">View my profile</a>
+        </div>
+      </div>
+
+    </div><!-- /sheet-body -->
+
+    <!-- Sheet footer — hidden on success -->
+    <div class="sheet-footer" id="sheetFooter">
+      <button class="back-btn-link" id="backBtn" onclick="handleBack()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+      <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">Continue</button>
+    </div>
+
+  </div><!-- /contrib-sheet -->
+</div><!-- /modal-backdrop -->
+
+<script>
+/* ── Shared feature + review data ── */
+const FEATURES_DATA = [
+  { icon: `<path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/>`, name: 'Step-free entry', sublabel: 'Confirmed by 6 parents · 2 wks ago', chip: 'Yes', chipClass: 'fc-confirmed', iconColor: 'var(--sage-deep)', iconBg: 'fi-confirmed', chipIcon: `<polyline points="20 6 9 17 4 12"/>` },
+  { icon: `<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>`, name: 'Accessible bathroom', sublabel: 'Confirmed by 4 parents', chip: 'Yes', chipClass: 'fc-confirmed', iconColor: 'var(--sage-deep)', iconBg: 'fi-confirmed', chipIcon: `<polyline points="20 6 9 17 4 12"/>` },
+  { icon: `<path d="M9 12h6M9 16h6M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="8" r="2"/>`, name: 'Change table', sublabel: '1 report · needs 1 more to confirm', chip: 'Reported', chipClass: 'fc-reported', iconColor: 'var(--amber)', iconBg: 'fi-reported', chipIcon: `<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>` },
+  { icon: `<path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M15 7V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2"/>`, name: 'High chairs', sublabel: 'Confirmed by 3 parents', chip: 'Yes', chipClass: 'fc-confirmed', iconColor: 'var(--sage-deep)', iconBg: 'fi-confirmed', chipIcon: `<polyline points="20 6 9 17 4 12"/>` },
+  { icon: `<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>`, name: 'Auto door opener', sublabel: 'Confirmed by 2 parents', chip: 'Yes', chipClass: 'fc-confirmed', iconColor: 'var(--sage-deep)', iconBg: 'fi-confirmed', chipIcon: `<polyline points="20 6 9 17 4 12"/>` },
+  { icon: `<circle cx="12" cy="5" r="1"/><path d="M15 14H9M8 20v-4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><path d="M8 11V9a4 4 0 0 1 8 0v2"/>`, name: 'Stroller-friendly layout', sublabel: 'No one has checked this yet', chip: 'Unknown', chipClass: 'fc-unknown', iconColor: 'var(--ink-faint)', iconBg: 'fi-unknown', chipIcon: null },
+  { icon: `<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>`, name: 'Booster seats', sublabel: 'No one has checked this yet', chip: 'Unknown', chipClass: 'fc-unknown', iconColor: 'var(--ink-faint)', iconBg: 'fi-unknown', chipIcon: null },
+  { icon: `<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>`, name: "Change table in men's WC", sublabel: 'No one has checked this yet', chip: 'Unknown', chipClass: 'fc-unknown', iconColor: 'var(--ink-faint)', iconBg: 'fi-unknown', chipIcon: null },
+  { icon: `<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`, name: 'Change table in family WC', sublabel: 'No one has checked this yet', chip: 'Unknown', chipClass: 'fc-unknown', iconColor: 'var(--ink-faint)', iconBg: 'fi-unknown', chipIcon: null },
+];
+
+const REVIEWS_HTML = `
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-avatar av-sage">S</div>
+      <div class="review-meta"><div class="review-name">Sarah M.</div><div class="review-date">2 days ago · Founding Reporter</div></div>
+    </div>
+    <div class="review-text">Ramp at the front entrance — totally flat all the way in. Staff were so lovely with the stroller, helped move a chair to make room near the window. Great spot for a weekday morning.</div>
+    <div class="review-photos">
+      <div class="review-photo photo-1" style="height:68px;border-radius:8px;"></div>
+      <div class="review-photo photo-2" style="height:68px;border-radius:8px;"></div>
+    </div>
+  </div>
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-avatar av-terra">R</div>
+      <div class="review-meta"><div class="review-name">Raquel T.</div><div class="review-date">1 week ago · Verifier</div></div>
+    </div>
+    <div class="review-text">Wide enough for a Bugaboo Fox. Change table is in the accessible washroom at the back — you have to ask for the key but staff are quick about it.</div>
+  </div>
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-avatar av-sky">J</div>
+      <div class="review-meta"><div class="review-name">James K.</div><div class="review-date">3 weeks ago · Reporter</div></div>
+    </div>
+    <div class="review-text">Quick coffee stop with the stroller — no issues getting in. Busy on weekends but manageable with the umbrella stroller.</div>
+  </div>
+  <button class="see-all-reviews">See all 48 reviews <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+`;
+
+function buildFeatureRow(f) {
+  const chipIconSvg = f.chipIcon
+    ? `<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">${f.chipIcon}</svg>`
+    : '';
+  return `
+    <div class="feature-row">
+      <div class="feature-left">
+        <div class="feature-icon-wrap ${f.iconBg}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${f.iconColor}" stroke-width="1.5" stroke-linecap="round">${f.icon}</svg>
+        </div>
+        <div>
+          <div class="feature-name">${f.name}</div>
+          <div class="feature-sublabel">${f.sublabel}</div>
+        </div>
+      </div>
+      <div class="fc ${f.chipClass}">${chipIconSvg}${f.chip}</div>
+    </div>`;
+}
+
+function renderFeatures(containerId) {
+  const el = document.getElementById(containerId);
+  if (el) el.innerHTML = FEATURES_DATA.map(buildFeatureRow).join('');
+}
+
+function renderReviews(containerId) {
+  const el = document.getElementById(containerId);
+  if (el) el.innerHTML = REVIEWS_HTML;
+}
+
+/* ── Desktop layout switching ── */
+function isDesktop() { return window.innerWidth >= 900; }
+
+function applyLayout() {
+  const desktop = isDesktop();
+  document.getElementById('desktopLayout').style.display = desktop ? 'block' : 'none';
+
+  if (desktop) {
+    renderFeatures('featuresGridDesktop');
+    renderReviews('reviewsContentDesktop');
+  } else {
+    renderFeatures('featuresGridMobile');
+    renderReviews('reviewsContentMobile');
+  }
+}
+
+applyLayout();
+window.addEventListener('resize', applyLayout);
+
+/* ── Gallery (mobile) ── */
+const galleryScroll = document.getElementById('galleryScroll');
+if (galleryScroll) {
+  const dots = document.querySelectorAll('.gallery-dot');
+  const counter = document.getElementById('photoCounter');
+  galleryScroll.addEventListener('scroll', () => {
+    const idx = Math.round(galleryScroll.scrollLeft / galleryScroll.clientWidth);
+    dots.forEach((d,i) => d.classList.toggle('active', i === idx));
+    if (counter) counter.textContent = `${idx+1} / 4`;
+  });
+}
+
+/* ── Save toggle ── */
+let saved = false;
+function toggleSave() {
+  saved = !saved;
+  const icon = document.getElementById('heart-icon');
+  const btn = document.getElementById('save-btn');
+  if (saved) {
+    icon.setAttribute('fill', 'var(--terracotta)');
+    icon.setAttribute('stroke', 'var(--terracotta)');
+  } else {
+    icon.setAttribute('fill', 'none');
+    icon.setAttribute('stroke', 'var(--ink)');
+  }
+  btn.style.borderColor = saved ? 'var(--terracotta)' : '';
+}
+
+/* ── Modal ── */
+const ALL_FEATURES = ['step_free','bathroom','change_table','high_chairs','auto_door','layout','booster','ct_mens','ct_family'];
+let currentStep = 1;
+const answers = {};
+
+function openModal() {
+  document.getElementById('modalBackdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  showStep(1);
+}
+
+function closeModal() {
+  document.getElementById('modalBackdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById('modalBackdrop')) closeModal();
+}
+
+function showStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+
+  const pcts = { 1: '33%', 2: '66%', 3: '88%', 4: '100%' };
+  document.getElementById('progressFill').style.width = pcts[n] || '33%';
+
+  [1,2,3].forEach(i => {
+    document.getElementById('pnum'+i).classList.toggle('active', i === n);
+    document.getElementById('pname'+i).classList.toggle('active', i === n);
+  });
+
+  const footer = document.getElementById('sheetFooter');
+  const submitBtn = document.getElementById('submitBtn');
+  const backBtn = document.getElementById('backBtn');
+
+  if (n === 4) {
+    footer.style.display = 'none';
+    document.getElementById('progressWrap').style.display = 'none';
+    return;
+  }
+
+  footer.style.display = 'flex';
+  document.getElementById('progressWrap').style.display = 'block';
+
+  if (n === 1) {
+    backBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Close`;
+    submitBtn.textContent = 'Continue';
+    submitBtn.classList.toggle('active', allFeaturesAnswered());
+  } else if (n === 2) {
+    backBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back`;
+    submitBtn.textContent = 'Continue';
+    submitBtn.classList.add('active');
+  } else if (n === 3) {
+    backBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back`;
+    submitBtn.textContent = 'Submit';
+    submitBtn.classList.add('active');
+  }
+}
+
+function allFeaturesAnswered() {
+  return ALL_FEATURES.every(f => answers[f] !== undefined);
+}
+
+function setFeatureAnswer(feature, value, btn) {
+  answers[feature] = value;
+  const allBtns = document.querySelectorAll(`[data-feature="${feature}"]`);
+  allBtns.forEach(b => {
+    const v = b.dataset.value;
+    if (v === 'yes') {
+      b.style.background = value === 'yes' ? 'var(--mist)' : 'var(--warm-white)';
+      b.style.borderColor = value === 'yes' ? 'var(--sage)' : 'rgba(122,158,126,.2)';
+      b.style.color = value === 'yes' ? 'var(--sage-deep)' : 'var(--ink-soft)';
+      b.style.fontWeight = value === 'yes' ? '500' : '300';
+    } else if (v === 'no') {
+      b.style.background = value === 'no' ? 'var(--terra-light)' : 'var(--warm-white)';
+      b.style.borderColor = value === 'no' ? 'rgba(201,113,74,.4)' : 'rgba(26,31,27,.1)';
+      b.style.color = value === 'no' ? 'var(--terracotta)' : 'var(--ink-soft)';
+      b.style.fontWeight = value === 'no' ? '500' : '300';
+    } else {
+      b.style.background = value === 'unsure' ? 'var(--cream)' : 'var(--warm-white)';
+      b.style.borderColor = value === 'unsure' ? 'rgba(26,31,27,.2)' : 'rgba(26,31,27,.1)';
+      b.style.fontWeight = '300';
+    }
+  });
+  const fqEl = document.getElementById('fq-'+feature);
+  if (fqEl) fqEl.classList.remove('required-missing');
+  document.getElementById('submitBtn').classList.toggle('active', allFeaturesAnswered());
+  if (allFeaturesAnswered()) {
+    const msg = document.getElementById('validationMsg');
+    if (msg) msg.style.display = 'none';
+  }
+}
+
+function handleSubmit() {
+  if (currentStep === 1) {
+    const missing = ALL_FEATURES.filter(f => answers[f] === undefined);
+    if (missing.length > 0) {
+      ALL_FEATURES.forEach(f => {
+        const el = document.getElementById('fq-'+f);
+        if (el) el.classList.toggle('required-missing', answers[f] === undefined);
+      });
+      const msg = document.getElementById('validationMsg');
+      if (msg) { msg.style.display = 'flex'; }
+      const firstMissing = document.getElementById('fq-'+missing[0]);
+      if (firstMissing) firstMissing.scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+    showStep(2);
+  } else if (currentStep === 2) {
+    showStep(3);
+  } else if (currentStep === 3) {
+    showStep(4);
+  }
+}
+
+function handleBack() {
+  if (currentStep === 1) closeModal();
+  else showStep(currentStep - 1);
+}
+
+function handlePhotoSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('photoPreviewImg').src = e.target.result;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('photoUploadBtn').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPhoto() {
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('photoUploadBtn').style.display = 'flex';
+  document.getElementById('photoFileInput').value = '';
+}
+
+function resetModal() {
+  ALL_FEATURES.forEach(f => delete answers[f]);
+  document.querySelectorAll('.feat-btn').forEach(b => {
+    b.style.background = '';
+    b.style.borderColor = '';
+    b.style.color = '';
+    b.style.fontWeight = '';
+  });
+  document.querySelectorAll('.fq').forEach(el => el.classList.remove('required-missing'));
+  const msg = document.getElementById('validationMsg');
+  if (msg) msg.style.display = 'none';
+  showStep(1);
+}
+
+function updateCharCount(el) {
+  document.getElementById('charCount').textContent = `${el.value.length} / 280`;
+}
+</script>
+</body>
+</html>

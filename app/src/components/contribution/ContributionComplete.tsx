@@ -7,15 +7,15 @@ import type { BadgeType } from "@/types";
 
 interface ContributionCompleteProps {
   establishmentName: string;
+  placeId: string;
   newBadge: string | null;
-  onDone: () => void;
   onContributeMore: () => void;
 }
 
 export default function ContributionComplete({
   establishmentName,
+  placeId,
   newBadge,
-  onDone,
   onContributeMore,
 }: ContributionCompleteProps) {
   const badgeDef = newBadge
@@ -23,47 +23,80 @@ export default function ContributionComplete({
     : null;
 
   return (
-    <div className="flex flex-col items-center justify-center px-6 py-16 text-center gap-6 min-h-[60vh]">
-      <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-        <CheckCircle className="w-8 h-8 text-green-600" />
+    <div className="flex flex-col items-center px-6 py-12 text-center gap-5">
+      {/* Check mark */}
+      <div
+        className="w-14 h-14 rounded-full flex items-center justify-center"
+        style={{ background: "var(--sage)" }}
+      >
+        <CheckCircle className="w-7 h-7 text-white" />
       </div>
 
+      {/* Heading */}
       <div>
-        <h2 className="text-xl font-bold text-[var(--foreground)]">
+        <h2
+          className="font-display font-normal tracking-[-0.02em]"
+          style={{ fontSize: 24, color: "var(--sage-deep)" }}
+        >
           Nice one.
         </h2>
-        <p className="text-sm text-[var(--muted-foreground)] mt-1">
-          That helps parents in the neighbourhood plan better.
+        <p className="text-sm mt-1.5 leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+          That helps parents plan their outings in the neighbourhood. The community really appreciates it.
         </p>
       </div>
 
+      {/* Badge earned */}
       {badgeDef && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 max-w-xs w-full">
-          <div className="text-3xl mb-2">{badgeDef.icon}</div>
-          <p className="font-bold text-amber-900">{badgeDef.name} badge earned!</p>
-          <p className="text-sm text-amber-700 mt-1">{badgeDef.description}</p>
+        <div
+          className="w-full max-w-xs rounded-[var(--r-md)] px-4 py-3.5 flex items-center gap-4 text-left"
+          style={{
+            background: "var(--butter-light)",
+            border: "1px solid rgba(212,149,42,0.2)",
+          }}
+        >
+          <span className="text-2xl flex-shrink-0">{badgeDef.icon}</span>
+          <div>
+            <p className="text-sm font-medium" style={{ color: "var(--ink)" }}>
+              {badgeDef.name} badge earned!
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--ink-faint)" }}>
+              {badgeDef.description}
+            </p>
+          </div>
         </div>
       )}
 
-      <div className="flex flex-col gap-3 w-full max-w-xs">
+      {/* Actions */}
+      <div className="flex flex-col gap-2.5 w-full max-w-xs mt-1">
         <Link
-          href={`/explore`}
-          className="w-full py-3.5 rounded-2xl bg-[var(--primary)] text-white font-semibold text-sm text-center hover:bg-[var(--primary-hover)] transition-colors"
+          href={`/place/${placeId}`}
+          className="w-full py-3.5 rounded-[var(--r-pill)] text-sm font-medium text-white text-center transition-colors"
+          style={{ background: "var(--sage)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "var(--sage-deep)")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "var(--sage)")}
         >
-          Back to map
+          Back to {establishmentName}
+        </Link>
+        <Link
+          href="/profile"
+          className="w-full py-3 rounded-[var(--r-pill)] text-sm font-medium text-center transition-colors"
+          style={{
+            background: "transparent",
+            border: "1.5px solid rgba(26,31,27,0.1)",
+            color: "var(--ink-soft)",
+          }}
+        >
+          View my profile
         </Link>
         <button
           onClick={onContributeMore}
-          className="w-full py-3 rounded-2xl border border-[var(--border)] text-sm font-medium text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors"
+          className="text-sm transition-colors mt-1"
+          style={{ color: "var(--ink-faint)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--ink-soft)")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--ink-faint)")}
         >
           Report another feature
         </button>
-        <Link
-          href={`/profile`}
-          className="text-sm text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors"
-        >
-          View my badges →
-        </Link>
       </div>
     </div>
   );

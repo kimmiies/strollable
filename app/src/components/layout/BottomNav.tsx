@@ -16,6 +16,10 @@ const tabs = [
 export default function BottomNav() {
   const pathname = usePathname();
 
+  // On establishment detail pages, EstablishmentDetail renders its own
+  // sticky footer with the two primary CTAs. Hide the bottom nav there.
+  if (pathname.startsWith("/place/")) return null;
+
   return (
     <nav
       className="lg:hidden fixed bottom-0 left-0 right-0 z-40"
@@ -42,7 +46,7 @@ export default function BottomNav() {
                 aria-label={label}
               >
                 <div
-                  className="w-13 h-13 rounded-full flex items-center justify-center -mt-4 transition-all hover:scale-105"
+                  className="rounded-full flex items-center justify-center -mt-4 transition-all hover:scale-105"
                   style={{
                     background: "var(--sage)",
                     boxShadow: "0 4px 16px rgba(122,158,126,0.4)",

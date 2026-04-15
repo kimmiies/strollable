@@ -1,8 +1,20 @@
 import { notFound } from "next/navigation";
-import TopBar from "@/components/layout/TopBar";
 import EstablishmentDetail from "@/components/establishment/EstablishmentDetail";
 import { isDemoMode, DEMO_ESTABLISHMENTS } from "@/lib/demo";
 import { createClient } from "@/lib/supabase/server";
+import type { FeatureType } from "@/types";
+
+const ALL_FEATURE_TYPES: FeatureType[] = [
+  "step_free_entrance",
+  "accessible_bathroom",
+  "change_table",
+  "high_chairs",
+  "auto_door_opener",
+  "stroller_friendly_layout",
+  "booster_seats",
+  "change_table_mens",
+  "change_table_family",
+];
 
 async function getEstablishment(placeId: string) {
   if (isDemoMode) {
@@ -18,17 +30,21 @@ async function getEstablishment(placeId: string) {
 
   if (!data) return null;
 
-  const makeFeature = (type: string) => {
-    const f = (data.features as Array<{
-      id: string;
-      establishment_id: string;
-      feature_type: string;
-      value: string | null;
-      status: string;
-      report_count: number;
-      yes_count: number;
-      no_count: number;
-    }>)?.find((x) => x.feature_type === type);
+  type RawFeature = {
+    id: string;
+    establishment_id: string;
+    feature_type: string;
+    value: string | null;
+    status: string;
+    report_count: number;
+    yes_count: number;
+    no_count: number;
+  };
+
+  const makeFeature = (type: FeatureType) => {
+    const f = (data.features as RawFeature[])?.find(
+      (x) => x.feature_type === type
+    );
     return f ?? {
       id: "",
       establishment_id: data.id,
@@ -43,11 +59,9 @@ async function getEstablishment(placeId: string) {
 
   return {
     ...data,
-    features: {
-      step_free_entrance: makeFeature("step_free_entrance"),
-      accessible_bathroom: makeFeature("accessible_bathroom"),
-      change_table: makeFeature("change_table"),
-    },
+    features: Object.fromEntries(
+      ALL_FEATURE_TYPES.map((t) => [t, makeFeature(t)])
+    ),
   };
 }
 
@@ -61,10 +75,12 @@ export default async function PlacePage({
 
   if (!establishment) notFound();
 
+  // TopBar intentionally removed — EstablishmentDetail renders its own
+  // mobile nav bar (brand + back + save) consistent with the design system.
+  // TopNav handles desktop navigation globally via the app layout.
   return (
-    <div className="flex flex-col h-full overflow-y-auto bg-[var(--background)]">
-      <TopBar showBack title={establishment.name} />
-      <EstablishmentDetail establishment={establishment} />
+    <div className="flex flex-col h-full overflow-y-auto" style={{ background: "var(--cream)" }}>
+      <EstablishmentDetail establishment={establishment as never} />
     </div>
   );
 }
