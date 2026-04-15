@@ -10,6 +10,7 @@ interface MapState {
   selectedPlaceId: string | null;
   showList: boolean;
   searchQuery: string;
+  filterPanelOpen: boolean;
 
   setCenter: (center: { lat: number; lng: number }) => void;
   setZoom: (zoom: number) => void;
@@ -21,6 +22,7 @@ interface MapState {
   setShowList: (show: boolean) => void;
   toggleShowList: () => void;
   setSearchQuery: (query: string) => void;
+  setFilterPanelOpen: (open: boolean) => void;
 }
 
 export const useMapStore = create<MapState>((set) => ({
@@ -32,6 +34,7 @@ export const useMapStore = create<MapState>((set) => ({
   selectedPlaceId: null,
   showList: false,
   searchQuery: "",
+  filterPanelOpen: false,
 
   setCenter: (center) => set({ center }),
   setZoom: (zoom) => set({ zoom }),
@@ -56,4 +59,5 @@ export const useMapStore = create<MapState>((set) => ({
   setShowList: (show) => set({ showList: show }),
   toggleShowList: () => set((s) => ({ showList: !s.showList })),
   setSearchQuery: (query) => set({ searchQuery: query }),
+  setFilterPanelOpen: (open) => set({ filterPanelOpen: open }),
 }));

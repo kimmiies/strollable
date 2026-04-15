@@ -2,14 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Map, Heart, PlusCircle, Bell, User } from "lucide-react";
+import { Search, Heart, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { href: "/explore", label: "Explore", Icon: Map },
+  { href: "/explore", label: "Explore", Icon: Search },
   { href: "/saved", label: "Saved", Icon: Heart },
-  { href: "/contribute", label: "Add", Icon: PlusCircle, primary: true },
-  { href: "/notifications", label: "Updates", Icon: Bell },
   { href: "/profile", label: "Profile", Icon: User },
 ];
 
@@ -31,34 +29,11 @@ export default function BottomNav() {
       }}
     >
       <div className="flex items-center justify-around h-16 px-1">
-        {tabs.map(({ href, label, Icon, primary }) => {
+        {tabs.map(({ href, label, Icon }) => {
           const isActive =
             href === "/explore"
               ? pathname === "/explore" || pathname.startsWith("/place/")
               : pathname.startsWith(href);
-
-          if (primary) {
-            return (
-              <Link
-                key={href}
-                href={href}
-                className="flex flex-col items-center justify-center min-w-[44px] min-h-[44px]"
-                aria-label={label}
-              >
-                <div
-                  className="rounded-full flex items-center justify-center -mt-4 transition-all hover:scale-105"
-                  style={{
-                    background: "var(--sage)",
-                    boxShadow: "0 4px 16px rgba(122,158,126,0.4)",
-                    width: 52,
-                    height: 52,
-                  }}
-                >
-                  <Icon className="w-5 h-5 text-white" strokeWidth={2.5} />
-                </div>
-              </Link>
-            );
-          }
 
           return (
             <Link

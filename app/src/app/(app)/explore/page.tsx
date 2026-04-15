@@ -52,16 +52,17 @@ export default function ExplorePage() {
     activeFeatureFilters,
     selectedPlaceId,
     searchQuery,
+    filterPanelOpen,
     setCenter,
     toggleFeatureFilter,
     setSelectedPlaceId,
     setSearchQuery,
+    setFilterPanelOpen,
   } = useMapStore();
 
   const { coords, loading: geoLoading, requestLocation } = useGeolocation();
   const { savedIds, toggle: toggleSaved } = useSaved();
   const [selectedEstablishment, setSelectedEstablishment] = useState<Establishment | null>(null);
-  const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [mobileSearch, setMobileSearch] = useState(searchQuery);
   const [mobileView, setMobileView] = useState<"both" | "map" | "list">("both");
 
@@ -183,46 +184,13 @@ export default function ExplorePage() {
           </p>
         </div>
 
-        {/* Desktop search bar */}
-        <div className="px-6 pb-3 flex-shrink-0">
-          <SearchBar
-            value={searchQuery}
-            onChange={setSearchQuery}
-            showKbd
-            nearbyCount={nearbyCount}
-            onNearby={() => {}}
-            establishmentSuggestions={searchSuggestions}
-            neighbourhoodSuggestions={neighbourhoodSuggestions}
-            onSelectEstablishment={(id) => setSelectedPlaceId(id)}
-            onSelectNeighbourhood={(n) => setSearchQuery(n)}
-            placeholder="Search spots near you…"
-          />
-        </div>
-
-        {/* Filter bar */}
-        <div className="flex items-center gap-2 border-b border-[rgba(122,158,126,0.15)] pr-4 flex-shrink-0">
+        {/* Feature pill strip — now directly under the title */}
+        <div className="border-b border-[rgba(122,158,126,0.15)] flex-shrink-0">
           <MapFilters
             activeFeatureFilters={activeFeatureFilters}
             onToggleFeature={toggleFeatureFilter}
-            className="flex-1 px-6 py-2"
+            className="px-6 py-2"
           />
-          <button
-            onClick={() => setFilterPanelOpen(true)}
-            className={cn(
-              "flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-[var(--r-pill)] border text-sm transition-all",
-              activeFilterCount > 0
-                ? "bg-[var(--ink)] text-white border-[var(--ink)]"
-                : "bg-[var(--warm-white)] text-[var(--ink-soft)] border-[rgba(26,31,27,0.12)] hover:border-[var(--sage)] hover:text-[var(--sage-deep)]"
-            )}
-          >
-            <SlidersHorizontal className="w-4 h-4" />
-            Filters
-            {activeFilterCount > 0 && (
-              <span className="bg-white/25 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
-                {activeFilterCount}
-              </span>
-            )}
-          </button>
         </div>
 
         {/* Content */}
