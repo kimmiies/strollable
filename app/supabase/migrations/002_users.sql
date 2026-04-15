@@ -3,8 +3,7 @@ CREATE TABLE users (
   display_name TEXT       NOT NULL,
   email       TEXT        NOT NULL,
   avatar_url  TEXT,
-  badge_flags JSONB       NOT NULL DEFAULT '{"founding_reporter":false,"reporter":false,"verifier":false,"scout":false}',
-  contribution_counts JSONB NOT NULL DEFAULT '{"reports":0,"verifications":0,"scouts":0}',
+  badge_flags JSONB       NOT NULL DEFAULT '{"founding_reporter":false}',
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -29,12 +28,7 @@ BEGIN
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'display_name', split_part(NEW.email, '@', 1)),
     NEW.email,
-    jsonb_build_object(
-      'founding_reporter', v_is_founding,
-      'reporter', false,
-      'verifier', false,
-      'scout', false
-    )
+    jsonb_build_object('founding_reporter', v_is_founding)
   );
   RETURN NEW;
 END;

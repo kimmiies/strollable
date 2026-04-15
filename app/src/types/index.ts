@@ -13,13 +13,9 @@ export type FeatureStatus = "unknown" | "reported" | "confirmed" | "disputed";
 
 export type FeatureValue = "yes" | "no" | null;
 
-export type ContributionType = "report" | "verify" | "scout";
+export type FeatureAnswer = "yes" | "no" | "unsure";
 
-export type BadgeType =
-  | "founding_reporter"
-  | "reporter"
-  | "verifier"
-  | "scout";
+export type BadgeType = "founding_reporter";
 
 export interface Feature {
   id: string;
@@ -66,6 +62,8 @@ export interface Establishment {
   website: string | null;
   google_rating: number | null;
   google_data_json: Record<string, unknown> | null;
+  community_rating: number | null;
+  rating_count: number;
   features: FeatureMap;
   distance_meters?: number;
 }
@@ -75,24 +73,23 @@ export interface Contribution {
   user_id: string;
   establishment_id: string;
   feature_id: string;
-  contribution_type: ContributionType;
-  value: string;
+  value: FeatureAnswer;
+  created_at: string;
+}
+
+export interface Review {
+  id: string;
+  user_id: string;
+  establishment_id: string;
+  rating: number;
   comment: string | null;
   photo_url: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 export interface BadgeFlags {
   founding_reporter: boolean;
-  reporter: boolean;
-  verifier: boolean;
-  scout: boolean;
-}
-
-export interface ContributionCounts {
-  reports: number;
-  verifications: number;
-  scouts: number;
 }
 
 export interface UserProfile {
@@ -101,7 +98,6 @@ export interface UserProfile {
   email: string;
   avatar_url: string | null;
   badge_flags: BadgeFlags;
-  contribution_counts: ContributionCounts;
 }
 
 export interface BadgeDefinition {
@@ -114,17 +110,15 @@ export interface BadgeDefinition {
 
 export interface ContributionAnswer {
   feature_type: FeatureType;
-  value: "yes" | "no";
+  value: FeatureAnswer;
 }
 
 export interface ContributionSubmission {
   place_id: string;
-  contributions: Array<{
-    feature_type: FeatureType;
-    value: "yes" | "no";
-    comment?: string;
-    photo_url?: string;
-  }>;
+  rating: number;
+  comment?: string;
+  photo_url?: string;
+  answers: ContributionAnswer[];
 }
 
 export interface NearbyParams {
@@ -180,26 +174,5 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     description: "Helped build Strollable before launch.",
     icon: "⭐",
     requirement: "Join during the founding period",
-  },
-  {
-    id: "reporter",
-    name: "Reporter",
-    description: "Added features to 5 establishments.",
-    icon: "✏️",
-    requirement: "Add features to 5 different spots",
-  },
-  {
-    id: "verifier",
-    name: "Verifier",
-    description: "Verified features at 5+ establishments.",
-    icon: "✅",
-    requirement: "Verify features at 5 establishments",
-  },
-  {
-    id: "scout",
-    name: "Scout",
-    description: "Added 5+ new locations not yet in the app.",
-    icon: "🔭",
-    requirement: "Scout 5 new places",
   },
 ];

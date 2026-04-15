@@ -11,13 +11,7 @@ const DEMO_USER: UserProfile = {
   display_name: "Demo Parent",
   email: "demo@strollable.app",
   avatar_url: null,
-  badge_flags: {
-    founding_reporter: true,
-    reporter: true,
-    verifier: false,
-    scout: false,
-  },
-  contribution_counts: { reports: 3, verifications: 1, scouts: 0 },
+  badge_flags: { founding_reporter: true },
 };
 
 export function useUser() {

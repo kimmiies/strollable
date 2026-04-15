@@ -11,6 +11,8 @@ CREATE TABLE establishments (
   website          TEXT,
   google_rating    NUMERIC(2,1),
   google_data_json JSONB,
+  community_rating NUMERIC(2,1),
+  rating_count     INTEGER        NOT NULL DEFAULT 0,
   location         GEOGRAPHY(POINT, 4326) GENERATED ALWAYS AS (
     ST_SetSRID(ST_MakePoint(lng, lat), 4326)::geography
   ) STORED,

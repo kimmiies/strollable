@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { FeatureType } from "@/types";
+import type { FeatureType, FeatureAnswer } from "@/types";
 
 export type ContributionStep = 1 | 2 | 3 | 4 | 5 | 6 | "success";
-export type FeatureAnswer = "yes" | "no" | "unsure";
+export type { FeatureAnswer };
 
 export type ContributionStatus =
   | "idle"
@@ -90,27 +90,31 @@ export function useContribution(placeId: string) {
   }
 
   async function submit() {
-    const answeredFeatures = (
+    if (state.rating === null) {
+      setState((s) => ({
+        ...s,
+        status: "error",
+        errorMessage: "Please add a rating before submitting.",
+      }));
+      return;
+    }
+
+    const answers = (
       Object.entries(state.answers) as [FeatureType, FeatureAnswer][]
-    ).filter(([, v]) => v === "yes" || v === "no") as [
-      FeatureType,
-      "yes" | "no"
-    ][];
+    ).map(([feature_type, value]) => ({ feature_type, value }));
 
     setState((s) => ({ ...s, status: "submitting", errorMessage: null }));
 
     try {
-      // TODO: persist overall rating once the schema supports it.
+      // TODO: upload photoFile to storage and pass the resulting URL.
       const res = await fetch("/api/contributions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           place_id: placeId,
-          contributions: answeredFeatures.map(([featureType, value]) => ({
-            feature_type: featureType,
-            value,
-            comment: state.comment || undefined,
-          })),
+          rating: state.rating,
+          comment: state.comment || undefined,
+          answers,
         }),
       });
 

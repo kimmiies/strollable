@@ -25,6 +25,8 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
     website: "https://reunionislandcoffee.com",
     google_rating: 4.7,
     google_data_json: null,
+    community_rating: null,
+    rating_count: 0,
     features: {
       step_free_entrance: {
         id: "demo-f1a",
@@ -89,6 +91,8 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
     website: "https://roncesvallescafe.ca",
     google_rating: 4.4,
     google_data_json: null,
+    community_rating: null,
+    rating_count: 0,
     features: {
       step_free_entrance: {
         id: "demo-f2a",
@@ -153,6 +157,8 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
     website: "https://leslievillepumps.com",
     google_rating: 4.3,
     google_data_json: null,
+    community_rating: null,
+    rating_count: 0,
     features: {
       step_free_entrance: {
         id: "demo-f3a",
@@ -217,6 +223,8 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
     website: "https://jimmyscoffee.ca",
     google_rating: 4.8,
     google_data_json: null,
+    community_rating: null,
+    rating_count: 0,
     features: {
       step_free_entrance: {
         id: "demo-f4a",
@@ -281,6 +289,8 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
     website: "https://makerscafe.ca",
     google_rating: 4.5,
     google_data_json: null,
+    community_rating: null,
+    rating_count: 0,
     features: {
       step_free_entrance: {
         id: "demo-f5a",
@@ -345,6 +355,8 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
     website: "https://lacarnita.com",
     google_rating: 4.2,
     google_data_json: null,
+    community_rating: null,
+    rating_count: 0,
     features: {
       step_free_entrance: {
         id: "demo-f6a",

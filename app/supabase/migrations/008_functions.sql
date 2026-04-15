@@ -17,6 +17,8 @@ RETURNS TABLE (
   phone            TEXT,
   website          TEXT,
   google_rating    NUMERIC,
+  community_rating NUMERIC,
+  rating_count     INTEGER,
   distance_meters  FLOAT,
   features         JSONB
 ) AS $$
@@ -34,6 +36,8 @@ BEGIN
     e.phone,
     e.website,
     e.google_rating,
+    e.community_rating,
+    e.rating_count,
     ST_Distance(
       e.location,
       ST_SetSRID(ST_MakePoint(p_lng, p_lat), 4326)::geography
@@ -63,7 +67,8 @@ BEGIN
   )
   AND (p_type IS NULL OR e.type = p_type)
   GROUP BY e.id, e.place_id, e.name, e.address, e.lat, e.lng,
-           e.type, e.hours, e.phone, e.website, e.google_rating, e.location
+           e.type, e.hours, e.phone, e.website, e.google_rating,
+           e.community_rating, e.rating_count, e.location
   ORDER BY distance_meters;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

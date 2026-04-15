@@ -1,14 +1,9 @@
-CREATE TYPE contribution_type_enum AS ENUM ('report', 'verify', 'scout');
-
 CREATE TABLE contributions (
   id                UUID                     PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id           UUID                     NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   establishment_id  UUID                     NOT NULL REFERENCES establishments(id) ON DELETE CASCADE,
   feature_id        UUID                     NOT NULL REFERENCES features(id) ON DELETE CASCADE,
-  contribution_type contribution_type_enum   NOT NULL,
-  value             TEXT                     NOT NULL,  -- 'yes' | 'no'
-  comment           TEXT,
-  photo_url         TEXT,
+  value             TEXT                     NOT NULL,  -- 'yes' | 'no' | 'unsure'
   created_at        TIMESTAMPTZ              NOT NULL DEFAULT NOW(),
   UNIQUE(user_id, feature_id)  -- one vote per user per feature; upsert on change
 );
