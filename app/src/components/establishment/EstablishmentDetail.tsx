@@ -9,7 +9,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { Establishment, FeatureType } from "@/types";
-import { cn, formatRating, getFeatureChipStyle } from "@/lib/utils";
+import { cn, formatRating } from "@/lib/utils";
 import { FEATURE_LABELS } from "@/types";
 import { useSaved } from "@/hooks/useSaved";
 
@@ -97,16 +97,12 @@ const MOCK_REVIEWS = [
   },
 ];
 
-const frostedBtnClass =
-  "rounded-full flex items-center justify-center transition-all active:scale-90";
-const frostedBtnStyle = {
-  width: 40,
-  height: 40,
-  background: "rgba(255,255,255,0.88)",
-  backdropFilter: "blur(12px)",
-  WebkitBackdropFilter: "blur(12px)",
-  boxShadow: "0 2px 12px rgba(0,0,0,0.14)",
-} as const;
+const PHOTO_GRADIENTS = [
+  "linear-gradient(160deg,#c8b89a 0%,#a08060 40%,#6b5040 100%)",
+  "linear-gradient(140deg,#b8c8b0 0%,#8aaa80 50%,#5a7850 100%)",
+  "linear-gradient(150deg,#d0c0a8 0%,#b09878 40%,#806848 100%)",
+  "linear-gradient(160deg,#c0d0d8 0%,#90b0c0 50%,#608098 100%)",
+];
 
 interface EstablishmentDetailProps {
   establishment: Establishment;
@@ -124,36 +120,103 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
   return (
     <div>
 
-      {/* MOBILE: full-bleed hero + floating nav */}
+      {/* MOBILE: unified sticky top-nav (brand + back + save) */}
+      <nav
+        className="lg:hidden sticky top-0 z-50 flex items-center gap-3 px-4"
+        style={{
+          height: 56,
+          background: "rgba(250,247,242,0.95)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(122,158,126,0.1)",
+        }}
+      >
+        <Link
+          href="/explore"
+          className="font-display font-light flex-shrink-0 tracking-[-0.02em]"
+          style={{ fontSize: 17, color: "var(--ink)" }}
+        >
+          Stroll<em className="not-italic" style={{ fontStyle: "italic", color: "var(--sage-deep)" }}>able</em>
+        </Link>
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[var(--r-pill)] text-[13px] transition-colors flex-shrink-0"
+          style={{ color: "var(--ink-soft)", background: "transparent" }}
+          aria-label="Back to explore"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Explore
+        </button>
+        <div className="ml-auto flex gap-2">
+          <button
+            onClick={() => toggle(establishment.place_id)}
+            className="rounded-full flex items-center justify-center transition-all active:scale-95 flex-shrink-0"
+            style={{
+              width: 36, height: 36,
+              background: "transparent",
+              border: "1px solid rgba(26,31,27,0.1)",
+            }}
+            aria-label={isSaved ? "Remove from saved" : "Save"}
+          >
+            <Heart className={cn("transition-colors", isSaved ? "fill-[var(--terracotta)] text-[var(--terracotta)]" : "text-[var(--ink)]")}
+              style={{ width: 16, height: 16 }} />
+          </button>
+        </div>
+      </nav>
+
+      {/* MOBILE: photo gallery */}
       <div className="lg:hidden">
-        <div className="relative" style={{ height: 340 }}>
-          <div className="absolute inset-0"
-            style={{ background: "linear-gradient(160deg,#c8b89a 0%,#a08060 40%,#6b5040 100%)" }} />
+        <div className="relative overflow-hidden" style={{ height: 280, background: "var(--ink)" }}>
+          <div className="absolute inset-0 flex overflow-x-auto snap-x snap-mandatory" style={{ scrollbarWidth: "none" }}>
+            {PHOTO_GRADIENTS.map((bg, i) => (
+              <div key={i} className="flex-shrink-0 w-full h-full snap-start" style={{ background: bg }} />
+            ))}
+          </div>
           <div className="absolute inset-0 pointer-events-none"
-            style={{ background: "linear-gradient(to top, rgba(26,31,27,0.55) 0%, transparent 52%)" }} />
-          <div className="absolute bottom-4 right-4 text-xs text-white px-2.5 py-1 rounded-full"
-            style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)", letterSpacing: "0.04em" }}>
+            style={{ background: "linear-gradient(to top, rgba(26,31,27,0.5) 0%, transparent 45%)" }} />
+          <div className="absolute bottom-3.5 right-3.5 text-xs text-white px-2.5 py-1 rounded-[var(--r-pill)]"
+            style={{ background: "rgba(26,31,27,0.6)", backdropFilter: "blur(6px)", letterSpacing: "0.04em" }}>
             1 / 4
           </div>
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 items-center">
-            <div style={{ width: 18, height: 5, borderRadius: 3, background: "white" }} />
+          <div className="absolute bottom-3.5 left-1/2 -translate-x-1/2 flex gap-1.5 items-center">
+            <div style={{ width: 16, height: 5, borderRadius: 3, background: "white" }} />
             {[0, 0, 0].map((_, i) => (
               <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: "rgba(255,255,255,0.5)" }} />
             ))}
           </div>
-          <button onClick={() => router.back()} className={frostedBtnClass}
-            style={{ ...frostedBtnStyle, position: "absolute", top: "max(16px, env(safe-area-inset-top, 16px))", left: 16 }}
-            aria-label="Go back">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" strokeWidth="2" strokeLinecap="round">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-          </button>
-          <button onClick={() => toggle(establishment.place_id)} className={frostedBtnClass}
-            style={{ ...frostedBtnStyle, position: "absolute", top: "max(16px, env(safe-area-inset-top, 16px))", right: 16 }}
-            aria-label={isSaved ? "Remove from saved" : "Save"}>
-            <Heart className={cn("transition-colors", isSaved ? "fill-[var(--terracotta)] text-[var(--terracotta)]" : "text-[var(--ink)]")}
-              style={{ width: 18, height: 18 }} />
-          </button>
+        </div>
+      </div>
+
+      {/* DESKTOP: photo grid */}
+      <div className="hidden lg:block max-w-[1180px] mx-auto px-10 mt-6">
+        <div className="grid gap-1 rounded-[var(--r-lg)] overflow-hidden" style={{ gridTemplateColumns: "1fr 1fr", gridTemplateRows: "260px 260px" }}>
+          <div className="row-span-2 overflow-hidden rounded-l-[var(--r-lg)]">
+            <div className="w-full h-full" style={{ background: PHOTO_GRADIENTS[0] }} />
+          </div>
+          <div className="overflow-hidden" style={{ borderTopRightRadius: "var(--r-lg)" }}>
+            <div className="w-full h-full" style={{ background: PHOTO_GRADIENTS[1] }} />
+          </div>
+          <div className="overflow-hidden relative" style={{ borderBottomRightRadius: "var(--r-lg)" }}>
+            <div className="w-full h-full" style={{ background: PHOTO_GRADIENTS[2] }} />
+            <button
+              className="absolute bottom-4 right-4 flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--r-pill)] text-[13px] transition-colors"
+              style={{
+                background: "var(--warm-white)",
+                border: "1px solid rgba(26,31,27,0.15)",
+                color: "var(--ink)",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "var(--mist)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "var(--warm-white)")}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+              </svg>
+              Show all photos
+            </button>
+          </div>
         </div>
       </div>
 
@@ -232,7 +295,7 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
 
           {/* Community summary */}
           <div className="px-4 py-5 lg:px-0 lg:py-7 lg:border-b flex flex-col gap-2.5" style={{ borderColor: "rgba(122,158,126,0.12)" }}>
-            <p className="text-[13px] uppercase tracking-[0.08em] font-medium" style={{ color: "var(--ink-soft)" }}>Community summary</p>
+            <p className="hidden lg:block text-[13px] uppercase tracking-[0.08em] font-medium" style={{ color: "var(--ink-soft)" }}>Community summary</p>
             <div className="rounded-[var(--r-lg)] overflow-hidden" style={{ background: "var(--warm-white)", border: "1px solid rgba(122,158,126,0.12)" }}>
               <div className="px-4 py-3.5 flex items-center gap-3 border-b" style={{ borderColor: "rgba(122,158,126,0.08)" }}>
                 <div className="flex flex-col items-center">
@@ -282,8 +345,14 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
                 const feature = establishment.features[type];
                 const status  = feature?.status ?? "unknown";
                 const value   = feature?.value  ?? null;
-                const { bg, text } = getFeatureChipStyle(status, value);
                 const Icon = FEATURE_ICON_MAP[type];
+                const CHIP_STYLES: Record<string, { bg: string; color: string; border: string }> = {
+                  confirmed: { bg: "var(--mist)", color: "var(--sage-deep)", border: "1px solid rgba(122,158,126,0.2)" },
+                  reported:  { bg: "var(--amber-light)", color: "var(--amber)", border: "1px solid rgba(212,149,42,0.2)" },
+                  disputed:  { bg: "var(--terra-light)", color: "var(--terracotta)", border: "1px solid rgba(201,113,74,0.2)" },
+                  unknown:   { bg: "transparent", color: "var(--ink-faint)", border: "1px solid rgba(26,31,27,0.12)" },
+                };
+                const chipStyle = CHIP_STYLES[status];
                 const sublabel = status === "confirmed"
                   ? `Confirmed by ${feature.report_count} parent${feature.report_count !== 1 ? "s" : ""}`
                   : STATUS_SUBLABELS[status] ?? "";
@@ -300,13 +369,20 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
                         <Icon className="w-4 h-4" style={{ color: ICON_COLOR[status] }} />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium truncate" style={{ color: "var(--ink)" }}>{FEATURE_LABELS[type]}</p>
-                        {sublabel && <p className="text-xs mt-0.5 truncate" style={{ color: "var(--ink-faint)" }}>{sublabel}</p>}
+                        <p className="text-sm truncate" style={{ color: "var(--ink)" }}>{FEATURE_LABELS[type]}</p>
+                        {sublabel && <p className="text-[11px] mt-0.5 truncate" style={{ color: "var(--ink-faint)" }}>{sublabel}</p>}
                       </div>
                     </div>
-                    <span className={cn("px-2.5 py-1 rounded-full text-xs font-medium flex-shrink-0 flex items-center gap-1", bg, text)}>
-                      {status === "confirmed" && <svg className="w-2 h-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
-                      {status === "reported"  && <svg className="w-2 h-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>}
+                    <span
+                      className="inline-flex items-center px-2.5 py-1 rounded-[var(--r-pill)] flex-shrink-0 whitespace-nowrap"
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 400,
+                        background: chipStyle.bg,
+                        color: chipStyle.color,
+                        border: chipStyle.border,
+                      }}
+                    >
                       {chipLabel}
                     </span>
                   </div>
