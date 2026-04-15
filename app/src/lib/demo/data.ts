@@ -22,7 +22,7 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
       ],
     },
     phone: "+1 416-588-0374",
-    website: null,
+    website: "https://reunionislandcoffee.com",
     google_rating: 4.7,
     google_data_json: null,
     features: {
@@ -85,8 +85,8 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
         "Sunday: 9:00 AM – 4:00 PM",
       ],
     },
-    phone: null,
-    website: null,
+    phone: "+1 416-535-0404",
+    website: "https://roncesvallescafe.ca",
     google_rating: 4.4,
     google_data_json: null,
     features: {
@@ -150,7 +150,7 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
       ],
     },
     phone: "+1 416-465-2271",
-    website: null,
+    website: "https://leslievillepumps.com",
     google_rating: 4.3,
     google_data_json: null,
     features: {
@@ -213,8 +213,8 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
         "Sunday: 8:00 AM – 5:00 PM",
       ],
     },
-    phone: null,
-    website: null,
+    phone: "+1 416-703-2423",
+    website: "https://jimmyscoffee.ca",
     google_rating: 4.8,
     google_data_json: null,
     features: {
@@ -278,7 +278,7 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
       ],
     },
     phone: "+1 416-532-0045",
-    website: null,
+    website: "https://makerscafe.ca",
     google_rating: 4.5,
     google_data_json: null,
     features: {
@@ -342,7 +342,7 @@ export const DEMO_ESTABLISHMENTS: Establishment[] = [
       ],
     },
     phone: "+1 647-352-7996",
-    website: null,
+    website: "https://lacarnita.com",
     google_rating: 4.2,
     google_data_json: null,
     features: {

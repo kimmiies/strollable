@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Heart, Phone, Globe, Star,
+  Heart, Phone, Globe, Star, Share,
   Footprints, LockOpen, Baby, Armchair,
   DoorOpen, Navigation, Sofa, User, Users,
   type LucideIcon,
@@ -120,67 +120,78 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
   return (
     <div>
 
-      {/* MOBILE: unified sticky top-nav (brand + back + save) */}
-      <nav
-        className="lg:hidden sticky top-0 z-50 flex items-center gap-3 px-4"
-        style={{
-          height: 56,
-          background: "rgba(250,247,242,0.95)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(122,158,126,0.1)",
-        }}
-      >
-        <Link
-          href="/explore"
-          className="font-display font-light flex-shrink-0 tracking-[-0.02em]"
-          style={{ fontSize: 17, color: "var(--ink)" }}
-        >
-          Stroll<em className="not-italic" style={{ fontStyle: "italic", color: "var(--sage-deep)" }}>able</em>
-        </Link>
-        <button
-          onClick={() => router.back()}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[var(--r-pill)] text-[13px] transition-colors flex-shrink-0"
-          style={{ color: "var(--ink-soft)", background: "transparent" }}
-          aria-label="Back to explore"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-          Explore
-        </button>
-        <div className="ml-auto flex gap-2">
-          <button
-            onClick={() => toggle(establishment.place_id)}
-            className="rounded-full flex items-center justify-center transition-all active:scale-95 flex-shrink-0"
-            style={{
-              width: 36, height: 36,
-              background: "transparent",
-              border: "1px solid rgba(26,31,27,0.1)",
-            }}
-            aria-label={isSaved ? "Remove from saved" : "Save"}
-          >
-            <Heart className={cn("transition-colors", isSaved ? "fill-[var(--terracotta)] text-[var(--terracotta)]" : "text-[var(--ink)]")}
-              style={{ width: 16, height: 16 }} />
-          </button>
-        </div>
-      </nav>
-
-      {/* MOBILE: photo gallery */}
+      {/* MOBILE: full-bleed hero gallery with floating frosted controls */}
       <div className="lg:hidden">
-        <div className="relative overflow-hidden" style={{ height: 280, background: "var(--ink)" }}>
+        <div className="relative overflow-hidden" style={{ height: 320, background: "var(--ink)" }}>
           <div className="absolute inset-0 flex overflow-x-auto snap-x snap-mandatory" style={{ scrollbarWidth: "none" }}>
             {PHOTO_GRADIENTS.map((bg, i) => (
               <div key={i} className="flex-shrink-0 w-full h-full snap-start" style={{ background: bg }} />
             ))}
           </div>
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: "linear-gradient(to top, rgba(26,31,27,0.5) 0%, transparent 45%)" }} />
-          <div className="absolute bottom-3.5 right-3.5 text-xs text-white px-2.5 py-1 rounded-[var(--r-pill)]"
-            style={{ background: "rgba(26,31,27,0.6)", backdropFilter: "blur(6px)", letterSpacing: "0.04em" }}>
+
+          {/* Back button — top-left */}
+          <button
+            onClick={() => router.back()}
+            className="absolute rounded-full flex items-center justify-center transition-all active:scale-90"
+            style={{
+              top: "max(14px, env(safe-area-inset-top, 14px))",
+              left: 14,
+              width: 38, height: 38,
+              background: "rgba(255,255,255,0.92)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.18)",
+            }}
+            aria-label="Go back"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" strokeWidth="2" strokeLinecap="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+
+          {/* Share + save — top-right cluster */}
+          <div
+            className="absolute flex gap-2"
+            style={{ top: "max(14px, env(safe-area-inset-top, 14px))", right: 14 }}
+          >
+            <button
+              className="rounded-full flex items-center justify-center transition-all active:scale-90"
+              style={{
+                width: 38, height: 38,
+                background: "rgba(255,255,255,0.92)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.18)",
+              }}
+              aria-label="Share"
+            >
+              <Share style={{ width: 16, height: 16, color: "var(--ink)" }} />
+            </button>
+            <button
+              onClick={() => toggle(establishment.place_id)}
+              className="rounded-full flex items-center justify-center transition-all active:scale-90"
+              style={{
+                width: 38, height: 38,
+                background: "rgba(255,255,255,0.92)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.18)",
+              }}
+              aria-label={isSaved ? "Remove from saved" : "Save"}
+            >
+              <Heart className={cn("transition-colors", isSaved ? "fill-[var(--terracotta)] text-[var(--terracotta)]" : "text-[var(--ink)]")}
+                style={{ width: 16, height: 16 }} />
+            </button>
+          </div>
+
+          {/* Photo counter — bottom-right */}
+          <div className="absolute bottom-8 right-3.5 text-xs text-white px-2.5 py-1 rounded-[var(--r-pill)]"
+            style={{ background: "rgba(26,31,27,0.55)", backdropFilter: "blur(6px)", letterSpacing: "0.04em" }}>
             1 / 4
           </div>
-          <div className="absolute bottom-3.5 left-1/2 -translate-x-1/2 flex gap-1.5 items-center">
+
+          {/* Dots */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-1.5 items-center">
             <div style={{ width: 16, height: 5, borderRadius: 3, background: "white" }} />
             {[0, 0, 0].map((_, i) => (
               <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: "rgba(255,255,255,0.5)" }} />
@@ -221,32 +232,31 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
       </div>
 
       {/* MAIN CONTENT */}
-      <div className="lg:grid lg:grid-cols-[1fr_380px] lg:gap-12 lg:max-w-[1180px] lg:mx-auto lg:px-10 lg:pt-8 lg:pb-16 lg:items-start">
+      <div
+        className="relative -mt-6 rounded-t-[var(--r-xl)] bg-[var(--cream)] z-[1] lg:mt-0 lg:rounded-none lg:bg-transparent lg:grid lg:grid-cols-[1fr_380px] lg:gap-12 lg:max-w-[1180px] lg:mx-auto lg:px-10 lg:pt-8 lg:pb-16 lg:items-start"
+      >
 
         {/* LEFT COLUMN */}
         <div>
 
           {/* Establishment info */}
-          <div className="px-4 py-5 lg:px-0 lg:py-0 lg:pb-6 lg:border-b" style={{ borderColor: "rgba(122,158,126,0.12)" }}>
+          <div className="px-5 pt-6 pb-5 lg:px-0 lg:pt-0 lg:pb-6 lg:border-b" style={{ borderColor: "rgba(122,158,126,0.12)" }}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 {/* Name */}
                 <h1
-                  className="font-display font-normal leading-tight tracking-[-0.025em] lg:text-[32px]"
-                  style={{ fontSize: 26, color: "var(--ink)" }}
+                  className="font-display leading-[1.05] tracking-[-0.025em] text-[32px] lg:text-[48px]"
+                  style={{ fontWeight: 500, color: "var(--ink)" }}
                 >
                   {establishment.name}
                 </h1>
 
                 {/* Rating */}
                 {establishment.google_rating && (
-                  <div className="flex items-center gap-1 mt-1.5">
-                    <Star className="w-3.5 h-3.5 fill-current flex-shrink-0" style={{ color: "var(--amber)" }} />
-                    <span className="text-sm font-medium" style={{ color: "var(--amber)" }}>
-                      {formatRating(establishment.google_rating)}
-                    </span>
-                    <span className="text-sm" style={{ color: "var(--ink-faint)" }}>
-                      · 48 reviews
+                  <div className="flex items-center gap-1.5 mt-3">
+                    <Star className="w-[18px] h-[18px] fill-current flex-shrink-0" style={{ color: "var(--amber)" }} />
+                    <span className="text-[17px]" style={{ color: "var(--amber)" }}>
+                      {formatRating(establishment.google_rating)} · 48 reviews
                     </span>
                   </div>
                 )}
@@ -266,25 +276,25 @@ export default function EstablishmentDetail({ establishment }: EstablishmentDeta
             </div>
 
             {/* Address / phone / website rows */}
-            <div className="mt-4 space-y-2.5">
-              <div className="flex items-start gap-3 text-sm" style={{ color: "var(--ink-soft)" }}>
-                <svg className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--ink-faint)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <div className="mt-5 flex flex-col gap-3">
+              <div className="flex items-start gap-3 text-[15px] leading-[1.5]" style={{ color: "var(--ink-soft)" }}>
+                <svg className="w-[18px] h-[18px] flex-shrink-0 mt-[3px]" style={{ color: "var(--ink-faint)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
-                <span>{establishment.address}</span>
+                <span className="min-w-0">{establishment.address.split(",")[0]} · 0.3 km away</span>
               </div>
               {establishment.phone && (
-                <a href={`tel:${establishment.phone}`} className="flex items-center gap-3 text-sm"
+                <a href={`tel:${establishment.phone}`} className="flex items-center gap-3 text-[15px]"
                   style={{ color: "var(--ink-soft)", textDecoration: "none" }}>
-                  <Phone className="w-4 h-4 flex-shrink-0" style={{ color: "var(--ink-faint)" }} />
+                  <Phone className="w-[18px] h-[18px] flex-shrink-0" style={{ color: "var(--ink-faint)" }} />
                   {establishment.phone}
                 </a>
               )}
               {establishment.website && (
                 <a href={establishment.website} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-sm"
+                  className="flex items-center gap-3 text-[15px]"
                   style={{ color: "var(--sage-deep)", textDecoration: "none" }}>
-                  <Globe className="w-4 h-4 flex-shrink-0" style={{ color: "var(--ink-faint)" }} />
+                  <Globe className="w-[18px] h-[18px] flex-shrink-0" style={{ color: "var(--ink-faint)" }} />
                   {establishment.website.replace(/^https?:\/\//, "")}
                 </a>
               )}
