@@ -20,10 +20,10 @@ DECLARE
   v_user_count INTEGER;
   v_is_founding BOOLEAN;
 BEGIN
-  SELECT COUNT(*) INTO v_user_count FROM users;
+  SELECT COUNT(*) INTO v_user_count FROM public.users;
   v_is_founding := v_user_count < 100;
 
-  INSERT INTO users (id, display_name, email, badge_flags)
+  INSERT INTO public.users (id, display_name, email, badge_flags)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'display_name', split_part(NEW.email, '@', 1)),
